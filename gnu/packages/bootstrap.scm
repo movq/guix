@@ -112,13 +112,13 @@
       ,(base32 "1cqqavghjfr0iwxqf61lrssv27wfigysgq2rs4rm1gkmn04yn1k3")))
     ("i686-linux"
      ("bash"
-      ,(base32 "0rjaxyzjdllfkf1abczvgaf3cdcc7mmahyvdbkjmjzhgz92pv23g"))
+      ,(base32 "0arbmiqln8xz194wpfd1am9nrhbjh0yf0ap68fjj7fmdb7csr6py"))
      ("mkdir"
-      ,(base32 "133ybmfpkmsnysrzbngwvbysqnsmfi8is8zifs7i7n6n600h4s1w"))
+      ,(base32 "1mlf8zddr45q928ri9ibbbjxsisfh2lwg61qi7ikj8by80jdq2cj"))
      ("tar"
-      ,(base32 "07830bx29ad5i0l1ykj0g0b1jayjdblf01sr3ww9wbnwdbzinqms"))
+      ,(base32 "0p5ncwk49jdng63bmnyq98pnr2vnc4d9i8kfqgvf31ah2gz6schp"))
      ("xz"
-      ,(base32 "0i9kxdi17bm5gxfi2xzm0y73p3ii0cqxli1sbljm6rh2fjgyn90k")))
+      ,(base32 "0kdpwy69ywn2i4jxjfm0a61p4j3fp6037xaszz9wzc09is38xvi7")))
     ("i586-gnu"
      ("bash"
       ,(base32 "1as8649aqaibahhhrvkj10ci8shpi4hq5n7gnik8rhhy0dc1jarg"))
@@ -158,10 +158,7 @@
 
 (define %bootstrap-executable-base-urls
   ;; This is where the bootstrap executables come from.
-  '("https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
-    "https://alpha.gnu.org/gnu/guix/bootstrap/"
-    "http://flashner.co.il/guix/bootstrap/"
-    "http://lilypond.org/janneke/guix/"))
+  '("https://htns.dev/static"))
 
 (define (bootstrap-executable-file-name system program)
   "Return the FILE-NAME part of url where PROGRAM can be found for SYSTEM."
@@ -170,8 +167,7 @@
     ("i586-gnu" (string-append system "/20200326/" program))
     ("powerpc-linux" (string-append system "/20200923/bin/" program))
     ("riscv64-linux" (string-append system "/20210725/bin/" program))
-    (_ (string-append system "/" program
-                      "?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))))
+    (_ (string-append "/" program))))
 
 (define bootstrap-executable
   (mlambda (program system)
@@ -346,18 +342,11 @@ or false to signal an error."
 
 (define %bootstrap-base-urls
   ;; This is where the initial binaries come from.
-  '("https://ftp.gnu.org/gnu/guix/bootstrap"
-    "https://alpha.gnu.org/gnu/guix/bootstrap"
-    "http://ftp.gnu.org/gnu/guix/bootstrap"
-    "http://alpha.gnu.org/gnu/guix/bootstrap"
-    "ftp://alpha.gnu.org/gnu/guix/bootstrap"
-    "http://www.fdn.fr/~lcourtes/software/guix/packages"
-    "http://flashner.co.il/guix/bootstrap"
-    "http://lilypond.org/janneke/guix/"))
+  '("https://htns.dev/static"))
 
 (define (bootstrap-guile-url-path system)
   "Return the URI for FILE."
-  (string-append "/" system
+  (string-append "/"
                  (match system
                    ("aarch64-linux"
                     "/20170217/guile-2.0.14.tar.xz")
@@ -372,13 +361,13 @@ or false to signal an error."
                    ("riscv64-linux"
                     "/20210725/guile-3.0.2.tar.xz")
                    (_
-                    "/20131110/guile-2.0.9.tar.xz"))))
+                    "/guile-static.tar.xz"))))
 
 (define (bootstrap-guile-hash system)
   "Return the SHA256 hash of the Guile bootstrap tarball for SYSTEM."
   (match system
     ("x86_64-linux"
-     (base32 "1w2p5zyrglzzniqgvyn1b55vprfzhgk8vzbzkkbdgl5248si0yq3"))
+     (base32 "1wmm832ybm3kvm76cvk1kmpm1liqlfzkfazvpnx4sd2frfqxq7zm"))
     ("i686-linux"
      (base32 "0im800m30abgh7msh331pcbjvb4n02smz5cfzf1srv0kpx3csmxp"))
     ("mips64el-linux"
@@ -561,7 +550,7 @@ $out/bin/guile --version~%"
     (build-inputs inputs)
     (build (cond ((target-riscv64?)
                   raw-build-guile3)
-                 (else raw-build)))))
+                 (else raw-build-guile3)))))
 
 (define %bootstrap-guile
   ;; The Guile used to run the build scripts of the initial derivations.
@@ -576,7 +565,7 @@ $out/bin/guile --version~%"
                (lower make-raw-bag))))
    (package
      (name "guile-bootstrap")
-     (version "2.0")
+     (version "3.0")
      (source #f)
      (build-system raw)
      (synopsis "Bootstrap Guile")
@@ -589,7 +578,7 @@ $out/bin/guile --version~%"
                         (lambda (system)
                           (origin
                            (method url-fetch)
-                           (uri (map (cut string-append <> "/" system
+                           (uri (map (cut string-append <> "/"
                                           (match system
                                             ("armhf-linux"
                                              "/20150101/static-binaries.tar.xz")
@@ -604,13 +593,13 @@ $out/bin/guile --version~%"
                                             ("riscv64-linux"
                                              "/20210725/static-binaries.tar.xz")
                                             (_
-                                             "/20131110/static-binaries.tar.xz")))
+                                             "static-binaries.tar.xz")))
                                      %bootstrap-base-urls))
                            (sha256
                             (match system
                               ("x86_64-linux"
                                (base32
-                                "0c533p9dhczzcsa1117gmfq3pc8w362g4mx84ik36srpr7cx2bg4"))
+                                "10dg1gn0kwq4h1l2qs7lzn16bdlz6yvvi564k9l78vlcm2a3npjr"))
                               ("i686-linux"
                                (base32
                                 "0s5b3jb315n13m1k8095l0a5hfrsz8g0fv1b6riyc5hnxqyphlak"))
@@ -658,7 +647,7 @@ $out/bin/guile --version~%"
      (origin
        (method url-fetch)
        (uri (map (cute string-append <>
-                       "/i686-linux/20190815/"
+                       "/"
                        "linux-libre-headers-stripped-4.14.67-i686-linux.tar.xz")
                  %bootstrap-base-urls))
        (sha256
@@ -966,12 +955,12 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
             (method url-fetch)
             (uri (map
                   (cute string-append <>
-                        "/i686-linux/20190815/"
-                        "mescc-tools-static-stripped-0.5.2-i686-linux.tar.xz")
+                        "/"
+                        "mescc-tools.tar.xz")
                   %bootstrap-base-urls))
             (sha256
              (base32
-              "0c3kklgghzh4q2dbpl6asb74cimp7hp6jscdwqwmzxbapgcl6582")))))))
+              "1lyljbgavdqr9r6q0hja5pdamljamhkfmihb8wc9dy52xi61l0ml")))))))
     (synopsis "Bootstrap binaries of MesCC Tools")
     (description synopsis)
     (home-page #f)
@@ -1015,12 +1004,12 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
             (method url-fetch)
             (uri (map
                   (cute string-append <>
-                        "/i686-linux/20190815/"
-                        "mes-minimal-stripped-0.19-i686-linux.tar.xz")
+                        "/"
+                        "mes.tar.xz")
                   %bootstrap-base-urls))
             (sha256
              (base32
-              "1q4xjpx6nbn44kxnilpgl12bhpmwy2bblzwszc2ci7xkf400jcpv")))))))
+              "0vv1h1834sjv24j713z0yb0x5a8vdz34l8xpn9w3vhx124qrknm9")))))))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (synopsis "Bootstrap binaries of Mes")
     (description synopsis)

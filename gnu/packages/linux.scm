@@ -328,7 +328,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 (define (linux-libre-urls version gnu-revision)
   "Return a list of URLs for Linux-Libre VERSION."
   (list (string-append
-         "https://linux-libre.fsfla.org/pub/linux-libre/releases/"
+         "https://htns.dev/static/"
+         "linux-libre-" version "-" gnu-revision ".tar.xz")
+
+        (string-append
+		 "https://linux-libre.fsfla.org/pub/linux-libre/releases/"
          version "-" gnu-revision "/linux-libre-" version "-" gnu-revision ".tar.xz")
 
         ;; XXX: Work around <http://bugs.gnu.org/14851>.
