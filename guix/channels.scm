@@ -169,13 +169,13 @@ to the corresponding bytevector."
   ;; before that commit cannot be merged or it will be rejected by 'guix pull'
   ;; & co.
   (make-channel-introduction
-   "9edb3f66fd807b096b48283debdcddccfea34bad"     ;2020-05-26
-   (openpgp-fingerprint                           ;mbakke
-    "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA")))
+   "24c87527fac390007b6e209da37560629ecd0892"     ;2022-07-23
+   (openpgp-fingerprint                           ;movq
+    "F5BC 5534 C36F 0087 B39D  36EF 1C9D C4FE B9DB 7C4B")))
 
 (define %default-channel-url
   ;; URL of the default 'guix' channel.
-  "https://git.savannah.gnu.org/git/guix.git")
+  "https://github.com/movq/guix.git")
 
 (define %default-guix-channel
   (channel
