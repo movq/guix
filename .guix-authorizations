@@ -74,6 +74,8 @@
    (name "monego"))
   ("4008 6A7E 0252 9B60 31FB  8607 8354 7635 3176 9CA6"
    (name "mothacehe"))
+  ("4914 197B EB99 9068 EF4F  E600 3653 4788 10E3 55A4"
+   (name "movq"))
   (;; primary: "F5BC 5534 C36F 0087 B39D  36EF 1C9D C4FE B9DB 7C4B"
    "F5DA 2032 4B87 3D0B 7A38  7672 0DB0 FF88 4F55 6D79"
    (name "nckx"))
