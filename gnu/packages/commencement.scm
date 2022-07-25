@@ -320,7 +320,7 @@ LANG=C
 LC_ALL=C
 export LANG LC_ALL
 
-MES_PREFIX=${MES_REWIRED_PREFIX-" out "/}
+MES_PREFIX=${MES_REWIRED_PREFIX-" out "/share/mes}
 MES=" bin "/mes
 export MES MES_PREFIX
 

@@ -1009,7 +1009,7 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                   %bootstrap-base-urls))
             (sha256
              (base32
-              "0vv1h1834sjv24j713z0yb0x5a8vdz34l8xpn9w3vhx124qrknm9")))))))
+              "0ll35p4n7syavicifjgpds4x7mky8m62mkkh9nbdn4grlcvzi2py")))))))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (synopsis "Bootstrap binaries of Mes")
     (description synopsis)
