@@ -762,11 +762,7 @@ encoding conversion errors."
   ;; Default list of substituters.  This is *not* the list baked in
   ;; 'guix-daemon', but it is used by 'guix-service-type' and and a couple of
   ;; clients ('guix build --log-file' uses it.)
-  (map (if (false-if-exception (resolve-interface '(gnutls)))
-           (cut string-append "https://" <>)
-           (cut string-append "http://" <>))
-       '("ci.guix.gnu.org"
-         "bordeaux.guix.gnu.org")))
+  '())
 
 (define (current-user-name)
   "Return the name of the calling user."
