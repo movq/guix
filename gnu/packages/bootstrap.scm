@@ -361,13 +361,13 @@ or false to signal an error."
                    ("riscv64-linux"
                     "/20210725/guile-3.0.2.tar.xz")
                    (_
-                    "/guile-static.tar.xz"))))
+                    "/guile-3.0.8-static.tar.xz"))))
 
 (define (bootstrap-guile-hash system)
   "Return the SHA256 hash of the Guile bootstrap tarball for SYSTEM."
   (match system
     ("x86_64-linux"
-     (base32 "1wmm832ybm3kvm76cvk1kmpm1liqlfzkfazvpnx4sd2frfqxq7zm"))
+     (base32 "13x3wx268d7a00h8km4aymgqa7n28ly8zakllb5gz3ifixich4ss"))
     ("i686-linux"
      (base32 "0im800m30abgh7msh331pcbjvb4n02smz5cfzf1srv0kpx3csmxp"))
     ("mips64el-linux"
