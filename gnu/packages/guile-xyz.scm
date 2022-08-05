@@ -43,6 +43,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1408,9 +1409,7 @@ microblogging service.")
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
     (inputs
-     ;; XXX: Use Parted 3.4 to work around issues when using 3.5 in the Guix
-     ;; System installer: <https://issues.guix.gnu.org/55549>.
-     (list guile-3.0 parted-3.4))
+     (list guile-3.0 parted))
     (propagated-inputs
      (list guile-bytestructures))
     (native-inputs
@@ -3944,7 +3943,7 @@ as signed sessions, multipart message support, etc.")
            (add-after 'unpack 'run-hall
              (lambda _
                (setenv "HOME" "/tmp")   ; for ~/.hall
-               (invoke "hall" "dist" "-x"))))))
+               (invoke "hall" "build-system" "-x"))))))
       (native-inputs
        (list autoconf
              automake

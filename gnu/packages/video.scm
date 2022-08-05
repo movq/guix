@@ -1000,7 +1000,7 @@ H.264 (MPEG-4 AVC) video streams.")
            pcre2
            pugixml
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            utfcpp
            zlib))
     (native-inputs
@@ -1012,7 +1012,7 @@ H.264 (MPEG-4 AVC) video streams.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("ruby" ,ruby)))
     (arguments
      `(#:configure-flags
@@ -1562,14 +1562,14 @@ operate properly.")
 (define-public ffmpeg-5
   (package
     (name "ffmpeg")
-    (version "5.0.1")
+    (version "5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
+                "00wbd5skv6ba5yqq4ca505ncckhvpzwflcsall7madg2bsmnmssm"))))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -1971,7 +1971,7 @@ videoformats depend on the configuration flags of ffmpeg.")
            pulseaudio
            python-wrapper
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            samba
            sdl
@@ -2242,7 +2242,7 @@ projects while introducing many more.")
                 "12nvcl0cfix1xay9hfi7856vg4lpv8y5b0a22212bsjbvl5g22rc"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list bash-minimal qtbase-5 zlib mpv))
     (arguments
@@ -2875,7 +2875,7 @@ for use with HTML5 video.")
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("yasm" ,yasm)))
     ;; FIXME: Once packaged, add libraries not found during the build.
     (inputs
@@ -3194,7 +3194,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
            libsamplerate
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            rtaudio
            sdl2
            sdl2-image
@@ -3362,7 +3362,7 @@ be used for realtime video capture via Linux-specific APIs.")
       pipewire-0.3
       pulseaudio
       qtbase-5
-      qtsvg
+      qtsvg-5
       qtx11extras
       qtwayland
       speexdsp
@@ -4687,7 +4687,7 @@ create smoother and stable videos.")
            jsoncpp
            libopenshot-audio
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            zeromq))
     (arguments
      `(#:configure-flags
@@ -4740,7 +4740,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            python-pyqt
            python-pyzmq
            python-requests
-           qtsvg))
+           qtsvg-5))
     (arguments
      `(#:modules ((guix build python-build-system)
                   (guix build qt-utils)
@@ -4844,7 +4844,7 @@ transitions, and effects and then export your film to many common formats.")
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python-wrapper" ,python-wrapper)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (inputs
      (list bash-minimal
            ffmpeg
@@ -4857,14 +4857,14 @@ transitions, and effects and then export your film to many common formats.")
            mlt
            pulseaudio
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtmultimedia
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg
+           qtmultimedia-5
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5
            qtwebkit
-           qtwebsockets
+           qtwebsockets-5
            qtx11extras
            sdl2))
     (home-page "https://www.shotcut.org/")
@@ -5387,7 +5387,7 @@ brightness, contrast, and frame rate.")
 (define-public get-iplayer
   (package
     (name "get-iplayer")
-    (version "3.27")
+    (version "3.30")
     (source
       (origin
         (method git-fetch)
@@ -5396,7 +5396,7 @@ brightness, contrast, and frame rate.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "077y31gg020wjpx5pcivqgkqawcjxh5kjnvq97x2gd7i3wwc30qi"))))
+         (base32 "1kzsdq1mhm5h83bbdbhh3jhpfvq4f13ly22mfd6vvmhj8mq084pi"))))
     (build-system perl-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -5411,8 +5411,7 @@ brightness, contrast, and frame rate.")
                     (man (string-append out "/share/man/man1")))
                (install-file "get_iplayer" bin)
                (install-file "get_iplayer.cgi" bin)
-               (install-file "get_iplayer.1" man))
-             #t))
+               (install-file "get_iplayer.1" man))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -5423,8 +5422,7 @@ brightness, contrast, and frame rate.")
                    prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))
                (wrap-program (string-append out "/bin/get_iplayer.cgi")
                  `("PERL5LIB" ":"
-                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))
-               #t))))))
+                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))))))))
     (inputs
      (list perl-mojolicious perl-lwp-protocol-https perl-xml-libxml))
     (home-page "https://github.com/get-iplayer/get_iplayer")

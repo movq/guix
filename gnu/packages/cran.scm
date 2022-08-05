@@ -3315,7 +3315,7 @@ punctuation.")
     (synopsis "Inter-widget interactivity for HTML widgets")
     (description
      "This package provides building blocks for allowing HTML widgets to
-communicate with each other, with Shiny or without (i.e.  static @code{.html}
+communicate with each other, with Shiny or without (i.e., static @code{.html}
 files).  It currently supports linked brushing and filtering.")
     (license license:expat)))
 
@@ -11699,6 +11699,31 @@ supplied Jacobian, for specifying a banded numerical Jacobian and for allowing a
 singular or ill-conditioned Jacobian.")
     (license license:gpl2+)))
 
+(define-public r-phyclust
+  (package
+    (name "r-phyclust")
+    (version "0.1-30")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "phyclust" version))
+              (sha256
+               (base32
+                "0fy9q95vmlm9idpax7alhpfwn30gflnc9md72g91jypyxkx5nr7p"))))
+    (properties `((upstream-name . "phyclust")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape))
+    (home-page "https://snoweye.github.io/phyclust/")
+    (synopsis "Studying phyloclustering and exploring DNA sequence data")
+    (description
+     "@dfn{Phylogenetic clustering} (phyloclustering) is an evolutionary continuous
+time Markov Chain model-based approach to identify population structure from
+molecular data without assuming linkage equilibrium.  The package @code{phyclust}
+provides a convenient implementation of phyloclustering for DNA and SNP data,
+capable of clustering individuals into subpopulations and identifying molecular
+sequences representative of those subpopulations.  It is designed in @code{C} for
+performance and interfaced with @code{R} for visualization.")
+    (license license:gpl2+)))
+
 (define-public r-physicalactivity
   (package
     (name "r-physicalactivity")
@@ -13459,6 +13484,38 @@ regressions).  NOTE: Weighted partial correlation calculations pulled to
 address a bug.")
   (license license:gpl2+)))
 
+(define-public r-rcppalgos
+  (package
+    (name "r-rcppalgos")
+    (version "2.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "RcppAlgos" version))
+              (sha256
+               (base32
+                "1ndibdf3k02bpcgackzviczramzkay9idn071nix3dhs5miq1ai8"))))
+    (properties `((upstream-name . "RcppAlgos")))
+    (build-system r-build-system)
+    (inputs (list gmp))
+    (propagated-inputs (list r-cpp11 r-gmp))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/jwood000/RcppAlgos")
+    (synopsis
+     "High performance tools for combinatorics and computational mathematics")
+    (description
+     "This package provides optimized functions and flexible combinatorial
+iterators implemented in C++ for solving problems in combinatorics and
+computational mathematics.  It utilizes the @code{RMatrix} class from
+@code{RcppParallel} for thread safety.  There are combination/permutation
+functions with constraint parameters that allow for generation of all results
+of a vector meeting specific criteria.  It is capable of generating specific
+combinations/permutations which sets up nicely for parallelization as well as
+random sampling.  Gmp support permits exploration where the total number of
+results is large.  Additionally, there are several high performance number
+theoretic functions that are useful for problems common in computational
+mathematics.")
+    (license license:gpl2+)))
+
 (define-public r-rcppannoy
   (package
     (name "r-rcppannoy")
@@ -14566,6 +14623,27 @@ library which allows parsing of NEXUS, Newick and other phylogenetic tree
     (description "This package provides a base @code{S4} class for comparative
 methods, incorporating one or more trees and trait data.")
     (license license:gpl2+)))
+
+(define-public r-phylotools
+  (package
+    (name "r-phylotools")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "phylotools" version))
+              (sha256
+               (base32
+                "1dhk1ncp5zi4zl1xfnjz64v983dm7bq7iimfjin80j0bdcpps44w"))))
+    (properties `((upstream-name . "phylotools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape))
+    (home-page "https://github.com/helixcn/phylotools")
+    (synopsis "Phylogenetic tools for eco-phylogenetics")
+    (description
+     "This package provides a collection of tools for building RAxML
+supermatrix using PHYLIP or aligned FASTA files.  These functions will be
+useful for building large phylogenies using multiple markers.")
+    (license license:gpl2)))
 
 (define-public r-rnexml
   (package

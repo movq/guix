@@ -520,9 +520,9 @@ formats such as PNG.")
                 "05gczsywkk45bh0z1vv8l6cmrlncc2qj8agavj5ryxpnxkzy69r1"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtdeclarative qtsvg zlib))
+     (list qtbase-5 qtdeclarative-5 qtsvg-5 zlib))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -531,7 +531,7 @@ formats such as PNG.")
              (substitute* "translations/translations.pro"
                (("LRELEASE =.*")
                 (string-append "LRELEASE = "
-                               (assoc-ref inputs "qttools")
+                               (assoc-ref inputs "qttools-5")
                                "/bin/lrelease\n")))
              (let ((out (assoc-ref outputs "out")))
                (invoke "qmake"
@@ -2623,7 +2623,7 @@ utilities frequently used in roguelikes.")
          ("openal" ,openal)
          ("pulseaudio" ,pulseaudio)
          ("qtbase" ,qtbase-5)
-         ("qtdeclarative" ,qtdeclarative)
+         ("qtdeclarative-5" ,qtdeclarative-5)
          ("sdl2" ,sdl2)
          ("uuid.h" ,util-linux "lib")
          ("zlib" ,zlib)))

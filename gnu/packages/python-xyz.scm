@@ -59,7 +59,7 @@
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
@@ -124,6 +124,8 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1182,20 +1184,13 @@ iotop, uptime, pidof, tty, taskset, pmap.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "1.7.1")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Shapely" version))
        (sha256
-        (base32
-         "0adiz4jwmwxk7k1awqifb1a9bj5x4nx4gglb5dz9liam21674h8n"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file "shapely/speedups/_speedups.c")
-           (delete-file "shapely/vectorized/_vectorized.c")
-           #t))))
+        (base32 "1dpbjw0w2l1r9s5drmi4cyr1yd5h2a4m9vip7qhy7mbg03azjajp"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython python-matplotlib python-pytest
@@ -1481,6 +1476,37 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 @url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
    (license license:expat)))
 
+(define-public python-h5netcdf
+  (package
+    (name "python-h5netcdf")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "h5netcdf" version))
+       (sha256
+        (base32 "1b2dcgf5rwy7pb7hr4prkc5vgcw9qc2was20dmnj90lbrpx08rvp"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "h5netcdf/tests")))))))
+    (native-inputs
+     (list python-netcdf4
+           python-pytest
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-h5py python-packaging))
+    (home-page "https://h5netcdf.org")
+    (synopsis "Python interface for the netCDF4 file-format based on h5py")
+    (description "This package provides Python interface for the netCDF4
+file-format that reads and writes local or remote HDF5 files directly via h5py
+or h5pyd, without relying on the Unidata netCDF library")
+    (license license:bsd-3)))
+
 (define-public python-h5py
   (package
     (name "python-h5py")
@@ -1646,14 +1672,14 @@ of the netcdf4 package before.")
 (define-public python-netcdf4
   (package
     (name "python-netcdf4")
-    (version "1.5.3")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "netCDF4" version))
        (sha256
         (base32
-         "1gn35mb2yc263pci720aik8ymz41lrvxlrn3z83vyjwghiashg1a"))))
+         "0qxs8r1qmsmg760wm5q0wqlcm7hdd3k7cghryw6wvqd3v5rs7vwm"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -14061,21 +14087,36 @@ files for use with Python.")
     (license license:bsd-2)))
 
 (define-public python-args
-  (package
-    (name "python-args")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "args" version))
-              (sha256
-               (base32
-                "057qzi46h5dmxdqknsbrssn78lmqjlnm624iqdhrnpk26zcbi1d7"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/kennethreitz/args")
-    (synopsis "Command-line argument parser")
-    (description
-     "This library provides a Python module to parse command-line arguments.")
-    (license license:bsd-3)))
+  (let ((commit "9460f1a35eb3055e9e4de1f0a6932e0883c72d65") (revision "0"))
+    (package
+      (name "python-args")
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://github.com/kennethreitz-archive/args")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zfxpbp9vldqdrjmd0c6y3wisl35mx5v8zlyp3nhwpy1730wrc9j"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'patch-args.py
+                      (lambda _
+                        (substitute* "args.py"
+                          (("basestring") "str"))))
+                    (replace 'check
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (when tests?
+                          (invoke "nosetests" "-v")))))))
+      (native-inputs (list python-nose))
+      (synopsis "Command-line argument parser")
+      (description
+       "This library provides a Python module to parse command-line arguments.")
+      (license license:bsd-3))))
 
 (define-public python-clint
   (package
@@ -19659,7 +19700,7 @@ while only declaring the test-specific fields.")
      Supported metrics are:
      @itemize @bullet
      @item raw metrics: SLOC, comment lines, blank lines, &c.
-     @item Cyclomatic Complexity (i.e.  McCabe’s Complexity)
+     @item Cyclomatic Complexity (i.e., McCabe’s Complexity)
      @item Halstead metrics (all of them)
      @item the Maintainability Index (a Visual Studio metric)
      @end itemize")
@@ -22003,14 +22044,14 @@ package updates.")
 (define-public python-userspacefs
   (package
     (name "python-userspacefs")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "userspacefs" version))
         (sha256
          (base32
-          "06f2gsiypas270nqfjir4wwjlpkjp097pm6zchc7k20ggg32gv1k"))))
+          "0v0qkdwfc61s2yiq7d7amin93x5biypfmi9pfhf8yj1rdpx5yvsx"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-fusepyng))
@@ -22652,13 +22693,13 @@ object-oriented library such as @code{scikit-learn}.")
 (define-public python-dill
   (package
     (name "python-dill")
-    (version "0.3.1.1")
+    (version "0.3.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dill" version))
        (sha256
-        (base32 "1704g8z70d210ksgbccs2v545v9w0wc6lx15m296alb7jf0yzn22"))))
+        (base32 "11lc40x37cx2i8qqbc5qklifm65dyjl6prrqsycybvpixzrl2pnp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -25034,7 +25075,7 @@ with features similar to the @command{wget} utility.")
             python-translation-finder
             python-watchdog))
     (native-inputs
-     (list qttools fontforge))
+     (list qttools-5 fontforge))
     (home-page "https://framagit.org/tyreunom/offlate")
     (synopsis "Offline translation interface for online translation tools")
     (description "Offlate offers a unified interface for different translation
@@ -28796,13 +28837,13 @@ development, testing, production]};
 (define-public python-pudb
   (package
     (name "python-pudb")
-    (version "2022.1.1")
+    (version "2022.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pudb" version))
               (sha256
                (base32
-                "0gq82hwnibby9qdyv7ri11phvg94nby4jb0w9h3jk79w89kdsfyv"))))
+                "03a7zalgdxfd2z2k6050ng087gwqgqis544n2083gdfxbf0ap0vb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -30203,3 +30244,32 @@ versa.  Extended WKB/WKT are also supported.")
 binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
 and @code{bspatch4}.")
     (license license:bsd-2)))
+
+(define-public python-biblib
+  (let ((upstream-version "0.1.0")
+        (commit "ab0e857b9198fe425ec9b02fcc293b5d9fd0c406")
+        (revision "1"))
+    (package
+      (name "python-biblib")
+      (version (git-version upstream-version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aclements/biblib")
+               (commit commit)))
+         (sha256
+          (base32 "1ym1gwxys9gl5a7fjs6xh5z9w50pnq4z3rs6fx7kpv78hlrbjlip"))
+         (file-name (git-file-name name version))))
+      (build-system python-build-system)
+      (home-page "https://github.com/aclements/biblib")
+      (synopsis "BibTeX parsing and transformation library")
+      (description
+       "Biblib provides a simple, standalone Python 3 package for parsing
+BibTeX bibliographic databases, as well as algorithms for manipulating BibTeX
+entries in BibTeX-y ways.  Biblib's parser is derived directly from the WEB
+source code for BibTeX and hence (barring bugs in translation) should be fully
+compatible with BibTeX's own parser.")
+      ;; N.B. It seems the parser was translated from WEB by hand: this
+      ;; package does not contain any generated files.
+      (license license:expat))))

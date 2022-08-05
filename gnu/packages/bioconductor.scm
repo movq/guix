@@ -49,6 +49,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages statistics)
@@ -2647,6 +2648,65 @@ and evaluate clustering results.")
 arbitrary genomic intervals along chromosomal ideogram.")
     (license license:gpl2)))
 
+(define-public r-infercnv
+  (package
+    (name "r-infercnv")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "infercnv" version))
+       (sha256
+        (base32
+         "01f021fdxm058733rky46dlvqg7dmf5mn5x9lnq0fspp5665w3bl"))))
+    (properties `((upstream-name . "infercnv")))
+    (build-system r-build-system)
+    (inputs (list python))
+    (propagated-inputs
+     (list r-ape
+           r-argparse
+           r-biocgenerics
+           r-catools
+           r-coda
+           r-coin
+           r-digest
+           r-doparallel
+           r-dplyr
+           r-edger
+           r-fastcluster
+           r-fitdistrplus
+           r-foreach
+           r-futile-logger
+           r-future
+           r-ggplot2
+           r-gplots
+           r-gridextra
+           r-hiddenmarkov
+           r-leiden
+           r-matrix
+           r-paralleldist
+           r-phyclust
+           r-rann
+           r-rcolorbrewer
+           r-reshape
+           r-rjags
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/broadinstitute/inferCNV/wiki")
+    (synopsis "Infer copy number variation from single-cell RNA-Seq data")
+    (description
+     "@code{InferCNV} is used to explore tumor single cell RNA-Seq data to identify
+evidence for somatic large-scale chromosomal copy number alterations, such as gains
+or deletions of entire chromosomes or large segments of chromosomes.  This is done
+by exploring expression intensity of genes across positions of a tumor genome in
+comparison to a set of reference \"normal\" cells.  A heatmap is generated
+illustrating the relative expression intensities across each chromosome, and it
+often becomes readily apparent as to which regions of the tumor genome are
+over-abundant or less-abundant as compared to that of normal cells.")
+    (license license:bsd-3)))
+
 (define-public r-iranges
   (package
     (name "r-iranges")
@@ -4628,6 +4688,56 @@ TAB-Seq.")
      "This package provides tools for discriminative motif discovery in high
 throughput genetic sequencing data sets using regression methods.")
     (license license:artistic2.0)))
+
+(define-public r-muscat
+  (package
+    (name "r-muscat")
+    (version "1.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "muscat" version))
+       (sha256
+        (base32
+         "1j3zkhqgza92vdykb1yia1jjwsdqra6q9c0jk6p5p2x0778xqgfd"))))
+    (properties `((upstream-name . "muscat")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-blme
+           r-complexheatmap
+           r-data-table
+           r-deseq2
+           r-dplyr
+           r-edger
+           r-ggplot2
+           r-glmmtmb
+           r-limma
+           r-lme4
+           r-lmertest
+           r-matrix
+           r-matrixstats
+           r-progress
+           r-purrr
+           r-s4vectors
+           r-scales
+           r-scater
+           r-sctransform
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-variancepartition
+           r-viridis))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/HelenaLC/muscat")
+    (synopsis "Multi-sample multi-group scRNA-seq data analysis tools")
+    (description
+     "This package @code{muscat} provides various methods and visualization tools
+for @dfn{DS}(differential splicing) analysis in multi-sample, multi-group,
+multi-(cell-)subpopulation scRNA-seq data, including cell-level mixed models and
+methods based on aggregated \"pseudobulk\" data, as well as a flexible simulation
+platform that mimics both single and multi-sample scRNA-seq data.")
+    (license license:gpl3)))
 
 (define-public r-mutationalpatterns
   (package
@@ -8834,7 +8944,7 @@ study various biological conditions.  The output from such analysis is both
 the mRNA level (e.g. cytosolic mRNA level) and the level of mRNA actively
 involved in translation (the actively translating mRNA level) for each mRNA.
 The standard analysis of such data strives towards identifying differential
-translational between two or more sample classes - i.e.  differences in
+translational between two or more sample classes - i.e., differences in
 actively translated mRNA levels that are independent of underlying differences
 in cytosolic mRNA levels.  This package allows for such analysis using partial
 variances and the random variance model.  As 10s of thousands of mRNAs are

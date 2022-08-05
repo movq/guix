@@ -21,7 +21,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017, 2018 nee <nee-git@hidamari.blue>
@@ -1846,7 +1846,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.14.2")
+    (version "1.14.3")
     (source
      (origin
        (method url-fetch)
@@ -1854,7 +1854,7 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "1s8fdwp0z1smzkwrsvssp9g3yak6z4cdk0qx0c4qmwca9z9fyy0k"))))
+        (base32 "0yzx9slg632iflw9p96nlh9i50dhacq7hrzpkj8b48mr1zkxrn3q"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list desktop-file-utils
@@ -3203,6 +3203,98 @@ the GNOME desktop environment.")
                                (search-path-specification
                                 (variable "GLADE_MODULE_SEARCH_PATH")
                                 (files '("lib/glade/modules")))))))
+
+(define-public cambalache
+  (package
+   (name "cambalache")
+   (version "0.10.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://gitlab.gnome.org/jpu/cambalache")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "1mw5gk98zx03yal3p8slaqwhwkc9p2vnh0cssnmg6ivxsjscqhgz"))))
+   (build-system meson-build-system)
+   (arguments
+    (list
+     #:glib-or-gtk? #t
+     #:imported-modules `((guix build python-build-system)
+                          ,@%meson-build-system-modules)
+     #:modules '((guix build meson-build-system)
+                 ((guix build python-build-system) #:prefix python:)
+                 (guix build utils))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'patch-source
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "cambalache/cmb_view.py"
+               (("GLib\\.find_program_in_path\\('(.*)'\\)" all cmd)
+                (string-append "'"
+                               (search-input-file inputs
+                                                  (string-append "/bin/" cmd))
+                               "'")))))
+         (add-after 'unpack 'patch-build
+           (lambda _
+             (substitute* "postinstall.py"
+               (("update-desktop-database") "true"))))
+         (add-after 'wrap 'python-wrap (assoc-ref python:%standard-phases 'wrap))
+         (delete 'check)
+         (add-after 'install 'add-install-to-pythonpath
+           (assoc-ref python:%standard-phases 'add-install-to-pythonpath))
+         (add-after 'add-install-to-pythonpath 'pre-check
+           (lambda _
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1")))
+         (add-after 'pre-check 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion ".."
+                 (invoke "python3" "-m" "pytest")))))
+         (add-after 'glib-or-gtk-wrap 'wrap-typelib
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each
+                (lambda (prog)
+                  (unless (wrapped-program? prog)
+                    (wrap-program prog
+                      `("GI_TYPELIB_PATH" suffix
+                        (,(string-append out "/lib/girepository-1.0")
+                         ,(getenv "GI_TYPELIB_PATH")))
+                      ;; icons and schemas
+                      `("XDG_DATA_DIRS" suffix
+                        #$(map
+                           (lambda (input)
+                             (file-append (this-package-input input) "/share"))
+                           '("adwaita-icon-theme" "hicolor-icon-theme"
+                             "gsettings-desktop-schemas")))
+                      ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Cambalache to
+                      ;; load its own icons in pure environments.
+                      `("GDK_PIXBUF_MODULE_FILE" =
+                        (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))
+                (find-files (string-append out "/bin")))))))))
+   (inputs (list bash-minimal
+                 adwaita-icon-theme hicolor-icon-theme
+                 gsettings-desktop-schemas
+                 gtk
+                 `(,gtk+ "bin")         ; broadwayd
+                 `(,gtk "bin")
+                 libadwaita
+                 libhandy
+                 (librsvg-for-system)
+                 python python-pygobject python-lxml
+                 webkitgtk-with-libsoup2))
+   (native-inputs (list `(,glib "bin") gobject-introspection
+                        gettext-minimal pkg-config
+                        python-pytest xorg-server-for-tests))
+   (home-page "https://gitlab.gnome.org/jpu/cambalache")
+   (synopsis "Rapid application development tool")
+   (description "Cambalache is a rapid application development (RAD) tool for
+Gtk 4 and 3 with a clear model-view-controller (MVC) design and
+data model first philosophy.")
+   (license (list license:lgpl2.1
+                  license:gpl2)))) ; tools
 
 (define-public libcroco
   (package
@@ -10851,7 +10943,7 @@ configurable file renaming.")
 (define-public workrave
   (package
     (name "workrave")
-    (version "1.10.48")
+    (version "1.10.50")
     (source
      (origin
        (method git-fetch)
@@ -10862,7 +10954,7 @@ configurable file renaming.")
                                          version)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qcknxylk9mr0xzszsd1rkgh2zpnix20m998dfclkm9x8zh9pvyr"))))
+        (base32 "0fj3fqmdn4nsjgvbbvzpxw2mgiihcr1zpb08amg2p6hg9n11y9bx"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      ;; The only tests are maintainer tests (in po/), which fail.

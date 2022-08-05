@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -6264,7 +6264,7 @@ subsequent visualization, annotation and storage of results.")
 (define-public plink-ng
   (package (inherit plink)
     (name "plink-ng")
-    (version "2.00a3-20220315")
+    (version "2.00a3.3")
     (source
      (origin
        (method git-fetch)
@@ -6273,12 +6273,14 @@ subsequent visualization, annotation and storage of results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19inr47jwddkjb9kfb14yxc7xb16c73lkhgxj9sncb0fsiskb4x8"))))
+        (base32 "0m8wkyvbgvcr5kzc284w8fbhpxwglh2c1xq0yc3yv00a53gs7rv0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
        ,#~(list "BLASFLAGS=-llapack -lopenblas"
-                "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
+                (string-append "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
+                               " -I" (search-input-directory
+                                       %build-inputs "include/simde"))
                 "ZLIB=-lz"
                 "BIN=plink prettify"
                 (string-append "CC=" #$(cc-for-target))
@@ -6305,7 +6307,7 @@ subsequent visualization, annotation and storage of results.")
     (inputs
      (list lapack openblas zlib))
     (native-inputs
-     (list diffutils plink python)) ; for tests
+     (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
     (license license:gpl3+)))
 
@@ -7522,6 +7524,41 @@ which applies pathway and gene set overdispersion analysis to identify aspects
 of transcriptional heterogeneity among single cells.")
     ;; See https://github.com/hms-dbmi/scde/issues/38
     (license license:gpl2)))
+
+(define-public r-millefy
+  (package
+    (name "r-millefy")
+    (version "0.1.9-beta")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuifu/millefy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0z2y0x99f761pxvg6n37cmnyrnj699jhjk43pvk05sa86iykgizl"))))
+    (properties `((upstream-name . "millefy")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-destiny
+           r-dplyr
+           r-genomicranges
+           r-iranges
+           r-magrittr
+           r-rsamtools
+           r-rtracklayer
+           r-tidyr))
+    (home-page "https://github.com/yuifu/millefy")
+    (synopsis "Make millefy plot with single-cell RNA-seq data")
+    (description "@code{Millefy} is a tool for visualizing read coverage of
+@dfn{scRNA-seq}(single-cell RNA sequencing) datasets in genomic contexts.  By
+dynamically and automatically reorder single cells based on locus-specific
+pseudo time, @code{Millefy} highlights cell-to-cell heterogeneity in read coverage
+of scRNA-seq data.")
+    (license license:expat)))
 
 (define-public r-misha
   (package
@@ -11262,7 +11299,7 @@ Thus the per-base error rate is similar to the raw input reads.")
                (install-file "Bandage" (string-append out "/bin"))
                #t))))))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (native-inputs
      (list imagemagick))
     (home-page "https://rrwick.github.io/Bandage/")
@@ -11842,19 +11879,23 @@ million cells.")
 (define-public python-bbknn
   (package
     (name "python-bbknn")
-    (version "1.3.6")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bbknn" version))
        (sha256
         (base32
-         "1jbsh01f57zj4bhvjr3jh4532zznqd6nccmgrl3qi9gnhkf7c4y0"))))
+         "0q11xdmjr2kf6f179a6kjizj3lllfrq743gslgw67qyzimvrrnhn"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no tests are included
        #:phases
        (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
          (add-after 'unpack 'do-not-fail-to-find-sklearn
            (lambda _
              ;; XXX: I have no idea why it cannot seem to find sklearn.
@@ -11864,6 +11905,7 @@ million cells.")
      (list python-annoy
            python-cython
            python-numpy
+           python-pandas
            python-scikit-learn
            python-scipy
            python-umap-learn))
@@ -12060,14 +12102,14 @@ allowing the insertion of arbitrary types into the tree.")
 (define-public python-intervaltree
   (package
     (name "python-intervaltree")
-    (version "3.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "intervaltree" version))
        (sha256
         (base32
-         "0wz234g6irlm4hivs2qzmnywk0ss06ckagwh15nflkyb3p462kyb"))))
+         "0bcm6c6r4ck9nfj9xwz4rm2swc5lrjvmw3lyl6rgj639jf41nawh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -12431,6 +12473,35 @@ efficiently.")
 juicer) and single-resolution or multi-resolution @code{.cool} files (for
 cooler).  Both @code{hic} and @code{cool} files describe Hi-C contact
 matrices.")
+    (license license:expat)))
+
+(define-public python-scanorama
+  (package
+    (name "python-scanorama")
+    (version "1.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scanorama" version))
+              (sha256
+               (base32
+                "0il7bf4c7vli2dm2jx7dskh3ymgv8nmk0y90jzgfrnqjzh250x5w"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-annoy
+           python-fbpca
+           python-geosketch
+           python-intervaltree
+           python-matplotlib
+           python-numpy
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/brianhie/scanorama")
+    (synopsis "Panoramic stitching of heterogeneous single cell transcriptomic data")
+    (description
+     "Scanorama enables batch-correction and integration of heterogeneous
+scRNA-seq datasets, which is described in the paper \"Efficient integration of
+heterogeneous single-cell transcriptomes using Scanorama\" by Brian Hie, Bryan
+Bryson, and Bonnie Berger.")
     (license license:expat)))
 
 (define-public r-pore

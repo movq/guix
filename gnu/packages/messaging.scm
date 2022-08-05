@@ -232,8 +232,8 @@ XMPP-based sessions.")
        ("libidn" ,libidn)
        ("qca" ,qca)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtsvg" ,qtsvg)
+       ("qtmultimedia-5" ,qtmultimedia-5)
+       ("qtsvg-5" ,qtsvg-5)
        ("qtwebkit" ,qtwebkit)
        ("qtx11extras" ,qtx11extras)
        ("x11" ,libx11)
@@ -583,7 +583,7 @@ end-to-end encryption.")
 (define-public axc
   (package
     (name "axc")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -593,12 +593,13 @@ end-to-end encryption.")
        (modules '((guix build utils)))
        (snippet
         `(begin
-           ;; Submodules
+           ;; Empty directories meant to hold submodules that we provide as
+           ;; proper inputs below.
            (delete-file-recursively "lib")))
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "05sv7l6lk0xk4wb2bspc2sdpygrb1f0szzi82a1kyfm0fjz887b3"))))
+        (base32 "0b02b9flri374f8aw6xfz7mm9s57rb7393r8mdphv7kcsf76i7i5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1475,12 +1476,12 @@ default.")
     (inputs (list kirigami
                   knotifications
                   qtbase-5
-                  qtdeclarative
+                  qtdeclarative-5
                   qtgraphicaleffects
                   qtlocation
-                  qtquickcontrols2
-                  qtsvg
-                  qtmultimedia
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  qtmultimedia-5
                   qtxmlpatterns
                   qqc2-desktop-style
                   qxmpp
@@ -1809,7 +1810,7 @@ instant messenger with audio and video chat capabilities.")
                          ,(list (search-input-directory
                                  inputs "lib/qt5/plugins/"))))))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list ffmpeg
            filteraudio
@@ -1825,7 +1826,7 @@ instant messenger with audio and video chat capabilities.")
            openal
            qrencode
            qtbase-5
-           qtsvg
+           qtsvg-5
            sqlcipher))
     (home-page "https://qtox.github.io/")
     (synopsis "Tox chat client using Qt")
@@ -2080,39 +2081,38 @@ support, and more.")
 (define-public freetalk
   (package
     (name "freetalk")
-    (version "4.1")
+    (version "4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/freetalk/freetalk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1rmrn7a1bb7vm26yaklrvx008a9qhwc32s57dwrlf40lv9gffwny"))))
+                "105mw7pg2mcp85r82cs4rv77nwvbw8025047364jzbq6lwllynxv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "CFLAGS=-fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         ;; For 'system' commands in Scheme code.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (bash      (assoc-ref inputs "bash"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (less      (assoc-ref inputs "less")))
-               (wrap-program (string-append out "/bin/freetalk")
-                 `("PATH" ":" prefix
-                   ,(map (lambda (dir)
-                           (string-append dir "/bin"))
-                         (list bash coreutils less))))
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (wrap-program (string-append out "/bin/freetalk")
+                       `("PATH" ":" suffix
+                         ,(map (lambda (command)
+                                 (dirname
+                                  (search-input-file
+                                   inputs (string-append "bin/" command))))
+                               ;; This list is not exhaustive: we assume that,
+                               ;; e.g., cat is packaged with other coreutils.
+                               (list "bash" ; src/{commands,util}.c et al
+                                     "cat"  ; extensions/first-time-run.sh
+                                     "less")))))))))) ; extensions/history.scm.
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
      (list bash
            glib
-           guile-2.0
+           guile-3.0
            less
            loudmouth
            readline))
@@ -2325,7 +2325,7 @@ notifications, and Python scripting support.")
         (base32 "0gkwr3yw6k2m0j8cc085b5p2q788rf5nhp1p5hc5d55pc7mci2qs"))))
     (build-system cmake-build-system)
     (inputs
-     (list qtbase-5 qtmultimedia))
+     (list qtbase-5 qtmultimedia-5))
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")
        #:tests? #f))                    ; no tests
@@ -2340,7 +2340,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2349,7 +2349,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kgz9i3xgyk1a82sv48a1m8gdxg0cl5pgd5imgwy519vvjlkwv48"))))
+        (base32 "0gkzgq6rzanvgyk47d25nqz7m0lwa3kz5pc0m4w0ada38xwhy2j9"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2385,7 +2385,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.9.3")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -2394,7 +2394,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1941jvk72qy9g41cs2p3d6fphkg8ccjlsiclwymvzdyi7s3ilml7"))
+        (base32 "1n7czmv8mamaphpr2cnppddpgmb914pjd7msxng0fim6w7bhil14"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2413,13 +2413,15 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unbundle-dependencies
-            (lambda _
-              (let ((single-app #$(this-package-input "single-application-qt5")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libSingleApplication.a
+                     (search-input-file inputs "lib/libSingleApplication.a"))
+                    (httplib.h (search-input-file inputs "include/httplib.h")))
                 (substitute* "CMakeLists.txt"
                   ;; Remove include and source dirs,replace with the correct one
-                  (("third_party/blurhash/blurhash.cpp") "")
-                  (("third_party/cpp-httplib-0.5.12")
-                   (string-append "\"" single-app "/include\""))
+                  (("third_party/blurhash/blurhash\\.[ch]pp") "")
+                  (("third_party/cpp-httplib-0\\.5\\.12")
+                   (dirname httplib.h))
                   (("add_subdirectory.*third_party/SingleApplication.*") "")
                   ;; Link using the correct static/shared libs
                   (("SingleApplication::SingleApplication")
@@ -2427,7 +2429,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
                     ;; Dynamic libraries
                     "httplib" "\n" "blurhash" "\n"
                     ;; Static library
-                    single-app "/lib/libSingleApplication.a"))))))
+                    libSingleApplication.a))))))
           (add-after 'unpack 'fix-determinism
             (lambda _
               ;; Make Qt deterministic.
@@ -2457,18 +2459,18 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            mtxclient
            openssl
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtkeychain
            qtgraphicaleffects
-           qtmultimedia
-           qtquickcontrols2
-           qtsvg
+           qtmultimedia-5
+           qtquickcontrols2-5
+           qtsvg-5
            spdlog
            single-application-qt5
            xcb-util-wm
            zlib))
     (native-inputs
-     (list asciidoc doxygen graphviz pkg-config qttools))
+     (list asciidoc doxygen graphviz pkg-config qttools-5))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
@@ -2497,12 +2499,12 @@ notification, emojis, E2E encryption, and voip calls.")
     (inputs
      (list libqmatrixclient
            qtbase-5
-           qtdeclarative
-           qtmultimedia
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg
-           qttools
+           qtdeclarative-5
+           qtmultimedia-5
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5
+           qttools-5
            xdg-utils))
     (arguments
      `(#:tests? #f))                    ; no tests
@@ -2782,6 +2784,8 @@ asynchronicity.")
                     (url "https://github.com/google/libphonenumber")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (patches (search-patches
+                        "libphonenumber-reproducible-build.patch"))
               (sha256
                (base32
                 "06y3mh1d1mks6d0ynxp3980g712nkf8l5nyljpybsk326b246hg9"))))
@@ -2802,7 +2806,6 @@ asynchronicity.")
 validating international phone numbers.")
    (home-page "https://github.com/google/libphonenumber")
    (license license:asl2.0)))
-
 
 (define-public chatty
  (package
@@ -2910,9 +2913,9 @@ as phones, embedded computers or microcontrollers.")
                   "\"../build"))
                #t)))))
       (inputs
-       (list qtbase-5 qtdeclarative qtwebchannel))
+       (list qtbase-5 qtdeclarative-5 qtwebchannel-5))
       (propagated-inputs
-       (list qtwebengine))
+       (list qtwebengine-5))
       (home-page "https://movim.eu/")
       (synopsis "Desktop Application for Movim")
       (description
@@ -3039,8 +3042,8 @@ social and chat platform.")
        ("qite" ,qite)
        ("qtbase" ,qtbase-5)
        ("qtkeychain" ,qtkeychain)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtsvg" ,qtsvg)
+       ("qtmultimedia-5" ,qtmultimedia-5)
+       ("qtsvg-5" ,qtsvg-5)
        ("qtx11extras" ,qtx11extras)
        ("usrsctp" ,usrsctp)
        ("x11" ,libx11)

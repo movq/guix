@@ -584,6 +584,45 @@ vertices, sorting by primitive type, merging of redundant materials and many
 more.")
     (license license:bsd-3)))
 
+(define-public mikktspace
+  ;; The latest commit is used as there is no release.
+  (let ((commit   "3e895b49d05ea07e4c2133156cfa94369e19e409")
+        (revision "0"))
+    (package
+      (name "mikktspace")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mmikk/MikkTSpace")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rjh9zflx51hdhnfadal87v4hhkrbprkv692hjkg9wkxx0ch39zi"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (replace 'build
+                   (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                     (invoke #$(cc-for-target) "mikktspace.c" "-O2" "-g" "-fPIC"
+                             "-shared" "-o" "libmikktspace.so")))
+                 (replace 'install
+                   (lambda _
+                     (install-file "mikktspace.h"
+                                   (string-append #$output "/include"))
+                     (install-file "libmikktspace.so"
+                                   (string-append #$output "/lib")))))))
+      (home-page "http://www.mikktspace.com/")
+      (synopsis "Library for a common standard for tangent spaces")
+      (description
+       "This package provides a common standard tangent space library used in
+baking tools to produce normal maps.")
+      (license license:zlib))))
+
 (define-public openshadinglanguage
   (package
     (name "openshadinglanguage")
@@ -809,6 +848,20 @@ basic geometries.")
     ;; (GPLv3+), the combined work must be licensed as GPLv3+ (see:
     ;; https://gitlab.com/inkscape/inkscape/issues/784).
     (license license:gpl3+)))
+
+(define-public lib2geom-1.2
+  (package
+    (inherit lib2geom)
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/inkscape/lib2geom")
+                    (commit version)))
+              (file-name (git-file-name "lib2geom" version))
+              (sha256
+               (base32
+                "0dq981g894hmvhd6rmfl1w32mksg9hpvpjs1qvfxrnz87rhkknj8"))))))
 
 (define-public python-booleanoperations
   (package
@@ -1438,7 +1491,7 @@ exec -a \"$0\" ~a/.brdf-real~%"
                             (chmod "brdf" #o555)))
                         #t)))))
       (native-inputs
-       (list qttools)) ;for 'qmake'
+       (list qttools-5)) ;for 'qmake'
       (inputs
        (list qtbase-5 mesa glew freeglut zlib))
       (home-page "https://www.disneyanimation.com/technology/brdf.html")
@@ -1965,8 +2018,8 @@ Automated palette selection is supported.")
              ;; ("miniupnpc" ,miniupnpc) ;segfaults for some reason
              qtbase-5
              qtkeychain
-             qtmultimedia
-             qtsvg
+             qtmultimedia-5
+             qtsvg-5
              qtx11extras))
       (home-page "https://drawpile.net")
       (synopsis "Collaborative drawing program")

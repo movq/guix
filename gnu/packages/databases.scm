@@ -2323,7 +2323,7 @@ Driver.")
 (define-public nanodbc
   (package
     (name "nanodbc")
-    (version "2.13.0")
+    (version "2.14.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -2333,7 +2333,7 @@ Driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q80p7yv9mcl4hyvnvcjdr70y8nc940ypf368lp97vpqn5yckkgm"))))
+                "1253bnrmchga3ra99jqkd2p29bc5h2ip79xd8afblz6b1v00wmbm"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -4782,7 +4782,7 @@ a Gtk.Grid Widget.")
            qscintilla
            qtbase-5
            sqlite))
-    (native-inputs (list qttools))
+    (native-inputs (list qttools-5))
     (home-page "https://sqlitebrowser.org/")
     (synopsis "Database browser for SQLite")
     (description "Sqlitebrowser is a high quaility, visual, open source tool to

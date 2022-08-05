@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017,2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -55,6 +55,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -1345,7 +1346,7 @@ channels.")
         (base32 "1qm6bvj28l42km009nc60gffn1qhngc0m2wjlhf90si3mcc8d99m"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:test-target "tests"
+     `(#:test-target "tests"
        #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON"
                                ;; darktable needs BMFF to support
                                ;; CR3 files.
@@ -1356,7 +1357,19 @@ channels.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (lib (string-append out "/lib")))
-               (for-each delete-file (find-files lib "\\.a$"))))))))
+               (for-each delete-file (find-files lib "\\.a$")))))
+
+         ,@(if (or (target-ppc64le?) (target-aarch64?))
+               '((add-after 'unpack 'adjust-tests
+                   (lambda _
+                     ;; Adjust test on ppc64 and aarch64, where no exception
+                     ;; is raised and thus the return value is different.  See
+                     ;; <https://github.com/Exiv2/exiv2/issues/365> and
+                     ;; <https://github.com/Exiv2/exiv2/issues/933>.
+                     (substitute* "tests/bugfixes/github/test_CVE_2018_12265.py"
+                       (("\\$uncaught_exception \\$addition_overflow_message\n") "")
+                       (("retval = \\[1\\]") "retval = [0]")))))
+               '()))))
     (propagated-inputs
      (list expat zlib))
     (native-inputs
@@ -1827,9 +1840,9 @@ parsing, viewing, modifying, and saving this metadata.")
          "1p7gqs5vqzbddlgl38lbanchwb14m6lx8f2cn2c5p0vyqwvqqv52"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (arguments
      `(#:tests? #f))                    ;no tests
     (home-page "https://github.com/flameshot-org/flameshot")
@@ -2382,7 +2395,7 @@ Wacom-style graphics tablets.")
 (define-public phockup
   (package
     (name "phockup")
-    (version "1.7.1")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2392,7 +2405,7 @@ Wacom-style graphics tablets.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nqd89g4ppwc96gxyh9npain7ipnzj66p6n3irsvhrpi4k54h388"))))
+         "1xs2h3nj19wsfffl87akinx14drk5nn2svjwyj0csv10apk0q4pp"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("src" "share/phockup/")
@@ -2402,8 +2415,8 @@ Wacom-style graphics tablets.")
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (list "src/dependency.py" "src/exif.py")
-               (("exiftool")
-                (search-input-file inputs "/bin/exiftool")))))
+               (("'exiftool'")
+                (string-append "'" (search-input-file inputs "/bin/exiftool") "'")))))
          (add-before 'install 'check
            (lambda _
              (invoke "pytest")))
@@ -2421,7 +2434,7 @@ Wacom-style graphics tablets.")
                    ,(search-path-as-string->list
                      (getenv "GUIX_PYTHONPATH"))))))))))
     (inputs
-     (list perl-image-exiftool python python-tqdm))
+     (list bash-minimal perl-image-exiftool python python-tqdm))
     (native-inputs
      (list python-pytest python-pytest-mock))
     (home-page "https://github.com/ivandokov/phockup")

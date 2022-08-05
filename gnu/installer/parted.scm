@@ -828,6 +828,7 @@ cause them to cross."
          (installer-log-line "~/type: ~a" partition-type)
          (installer-log-line "~/filesystem-type: ~a"
                              (filesystem-type-name filesystem-type))
+         (installer-log-line "~/flags: ~a" flags)
          (installer-log-line "~/start: ~a" start-sector*)
          (installer-log-line "~/end: ~a" end-sector)
          (installer-log-line "~/start-range: [~a, ~a]"
@@ -844,15 +845,18 @@ cause them to cross."
          (when (and partition-ok? has-name? name)
            (partition-set-name partition name))
 
-         ;; Set flags is required.
+         ;; Both partition-set-system and partition-set-flag calls can affect
+         ;; the partition type.  Their order is important, see:
+         ;; https://issues.guix.gnu.org/55549.
+         (partition-set-system partition filesystem-type)
+
+         ;; Set flags if required.
          (for-each (lambda (flag)
                      (and (partition-is-flag-available? partition flag)
                           (partition-set-flag partition flag 1)))
                    flags)
 
-         (and partition-ok?
-              (partition-set-system partition filesystem-type)
-              partition))))))
+         (and partition-ok? partition))))))
 
 
 ;;

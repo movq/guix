@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 
@@ -356,7 +356,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.18-version "5.18.12")
+(define-public linux-libre-5.18-version "5.18.16")
 (define-public linux-libre-5.18-gnu-revision "gnu")
 (define deblob-scripts-5.18
   (linux-libre-deblob-scripts
@@ -366,7 +366,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0vjpn8iw9yg39sr6jfhzyvivf159h9zfgnjamwa283zfll0h0a53")))
 (define-public linux-libre-5.18-pristine-source
   (let ((version linux-libre-5.18-version)
-        (hash (base32 "09wmgfrnv1df6jg9v3svwhvnxl0j6h4f240p903xlmgj884lvds0")))
+        (hash (base32 "1khi1npn8d8jimwdy8bf3r7l780mxdmvk5azdv419pk33qjqdxgi")))
    (make-linux-libre-source version
 
                             (%upstream-linux-source version hash)
@@ -375,7 +375,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.55")
+(define-public linux-libre-5.15-version "5.15.59")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -385,12 +385,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "129qlhwdv2mfb85gbvq03kkbdfp73b444rryr4rrbvi0jmq4cp24")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1k7x7fp675wglfd357n7hjidnm3j8zj3gcymyazg6fkcid8bvxhy")))
+        (hash (base32 "1jxw6fnc7yaw7r6193wy6l8wdlpy3frw48drnc3dnh3k0m1cdpg6")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.131")
+(define-public linux-libre-5.10-version "5.10.135")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -400,12 +400,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1ki11mvl3dky7iih90znr47vr66dxnlwrqwg2jkk1hqn5i243i4b")))
+        (hash (base32 "0i1kahv739qpyyml7d7sx306nv7gp55i5d97vlb0fryfx4dsd6g4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.206")
+(define-public linux-libre-5.4-version "5.4.209")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -415,12 +415,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1asvc7y1f938icspxx39n6y6r0w9mp0k9vik84rsx1hzzv0db41c")))
+        (hash (base32 "1kdnz99k7zspzaxqaxahbf6hncigy4cvjlb79jsy7a95qxxr31qf")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.252")
+(define-public linux-libre-4.19-version "4.19.254")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -430,12 +430,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0ac7k6x9h8gqi37n8d4fyi52h4cmzyy8f5vfv1aiihww4kvzca7v")))
+        (hash (base32 "1rd40wmdaymbly2zvf60mjqsflkd4n1y232qz0ixn1rfl28yz62i")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.288")
+(define-public linux-libre-4.14-version "4.14.290")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -445,12 +445,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0yyzxyz66mfngx3ll3pl43413xb67iyxddzh3lpzqcfg7d0rxfwz")))
+        (hash (base32 "0zyxb99a7fa2l85vnzmvg2nry99clj20d4j38piqm921iqxak2j4")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.323")
+(define-public linux-libre-4.9-version "4.9.325")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -460,7 +460,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "1h96ai9w5q2axhliw85aymdsg8py9y6gl8big5r2gwkbls6h7pa3")))
+        (hash (base32 "04msx0x0d8v93zjr3jj0qqkgg7m4hb7rj6hk5vzrzasmgbjmb3dl")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -1344,6 +1344,37 @@ Interface} platform driver for the @acronym{EC, Embedded Controller} firmware
 on Purism Librem laptop computers.  It allows user-space control over the
 battery charging thresholds, keyboard backlight, fans and thermal monitors,
 and the notification, WiFi, and Bluetooth LED.")
+    (license license:gpl2)))
+
+(define-public lkrg
+  (package
+    (name "lkrg")
+    (version "0.9.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lkrg-org/lkrg")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yirb7n4mqv8cn0gziz1m7ymq00dhhy79j59jdgrx00b8rj57cfw"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list #:linux linux-libre
+           #:tests? #f
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "SYSSRC="
+                                               (assoc-ref %build-inputs
+                                                "linux-module-builder")
+                                               "/lib/modules/build"))))
+    (inputs (list bash-minimal))
+    (home-page "https://lkrg.org/")
+    (synopsis "Linux Kernel Runtime Guard")
+    (description
+     "This package performs runtime integrity checking of the Linux kernel and
+detection of security vulnerability exploits against the kernel.")
     (license license:gpl2)))
 
 (define-public rtl8821ce-linux-module
@@ -3233,7 +3264,7 @@ processes currently causing I/O.")
 (define-public iotop
   (package
     (name "iotop")
-    (version "1.21")
+    (version "1.22")
     (source
      (origin
        (method git-fetch)
@@ -3242,7 +3273,7 @@ processes currently causing I/O.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03wdnkfl51dapilg6r9vjga1xrl9lxlypfz07k50nscvbq8v8fb7"))))
+        (base32 "04a77qir35s1bwvd39qddx2kfizdbf5jxlnz8zmy1cnrigbwcy1h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -3476,20 +3507,25 @@ UnionFS-FUSE additionally supports copy-on-write.")
 (define-public sshfs
   (package
     (name "sshfs")
-    (version "2.10")
+    (version "3.7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/libfuse/sshfs/releases/"
                                   "download/sshfs-" version "/sshfs-" version
-                                  ".tar.gz"))
+                                  ".tar.xz"))
               (sha256
                (base32
-                "00fir2iykdx11g8nv5gijg0zjrp2g3ldypnv0yi6lq3h5pg5v13h"))))
-    (build-system gnu-build-system)
+                "169fkilv060afgp9h7hvsbkg02bd1y77kmx06x0s7q1cvmxww62j"))))
+    (build-system meson-build-system)
+    (arguments
+     ;; XXX: tests are skipped: FUSE kernel module does not seem to be loaded
+     '(#:tests? #f))
     (inputs
-     (list fuse glib))
+     (list fuse-3 glib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           ;; man page
+           python-docutils))
     (home-page "https://github.com/libfuse/sshfs")
     (synopsis "Mount remote file systems over SSH")
     (description
@@ -6634,6 +6670,65 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
 @code{modprobe}, @code{insmod}, @code{lsmod}, and more.")
     (license license:gpl2+)))
 
+(define-public mce-inject
+  (let ((revision "0")                  ; no git tags :-/
+        (commit "4cbe46321b4a81365ff3aafafe63967264dbfec5"))
+    (package
+      (name "mce-inject")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gjapg2hrlxp8ssrnhvc19i3r1xpcnql7xv0zjgbv09zyha08g6z"))))
+      (build-system gnu-build-system)
+      (arguments
+       ;; There is no test suite.  There's a test/ directory, but it just holds
+       ;; example text files you could feed to the programme to crash something.
+       (list #:tests? #f
+             #:make-flags
+             #~(list (string-append "prefix=" #$output)
+                     (string-append "CC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ; no configure script
+                 (add-after 'install 'install-examples
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (doc (string-append out "/share/doc/" #$name))
+                            (dir (string-append doc "/examples")))
+                       (copy-recursively "test" dir )))))))
+      (native-inputs
+       (list bison flex))
+      (supported-systems (list "i686-linux" "x86_64-linux"))
+      (home-page
+       "https://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git/about/")
+      (synopsis
+       "Inject x86 @acronym{MCEs, machine-check exceptions} into Linux")
+      (description
+       "This simple tool injects fake @acronym{MCEs, machine-check exceptions}
+into a running Linux kernel, to debug or test the kernel's @acronym{EDAC, error
+detection and correction}-handling code specific to x86 and x86_64 platforms.
+
+Real MCEs are internal CPU errors.  Handling them correctly can be important to
+system stability and even prevent physical damage.  In contrast, simulated MCEs
+produced by @command{mce-inject} are purely synthetic: injection happens only at
+the software level, inside the kernel, and is not visible to the platform
+hardware or firmware.
+
+A convenient feature of @command{mce-inject} is that the input language used to
+describe MCEs is similar to the format used in Linux panic messages, with a few
+extensions.  In general, you should be able to pipe in any logged MCE panic to
+simulate that same MCE.
+
+The target kernel must have the @code{CONFIG_X86_MCE_INJECT} option enabled and
+the @code{mce-inject} module loaded if it exists.")
+      (license license:gpl2))))
+
 (define-public mcelog
   (package
     (name "mcelog")
@@ -6680,7 +6775,7 @@ exceeded.")
 (define-public mtd-utils
   (package
     (name "mtd-utils")
-    (version "2.1.2")
+    (version "2.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6688,12 +6783,14 @@ exceeded.")
                     "mtd-utils-" version ".tar.bz2"))
               (sha256
                (base32
-                "1mp9fqgnz5r69s8ly98ry6k2blqnaqpllwi8m930dm0n8zrwbm4a"))))
+                "168vyzpfa0n66i8lcf626b9jczjr81rqbdk7735lfb18bp8i2rrc"))))
     (arguments
      (list #:configure-flags
            (if (%current-target-system) ; When cross-compiling.
              #~(list)
-             #~(list "--enable-unit-tests"))))
+             #~(list "--enable-unit-tests"))
+
+           #:parallel-tests? #f))     ;tests may fail when running in parallel
     (native-inputs
      (list cmocka pkg-config))
     (inputs
@@ -9285,3 +9382,57 @@ libraries are found or why they cannot be located.")
 gestures you make on your touchpad or touchscreen into visible actions in your
 desktop.")
     (license license:gpl3+)))
+
+(define-public evtest
+  (package
+    (name "evtest")
+    (version "1.35")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/libevdev/evtest")
+                    (commit (string-append "evtest-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "164prnw35kda6jfykl7h52lfzy99ma2lk029zscyqk766k19spf4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;No tests exist
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'generate-doc
+                          (lambda _
+                            (invoke "asciidoc" "-d" "manpage"
+                                    "-b" "docbook"
+                                    "-o" "evtest.1.xml"
+                                    "evtest.txt")
+                            (invoke "xsltproc" "--nonet"
+                                    (string-append
+                                     #$(this-package-native-input "docbook-xsl")
+                                     "/xml/xsl/docbook-xsl-"
+                                     #$(package-version
+                                        (this-package-native-input "docbook-xsl"))
+                                     "/manpages/docbook.xsl")
+                                    "evtest.1.xml")))
+                        (replace 'bootstrap
+                          (lambda _
+                            (setenv "CONFIG_SHELL" (which "sh"))
+                            (invoke "autoreconf" "-fi"))))))
+    (native-inputs (list autoconf
+                         automake
+                         bash-minimal
+                         xmlto
+                         docbook-xsl
+                         libxslt
+                         asciidoc))
+    (home-page "https://gitlab.freedesktop.org/libevdev/evtest")
+    (synopsis "Kernel evdev device information and monitor")
+    (description
+     "@code{evtest} is a tool to print @code{evdev} kernel events.  It reads
+directly from the kernel device and prints a device description and the events
+with the value and the symbolic name.")
+    (license license:gpl2+)))

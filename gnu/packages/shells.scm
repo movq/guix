@@ -360,25 +360,18 @@ has a small feature set similar to a traditional Bourne shell.")
 (define-public es
   (package
     (name "es")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
-       (method url-fetch)
+       (method url-fetch/tarbomb)
        (uri (string-append "https://github.com/wryun/es-shell/releases/"
                            "download/v" version "/es-" version ".tar.gz"))
        (sha256
-        (base32
-         "1fplzxc6lncz2lv2fyr2ig23rgg5j96rm2bbl1rs28mik771zd5h"))
+        (base32 "1pgmqhsk14wyvl489sxdy7kdl2gwrsq1xvkip0z90kh888mlh9n9"))
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 're-enter-rootdir
-           ;; The tarball has no folder.
-           (lambda _
-             (chdir ".."))))))
+     (list #:test-target "test"))
     (inputs
      (list readline))
     (native-inputs
@@ -855,7 +848,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.9.9")
+    (version "0.12.0")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -868,7 +861,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ymszq0wy7sy709yqx8dpmv7b37fkc57bdg02ah2gnjbvbk6s2z1"))))
+        (base32 "1sz5xb88773ass6ip5yxmnby9p6h0bz1d02n6n0cna3hdzqn7bpv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary

@@ -783,7 +783,7 @@ embedded kernel situations.")
                       (("COMMODORE_PET") "PROGGY_TINY"))))))
       (build-system gnu-build-system)
       (inputs
-       (list qtbase-5 qtdeclarative qtgraphicaleffects qtquickcontrols2 bash-minimal))
+       (list qtbase-5 qtdeclarative-5 qtgraphicaleffects qtquickcontrols2-5 bash-minimal))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -805,9 +805,9 @@ embedded kernel situations.")
                      (,(string-append out qml)
                       ,@(map (lambda (i)
                                (string-append (assoc-ref inputs i) qml))
-                             '("qtdeclarative"
+                             '("qtdeclarative-5"
                                "qtgraphicaleffects"
-                               "qtquickcontrols2"))))))))
+                               "qtquickcontrols2-5"))))))))
            (add-after 'install 'add-alternate-name
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
