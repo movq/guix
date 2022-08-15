@@ -845,7 +845,7 @@ prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
 (define* (cached-channel-instance store
                                   channels
                                   #:key
-                                  (authenticate? #t)
+                                  (authenticate? #f)
                                   (cache-directory (%inferior-cache-directory))
                                   (ttl (* 3600 24 30)))
   "Return a directory containing a guix filetree defined by CHANNELS, a list of channels.
