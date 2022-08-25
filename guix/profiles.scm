@@ -1252,13 +1252,13 @@ loaders discovered in MANIFEST."
              ;; we must ensure that the inputs contain at least one
              ;; loaders.cache file.  This is why we include gdk-pixbuf or
              ;; librsvg when they are transitively found.
-             (list #$@(if gdk-pixbuf
+               (list #$@(if gdk-pixbuf
                           (list gdk-pixbuf)
                           '())
                    #$@(if librsvg
                           (list librsvg)
                           '())
-                   #$@(manifest-inputs manifest))
+                   #$@(delete-duplicates (manifest-inputs manifest)))
              (list #$output)))))
 
     (if gdk-pixbuf
