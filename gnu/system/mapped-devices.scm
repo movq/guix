@@ -217,7 +217,7 @@ option of @command{guix system}.\n")
            ;; thus, explicitly request a tty.
            (zero? (system*/tty
                    #$(file-append cryptsetup-static "/sbin/cryptsetup")
-                   "open" "--type" "luks"
+                   "open" "--type" "luks" "--allow-discards"
 
                    ;; Note: We cannot use the "UUID=source" syntax here
                    ;; because 'cryptsetup' implements it by searching the
