@@ -439,7 +439,8 @@ OpenSSL for TARGET."
                "static"))   ;6.4 MiB of .a files
     (native-inputs (list perl))
     (arguments
-     `(#:parallel-tests? #f
+     `(#:tests? #f
+       #:parallel-tests? #f
        #:test-target "test"
 
        ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
