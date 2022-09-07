@@ -67,6 +67,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages qt)
@@ -324,6 +325,37 @@ information about tracks being played to a scrobbler, such as Libre.FM.")
     (description "Python-mpd2 is a Python library which provides a client
 interface for the Music Player Daemon.")
     (license license:lgpl3+)))
+
+(define-public python-yams
+  (package
+    (name "python-yams")
+    (version "0.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Berulacks/yams")
+             (commit version)))
+       (sha256
+        (base32 "1zkhcys9i0s6jkaz24an690rvnkv1r84jxpaa84sf46abi59ijh8"))
+       (file-name (git-file-name name version))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f  ; there are no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-setup-py
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("yams\\.__main__:main") "yams.scrobble:cli_run")))))))
+    (propagated-inputs
+     (list python-mpd2 python-psutil python-pyyaml python-requests))
+    (home-page "https://github.com/Berulacks/yams")
+    (synopsis "Submit MPD song plays to Last.fm-compatible services")
+    (description "YAMS (Yet Another MPD Scrobbler) is a Music Player Daemon
+client which submits information about tracks being played to a service such as Last.fm
+or Libre.fm.")
+    (license license:gpl3)))
 
 (define-public sonata
   (package
