@@ -117,6 +117,42 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19))
 
+(define-public sbcl-alexandria-plus
+  (let ((commit "adafb09838a84895bedb119f8253b89b6a04a2c5")
+        (revision "0"))
+    (package
+      (name "sbcl-alexandria-plus")
+      ;; Version is stated in the ASD file.
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Symbolics/alexandria-plus")
+               (commit commit)))
+         (file-name (git-file-name "cl-alexandria-plus" version))
+         (sha256
+          (base32 "1w9r19610h599303gqlx2x5n8mmdynss2gyl7xilg5h6v8z3hkfl"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("alexandria+")))
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-alexandria))
+      (home-page "https://symbolics.github.io/alexandria-plus/")
+      (synopsis "Conservative set of extensions to Alexandria utilities")
+      (description
+       "@code{cl-alexandria-plus} is a conservative set of extensions to
+@code{cl-alexandria} utilities.")
+      (license license:ms-pl))))
+
+(define-public cl-alexandria-plus
+  (sbcl-package->cl-source-package sbcl-alexandria-plus))
+
+(define-public ecl-alexandria-plus
+  (sbcl-package->ecl-package sbcl-alexandria-plus))
+
 (define-public sbcl-alexandria
   (package
    (name "sbcl-alexandria")
@@ -147,6 +183,75 @@ portable between implementations.")
 
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
+
+(define-public sbcl-map-bind
+  (let ((commit "532d55d93540c632e22b2cd264b5daa5f9d3d900")
+        (revision "0"))
+    (package
+      (name "sbcl-map-bind")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/Hexstream/map-bind")
+                (commit commit)))
+          (file-name (git-file-name "cl-map-bind" version))
+          (sha256
+           (base32 "0hfy65xyqc4zqfncn11pp3hjjkdz7m91cynnv91s3lgcl3kffva0"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+        (list sbcl-parachute))
+      (home-page "https://www.hexstreamsoft.com/libraries/map-bind/")
+      (synopsis "Macro favouring positional references over naming")
+      (description
+       "@code{MAP-BIND} is a macro that allows visual grouping of variables with
+their corresponding values in calls to mapping operators when using an
+inline @code{LAMBDA}.")
+      (license license:unlicense))))
+
+(define-public cl-map-bind
+  (sbcl-package->cl-source-package sbcl-map-bind))
+
+(define-public ecl-cl-map-bind
+  (sbcl-package->ecl-package sbcl-map-bind))
+
+(define-public sbcl-positional-lambda
+  (let ((commit "a43a7bb4ef6faa277e6a7440ec9839711c4b9d28")
+        (revision "0"))
+    (package
+      (name "sbcl-positional-lambda")
+      (version (git-version "2.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/Hexstream/positional-lambda")
+                (commit commit)))
+          (file-name (git-file-name "cl-positional-lambda" version))
+          (sha256
+           (base32 "1l27mw5ciqz7rnjq1lwslgk220i8iqcr39rs8b7hxkp1yqmah5zq"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+        (list sbcl-parachute))
+      (inputs
+        (list sbcl-map-bind))
+      (home-page "https://www.hexstreamsoft.com/libraries/positional-lambda/")
+      (synopsis "Macro favouring positional references over naming")
+      (description
+       "This package provides a concise, intuitive and flexible macro for
+trivial lambdas that eschews explicit naming of parameter variables in favor
+of positional references, with support for a used or ignored &rest parameter
+and automatic declaration of ignored parameters when logical @code{gaps}
+are left in the positional references.  Further convenience features
+are provided.")
+      (license license:unlicense))))
+
+(define-public cl-positional-lambda
+  (sbcl-package->cl-source-package sbcl-positional-lambda))
+
+(define-public ecl-cl-positional-lambda
+  (sbcl-package->ecl-package sbcl-positional-lambda))
 
 (define-public sbcl-bodge-utilities
   (let ((commit "6304bac4abe06d53579e2c0fc4437d14ff077d9f")
@@ -216,6 +321,39 @@ implementation with no external dependencies.")
 
 (define-public ecl-bodge-queue
   (sbcl-package->ecl-package sbcl-bodge-queue))
+
+(define-public sbcl-list-named-class
+  (let ((commit "2955791a7469131bcab42d800883f27993ee1d62")
+        (revision "0"))
+    (package
+      (name "sbcl-list-named-class")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/list-named-class")
+               (commit commit)))
+         (file-name (git-file-name "cl-list-named-class" version))
+         (sha256
+          (base32 "1bdi9q9wvfj66jji3n9hpjrj9271ial2awsb0xw80bmy6wqbg8kq"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-1am))
+      (inputs
+       (list sbcl-alexandria sbcl-closer-mop))
+      (home-page "https://github.com/phoe/list-named-class/")
+      (synopsis "Name classes after lists of symbols")
+      (description
+       "This package makes it possible to name classes by lists of symbols
+instead of symbols.")
+      (license license:expat))))
+
+(define-public cl-list-named-class
+  (sbcl-package->cl-source-package sbcl-list-named-class))
+
+(define-public ecl-list-named-class
+  (sbcl-package->ecl-package sbcl-list-named-class))
 
 (define-public sbcl-golden-utils
   (let ((commit "fe1898f9abbd302b0359f017637c063173cf73e1")
@@ -390,6 +528,45 @@ Features:
 
 (define-public ecl-cl-irc
   (sbcl-package->ecl-package sbcl-cl-irc))
+
+(define-public sbcl-tripod
+  (let ((commit "bcea16610b4961a927e417e4413fffe686d71c83")
+        (revision "0"))
+    (package
+      (name "sbcl-tripod")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aartaka/tripod")
+               (commit commit)))
+         (file-name (git-file-name "cl-tripod" version))
+         (sha256
+          (base32 "07czbwzfqg8n1q4dsfmrdp2zmp90xgsg8q26hkrniyvkylq4nn1z"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-alexandria
+              sbcl-cl-gopher
+              sbcl-cl-markdown
+              sbcl-clss
+              sbcl-hunchentoot
+              sbcl-phos
+              sbcl-plump
+              sbcl-trivial-mimes))
+      (home-page "https://aartaka.me/blog/tripod")
+      (synopsis "Common Lisp web server aiming to ease website hosting")
+      (description
+       "Tripod is a Common Lisp web server aiming to ease plain text, HTML,
+and Gopher website hosting.")
+      (license license:bsd-2))))
+
+(define-public cl-tripod
+  (sbcl-package->cl-source-package sbcl-tripod))
+
+(define-public ecl-tripod
+  (sbcl-package->ecl-package sbcl-tripod))
+
 
 (define-public sbcl-trivial-timeout
   (let ((commit "feb869357f40f5e109570fb40abad215fb370c6c")
@@ -3428,7 +3605,7 @@ is a library for creating graphical user interfaces.")
 (define-public sbcl-cl-webkit
   (package
     (name "sbcl-cl-webkit")
-    (version "3.5.3")
+    (version "3.5.4")
     (source
      (origin
        (method git-fetch)
@@ -3438,7 +3615,7 @@ is a library for creating graphical user interfaces.")
        (file-name (git-file-name "cl-webkit" version))
        (sha256
         (base32
-         "076lqj8ns9s7z980g3p2llw3k6hgsqnsvw8vjjslbpas2jzf26nr"))))
+         "072c6m63w9q4nr3lsvavi2i71qyfgygdpyqy659l0n81n7mjy2cr"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      `(("cffi" ,sbcl-cffi)
@@ -3851,10 +4028,10 @@ client and server.")
   (sbcl-package->cl-source-package sbcl-trivial-arguments))
 
 (define-public sbcl-trivial-clipboard
-  (let ((commit "8a580cb97196be7cf096548eb1f46794cd22bb39"))
+  (let ((commit "13b53720306c0e6a13eccf4674d28ee5361127ae"))
     (package
       (name "sbcl-trivial-clipboard")
-      (version (git-version "0.0.0.0" "4" commit))
+      (version (git-version "0.0.0.0" "5" commit))
       (source
        (origin
          (method git-fetch)
@@ -3864,7 +4041,7 @@ client and server.")
          (file-name (git-file-name "trivial-clipboard" version))
          (sha256
           (base32
-           "0apkgqrscylw3hhm5x2vs0z3hz6h7zd7dl5y3wr2zl8qjpvpc80k"))))
+           "0l198m1gg2ixc43lqjq1ffd80s1sjxhqf1w83qqa1cn51rra2jp8"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        ;; Pick xsel instead of xclip because its closure size is slightly
@@ -7814,17 +7991,16 @@ of function partial application and composition.")
 (define-public sbcl-yason
   (package
     (name "sbcl-yason")
-    (version "0.7.7")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/phmarek/yason")
              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-yason" version))
        (sha256
-        (base32
-         "0479rbjgbj80jpk5bby18inlv1kfp771a82rlcq5psrz65qqa9bj"))))
+        (base32 "0d22sw7nf2ygqm56ilybg7bza63cv43pc4184r8rvsjz2in37n51"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria sbcl-trivial-gray-streams))
@@ -12185,7 +12361,9 @@ functions.")
              sbcl-zpb-ttf))
       (arguments
        '(#:asd-systems '("mcclim"
-                         "clim-examples")
+                         "clim-examples"
+                         ;; clim-debugger is required by cleavir.
+                         "clim-debugger")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
@@ -12217,7 +12395,14 @@ specification}, a toolkit for writing GUIs in Common Lisp.")
   (sbcl-package->cl-source-package sbcl-mcclim))
 
 (define-public ecl-mcclim
-  (sbcl-package->ecl-package sbcl-mcclim))
+  (let ((pkg (sbcl-package->ecl-package sbcl-mcclim)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; Tests fail with "FUNCTION: Not a valid argument (R1
+         ;; (GENERATE-REGION))."  on ECL.
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-cl-inflector
   (let ((commit "f1ab16919ccce3bd82a0042677d9616dde2034fe")
@@ -14642,10 +14827,10 @@ source files.")
   (sbcl-package->cl-source-package sbcl-cl-indentify))
 
 (define-public sbcl-concrete-syntax-tree
-  (let ((commit "abd242a59dadc5452aa9dbc1d313c83ec2c11f46"))
+  (let ((commit "4f01430c34f163356f3a2cfbf0a8a6963ff0e5ac"))
     (package
       (name "sbcl-concrete-syntax-tree")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -14654,10 +14839,14 @@ source files.")
                (commit commit)))
          (file-name (git-file-name name commit))
          (sha256
-          (base32 "1lyrglc3h1if44gxd9cwv90wa90nrdjvb7fry39b1xn8ywdfa7di"))))
+          (base32 "169ibaz1vv7pphib28443zzk3hf1mrcarhzfm8hnbdbk529cnxyi"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-acclimation))
+      (arguments
+       '(#:asd-systems '("concrete-syntax-tree"
+                         "concrete-syntax-tree-destructuring"
+                         "concrete-syntax-tree-source-info")))
       (home-page "https://github.com/s-expressionists/Concrete-Syntax-Tree")
       (synopsis "Parse Common Lisp code into a concrete syntax tree")
       (description
@@ -18454,6 +18643,51 @@ RSS feeds data via HTTP.  Currently, it supports RSS versions 0.90,
 (define-public cl-rss
   (sbcl-package->cl-source-package sbcl-rss))
 
+(define-public sbcl-binascii
+  (let ((commit "0fb0a9e5773148fd04d50efef08c1cc10f6fc487")
+        (revision "1"))
+    (package
+      (name "sbcl-binascii")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/binascii")
+               (commit commit)))
+         (file-name (git-file-name "cl-binascii" version))
+         (sha256
+          (base32 "000rcdl8qshr7n48zq9bzrc4lkjx4ylb3r3w9x9syhiwfla9j4b7"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Unbundle the RT test framework.
+          '(begin
+             (delete-file "tests/rt.lisp")
+             (substitute* "binascii.asd"
+               ((":depends-on \\(binascii\\)")
+                ":depends-on (binascii rt)")
+               (("\\(:file \"rt\"\\)")
+                "")
+               (("\\(:file \"tests\" :depends-on \\(\"rt\"\\)\\)")
+                "(:file \"tests\")"))))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rt))
+      (home-page "https://github.com/sharplispers/binascii")
+      (synopsis "Common Lisp library of ASCII encoding schemes for binary data")
+      (description
+       "@code{binascii} is a Common Lisp library for converting binary data
+to ASCII text of some kind.  Such conversions are common in email protocols
+(for encoding attachments to support old non-8-bit clean transports) or
+encoding binary data in HTTP and XML applications.  @code{binascii} supports
+the encodings described in RFC 4648: base64, base32, base16, and variants.
+It also supports base85, used in Adobe's PostScript and PDF document formats,
+and a variant called ascii85, used by git for binary diff files.")
+      (license license:bsd-3))))
+
+(define-public cl-binascii
+  (sbcl-package->cl-source-package sbcl-binascii))
+
 (define-public sbcl-trivial-with-current-source-form
   (let ((commit "9e343e043a77a5478c1f77bb626db22335fbbfb8")
         (revision "1"))
@@ -22235,6 +22469,10 @@ place outside with-notes.
          (sha256
           (base32 "05smc81ml9rbcbzdhqg2mi9drnjsipq62r5q7f7qql8hbx01vl9i"))))
       (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria))
+      (arguments
+       '(#:asd-systems '("ctype" "ctype-tfun")))
       (home-page "https://github.com/s-expressionists/ctype")
       (synopsis "Common Lisp type system implementation ")
       (description
@@ -22480,6 +22718,32 @@ can be useful for games, 3D, and GL in general.")
 (define-public ecl-mathkit
   (sbcl-package->ecl-package sbcl-mathkit))
 
+(define-public sbcl-rucksack
+  (let ((commit "89278f88513ef328d290aa8b2baa06d63b44a9b1")
+        (revision "0"))
+    (package
+     (name "sbcl-rucksack")
+     (version (git-version "0.1.20" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/arieltan/rucksack")
+               (commit commit)))
+         (file-name (git-file-name "cl-rucksack" version))
+         (sha256
+          (base32 "0acpsxaxpp90km7gdbn9sysilycp3yg1g040fg1vqakpj2yb8vad"))))
+     (build-system asdf-build-system/sbcl)
+     (synopsis "Flexible, light weight, persistence library")
+     (description
+      "@code{cl-rucksack} is a persistence library based on Arthur Lemmens'
+Rucksack with some enhancements.")
+     (home-page "https://github.com/arieltan/rucksack/")
+     (license license:expat))))
+
+(define-public cl-rucksack
+  (sbcl-package->cl-source-package sbcl-rucksack))
+
 (define-public sbcl-sdl2kit
   (let ((commit "aae663224a10ece2b0c374aa5942a3f0bc1b3c2f"))
     (package
@@ -22557,6 +22821,37 @@ functionality similar to what was originally found in @code{sdl2kit}.
 (define-public ecl-glkit
   (sbcl-package->ecl-package sbcl-glkit))
 
+(define-public sbcl-doplus
+  (package
+    (name "sbcl-doplus")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alessiostalla/doplus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-doplus" version))
+       (sha256
+        (base32 "1yvda9psw9m08d3bzdb8a2drvhrnr07a0rhza5ibk30v1dkwfw7c"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-fiveam))
+    (inputs
+     (list sbcl-parse-declarations sbcl-fset))
+    (arguments
+     '(#:asd-systems '("doplus" "doplus-fset")))
+    (synopsis "Iteration macro for Common Lisp")
+    (description "@code{doplus} is an iteration macro for Common Lisp.")
+    (home-page "https://github.com/alessiostalla/doplus")
+    (license license:gpl3+)))
+
+(define-public cl-doplus
+  (sbcl-package->cl-source-package sbcl-doplus))
+
+(define-public ecl-doplus
+  (sbcl-package->ecl-package sbcl-doplus))
+
 (define-public sbcl-trees
   (let ((commit "7b06048af0248c4302088c758208276f9faf2beb"))
     (package
@@ -22620,6 +22915,74 @@ objects.")
 (define-public ecl-cl-geometry
   (sbcl-package->ecl-package sbcl-cl-geometry))
 
+(define-public sbcl-amb
+  (let ((commit "884bef69a1ea02f3b9deae0341e1a038ff31b896")
+        (revision "0"))
+    (package
+     (name "sbcl-amb")
+     (version (git-version "1.0.0" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/amb")
+               (commit commit)))
+         (file-name (git-file-name "cl-amb" version))
+         (sha256
+          (base32 "1klh1aakklj1famrff0sccnwlv8238b1q446288aqnqgxxw6pf21"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs
+       (list sbcl-alexandria))
+     (native-inputs
+       (list sbcl-parachute))
+     (synopsis "Implementation of John McCarthy's ambiguous operator")
+     (description
+      "@code{cl-amb} provides an implementation of John McCarthy's ambiguous
+operator in portable Common Lisp.")
+     (home-page "https://github.com/phoe/amb/")
+     (license license:expat))))
+
+(define-public cl-amb
+  (sbcl-package->cl-source-package sbcl-amb))
+
+(define-public ecl-amb
+  (sbcl-package->ecl-package sbcl-amb))
+
+(define-public sbcl-quicklisp-stats
+  (let ((commit "953b45c2212ae513d48a611d3dd09c846a6102cd")
+        (revision "0"))
+    (package
+      (name "sbcl-quicklisp-stats")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/quicklisp-stats")
+               (commit commit)))
+         (file-name (git-file-name "cl-quicklisp-stats" version))
+         (sha256
+          (base32 "0v8dgmlgd283n1g486q4sj2mghgdvgywg2nqp43nnrfc04mkvgc0"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-drakma
+             sbcl-split-sequence))
+      (arguments
+       `(#:tests? #f)) ; There are no tests.
+      (synopsis "Fetches and operates on Quicklisp download statistics")
+      (description
+       "@code{cl-quicklisp-stats} is a system that fetches and performs basic
+operations on the Quicklisp download statistics.")
+      (home-page "https://github.com/phoe/quicklisp-stats/")
+      (license license:expat))))
+
+(define-public cl-quicklisp-stats
+  (sbcl-package->cl-source-package sbcl-quicklisp-stats))
+
+(define-public ecl-quicklisp-stats
+  (sbcl-package->ecl-package sbcl-quicklisp-stats))
+
 (define-public sbcl-sketch
   ;; No release in years.
   (let ((commit "4cc00b08e202c7adda41391463096cf9df1705c3"))
@@ -22664,6 +23027,37 @@ the Processing language and shares some of the API.")
 
 (define-public ecl-sketch
   (sbcl-package->ecl-package sbcl-sketch))
+
+(define-public sbcl-cl-cron
+  (let ((commit "092aef5d5666fb43c04258e4043f609670a20456")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-cron")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ciel-lang/cl-cron")
+               (commit commit)))
+         (file-name (git-file-name "cl-cron" version))
+         (sha256
+          (base32 "0y4li8j2h1nbpldpqm39ld9kgs4a7biy94h49n27l59l7mn1jd0d"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-bordeaux-threads))
+      (home-page "https://github.com/ciel-lang/cl-cron/")
+      (synopsis "Run cron like jobs in Common Lisp")
+      (description
+       "@code{cl-cron} is a simple tool that provides cron like facilities
+directly inside of Common Lisp.")
+      (license license:gpl3+))))
+
+(define-public cl-cron
+  (sbcl-package->cl-source-package sbcl-cl-cron))
+
+(define-public ecl-cl-cron
+  (sbcl-package->ecl-package sbcl-cl-cron))
 
 (define-public sbcl-string-pokemonize
   (let ((commit "2dc01643defb497e4d1eb833def71dfc1e8d5da6")
@@ -22793,6 +23187,43 @@ internbombing, excessive input and macro characters.")
 (define-public ecl-safe-read
   (sbcl-package->ecl-package sbcl-safe-read))
 
+(define-public sbcl-portable-condition-system
+  (let ((commit "1307ec146d227a9d8ea42312c1ba2a5206a9eb3c")
+        (revision "0"))
+    (package
+      (name "sbcl-portable-condition-system")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/portable-condition-system")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "099lb9f4bavj95wik99wla5rf6fk1gdw9pvn0cqlaf0wf20csd3h"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("portable-condition-system")))
+      (native-inputs
+       (list sbcl-1am))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-split-sequence))
+      (home-page "https://github.com/phoe/portable-condition-system")
+      (synopsis "Portable condition system for Common Lisp")
+      (description
+       "This package provides an example implementation of the Common Lisp
+condition system and library, based on the original condition system
+implementation by Kent M. Pitman.")
+      (license license:cc0))))
+
+(define-public cl-portable-condition-system
+  (sbcl-package->cl-source-package sbcl-portable-condition-system))
+
+(define-public ecl-portable-condition-system
+  (sbcl-package->ecl-package sbcl-portable-condition-system))
+
 (define-public sbcl-ospm
   (package
     (name "sbcl-ospm")
@@ -22843,6 +23274,41 @@ It has extensive support for Guix, among others:
        (cons (list "osicat" cl-osicat)
              (package-inputs pkg))))))
 
+(define-public sbcl-data-lens
+  (let ((commit "801bc1e0331f19fdc38be314c86ccac9362fde78")
+        (revision "0"))
+    (package
+     (name "sbcl-data-lens")
+     (version (git-version "0.0.0" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fiddlerwoaroof/data-lens")
+               (commit commit)))
+         (file-name (git-file-name "cl-data-lens" version))
+         (sha256
+          (base32 "1w4rvhcnss037q0bb1j70kdlhfh9085hy95d9q56sk519alhzhrp"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-fiveam))
+     (inputs
+       (list sbcl-cl-ppcre
+             sbcl-alexandria
+             sbcl-serapeum))
+     (synopsis "Functional utilities for Common Lisp")
+     (description
+      "The @code{cl-data-lens} library provides a language for expressing data
+manipulations as the composition of more primitive operations.")
+     (home-page "https://fiddlerwoaroof.github.io/data-lens/")
+     (license license:asl2.0))))
+
+(define-public cl-data-lens
+  (sbcl-package->cl-source-package sbcl-data-lens))
+
+(define-public ecl-data-lens
+  (sbcl-package->ecl-package sbcl-data-lens))
+
 (define-public sbcl-ndebug
   (package
     (name "sbcl-ndebug")
@@ -22880,3 +23346,554 @@ especially in a multi-threaded context.")
 
 (define-public ecl-ndebug
   (sbcl-package->ecl-package sbcl-ndebug))
+
+(define-public sbcl-canonicalized-initargs
+  (package
+    (name "sbcl-canonicalized-initargs")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/canonicalized-initargs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-canonicalized-initargs" version))
+       (sha256
+        (base32 "0jmmjw86x9mmlfla4kdmdqf1fjrj0p2fmv1lc4k555mcf67mj2fq"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-cesdi
+           sbcl-closer-mop
+           sbcl-compatible-metaclasses
+           sbcl-enhanced-defclass
+           sbcl-enhanced-typep))
+    (home-page
+     "https://www.hexstreamsoft.com/libraries/canonicalized-initargs/")
+    (synopsis "Standard way to canonicalize slot values")
+    (description
+     "This package provides a standard way to canonicalize slot values.")
+    (license license:unlicense)))
+
+(define-public cl-canonicalized-initargs
+  (sbcl-package->cl-source-package sbcl-canonicalized-initargs))
+
+(define-public ecl-canonicalized-initargs
+  (sbcl-package->ecl-package sbcl-canonicalized-initargs))
+
+(define-public sbcl-enhanced-typep
+  (package
+    (name "sbcl-enhanced-typep")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-typep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-typep" version))
+       (sha256
+        (base32 "0b22gddkbxnhmi71wa2h51495737lrvsqxnri7g1qdsl1hraml21"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-enhanced-boolean sbcl-parachute))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-typep/")
+    (synopsis "Enhanced version of typep")
+    (description
+     "This package provides an enhanced version of @code{typep} that is exactly
+like the one in the Lisp spec, except it can also accept a single type argument,
+in which case it returns the appropriate closure.")
+      (license license:unlicense)))
+
+(define-public cl-enhanced-typep
+  (sbcl-package->cl-source-package sbcl-enhanced-typep))
+
+(define-public ecl-enhanced-typep
+  (sbcl-package->ecl-package sbcl-enhanced-typep))
+
+(define-public sbcl-enhanced-defclass
+  (package
+    (name "sbcl-enhanced-defclass")
+    (version "2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-defclass")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-defclass" version))
+       (sha256
+        (base32 "142s5c3pl3x7xdawzsj8pdxiqp4wh6fcajf4la5msvnxgf66d8wg"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-cesdi
+           sbcl-closer-mop
+           sbcl-compatible-metaclasses
+           sbcl-enhanced-eval-when
+           sbcl-object-class
+           sbcl-shared-preferences
+           sbcl-simple-guess))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-defclass/")
+    (synopsis "Extensible implementation of defclass")
+    (description
+     "This package provides an extensible implementation of defclass that can
+accurately control the expansion according to the metaclass and automatically
+detect the suitable metaclass by analyzing the @code{defclass} form.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-defclass
+  (sbcl-package->cl-source-package sbcl-enhanced-defclass))
+
+(define-public ecl-enhanced-defclass
+  (sbcl-package->ecl-package sbcl-enhanced-defclass))
+
+(define-public sbcl-object-class
+  (package
+    (name "sbcl-object-class")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/object-class")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-object-class" version))
+       (sha256
+        (base32 "0qagmd2mxbr8b60l0y3jccj0maxjchds96p935pd3q805ry50683"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop
+           sbcl-compatible-metaclasses
+           sbcl-enhanced-find-class))
+    (home-page "https://www.hexstreamsoft.com/libraries/object-class/")
+    (synopsis "Cluster special subclasses of the standard-object")
+    (description
+     "This package ensures that special subclasses of standard-object cluster
+right in front of standard-object in the class precedence list.")
+    (license license:unlicense)))
+
+(define-public cl-object-class
+  (sbcl-package->cl-source-package sbcl-object-class))
+
+(define-public ecl-object-class
+  (sbcl-package->ecl-package sbcl-object-class))
+
+(define-public sbcl-shared-preferences
+  (package
+    (name "sbcl-shared-preferences")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/shared-preferences")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-shared-preferences" version))
+       (sha256
+        (base32 "12m4kaba2lxndkjw30a6y2rq16fflh5016lp74l7pf3v0y3j1ydf"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-inheriting-readers
+           sbcl-trivial-garbage))
+    (home-page "https://www.hexstreamsoft.com/libraries/shared-preferences/")
+    (synopsis "Flexible specification of package-local preferences")
+    (description
+     "This package allows flexible specification of package-local preferences.")
+    (license license:unlicense)))
+
+(define-public cl-shared-preferences
+  (sbcl-package->cl-source-package sbcl-shared-preferences))
+
+(define-public ecl-shared-preferences
+  (sbcl-package->ecl-package sbcl-shared-preferences))
+
+(define-public sbcl-inheriting-readers
+  (package
+    (name "sbcl-inheriting-readers")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/inheriting-readers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-inheriting-readers" version))
+       (sha256
+        (base32 "0km3mq6vx1q9qv6j3r4sqqcsdbnb5jar66bl0mzzpaacfvzbx68p"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-class-options
+           sbcl-closer-mop
+           sbcl-compatible-metaclasses))
+    (home-page "https://www.hexstreamsoft.com/libraries/inheriting-readers/")
+    (synopsis "Simple yet powerful value inheritance scheme")
+    (description
+     "This package provides a simple yet powerful value inheritance scheme.")
+    (license license:unlicense)))
+
+(define-public cl-inheriting-readers
+  (sbcl-package->cl-source-package sbcl-inheriting-readers))
+
+(define-public ecl-inheriting-readers
+  (sbcl-package->ecl-package sbcl-inheriting-readers))
+
+(define-public sbcl-simple-guess
+  (let ((commit "34744e3200a96e6aba285d70f91cdbd6c25508a6")
+        (revision "0"))
+    (package
+      (name "sbcl-simple-guess")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/Hexstream/simple-guess")
+                (commit commit)))
+          (file-name (git-file-name "cl-simple-guess" version))
+          (sha256
+           (base32 "0404vj7ln97x7rn9ypbw4rshs56nnpyjnh1z9k03s039s5q3kpv0"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fakenil sbcl-parachute))
+      (inputs
+       (list sbcl-cesdi
+             sbcl-closer-mop
+             sbcl-compatible-metaclasses
+             sbcl-evaled-when))
+      (home-page "https://www.hexstreamsoft.com/libraries/simple-guess/")
+      (synopsis "Extensible protocol for computing a guess using advisors")
+      (description
+       "This package defines a simple extensible protocol for computing a guess
+using advisors.")
+      (license license:unlicense))))
+
+(define-public cl-simple-guess
+  (sbcl-package->cl-source-package sbcl-simple-guess))
+
+(define-public ecl-simple-guess
+  (sbcl-package->ecl-package sbcl-simple-guess))
+
+(define-public sbcl-fakenil
+  (package
+    (name "sbcl-fakenil")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/fakenil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-fakenil" version))
+       (sha256
+        (base32 "0ipqax3sgcs1dsgxz8d2pmfg324k6l35pn0nz89w5jl02fia61l3"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (home-page "https://www.hexstreamsoft.com/libraries/fakenil/")
+    (synopsis "Provides a canonical stand-in for NIL")
+    (description
+     "This package provides a canonical stand-in for NIL for contexts where
+NIL means no value.")
+    (license license:unlicense)))
+
+(define-public cl-fakenil
+  (sbcl-package->cl-source-package sbcl-fakenil))
+
+(define-public ecl-fakenil
+  (sbcl-package->ecl-package sbcl-fakenil))
+
+(define-public sbcl-evaled-when
+  (let ((commit "c59f8ab20b846cac81d4be80d056a3d65676e8eb")
+        (revision "0"))
+    (package
+      (name "sbcl-evaled-when")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Hexstream/evaled-when")
+               (commit commit)))
+         (file-name (git-file-name "cl-evaled-when" version))
+         (sha256
+          (base32 "07g1a50aairvsj57issb18si5a9r3skpbk05nlixmlj0mva3gkl3"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-enhanced-boolean sbcl-parachute))
+      (inputs
+       (list sbcl-trivial-cltl2))
+      (home-page "https://www.hexstreamsoft.com/libraries/evaled-when/")
+      (synopsis "Extract and replicate the compile-time side-effects of forms")
+      (description
+       "This package provides a way of extracting and replicating the
+compile-time side-effects of forms.")
+      (license license:unlicense))))
+
+(define-public cl-evaled-when
+  (sbcl-package->cl-source-package sbcl-evaled-when))
+
+(define-public ecl-evaled-when
+  (sbcl-package->ecl-package sbcl-evaled-when))
+
+(define-public sbcl-enhanced-eval-when
+  (package
+    (name "sbcl-enhanced-eval-when")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-eval-when")
+             (commit (string-append "v" version))))
+          (file-name (git-file-name "cl-enhanced-eval-when" version))
+          (sha256
+           (base32 "1ws1v297plcbqmcvckg7vqzzgnrwfyx5kd7281r1wrhc26998rx2"))))
+    (build-system asdf-build-system/sbcl)
+    ;; https://github.com/Hexstream/enhanced-eval-when/issues/1
+    (arguments
+     (list #:tests? #f)) ; There are no tests in version 1.0.
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-eval-when/")
+    (synopsis "Shortcuts for EVAL-WHEN")
+    (description
+     "This package provides an enhanced @code{EVAL-WHEN} macro that supports a
+shorthand for @code{(eval-when (:compile-toplevel :load-toplevel :execute) ...)},
+addressing concerns about verbosity.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-eval-when
+  (sbcl-package->cl-source-package sbcl-enhanced-eval-when))
+
+(define-public ecl-enhanced-eval-when
+  (sbcl-package->ecl-package sbcl-enhanced-eval-when))
+
+(define-public sbcl-enhanced-boolean
+  (package
+    (name "sbcl-enhanced-boolean")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-boolean")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-boolean" version))
+       (sha256
+        (base32 "17l18lz07fk2kg835vs6c3189d230n1rm9vghk3ls4i356gbq0gy"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-boolean/")
+    (synopsis "Convert generalized booleans to booleans")
+    (description
+     "This package provides a canonical way of converting generalized booleans
+to booleans.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-boolean
+  (sbcl-package->cl-source-package sbcl-enhanced-boolean))
+
+(define-public ecl-enhanced-boolean
+  (sbcl-package->ecl-package sbcl-enhanced-boolean))
+
+(define-public sbcl-cesdi
+  (package
+    (name "sbcl-cesdi")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/cesdi")
+             (commit version)))
+       (file-name (git-file-name "cl-cesdi" version))
+       (sha256
+        (base32 "02f2pz5rw79ljkkx1ywh8nkpjj4g3z3s1lyvzqb8krbnx11wl0q9"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop))
+    (home-page "https://www.hexstreamsoft.com/libraries/cesdi/")
+    (synopsis "Ergonomic initialization of effective slot definition objects")
+    (description
+     "This package provides a @code{compute-effective-slot-definition-initargs}
+generic function that allows for more ergonomic initialization of effective slot
+definition objects.")
+    (license license:unlicense)))
+
+(define-public cl-cesdi
+  (sbcl-package->cl-source-package sbcl-cesdi))
+
+(define-public ecl-cesdi
+  (sbcl-package->ecl-package sbcl-cesdi))
+
+(define-public sbcl-compatible-metaclasses
+  (package
+    (name "sbcl-compatible-metaclasses")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/compatible-metaclasses")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-compatible-metaclasses" version))
+       (sha256
+        (base32 "17cf74j400cl6sjslfhkv13lir85k705v63mx3dd4y6dl5hvsdh6"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-class-options
+           sbcl-closer-mop
+           sbcl-enhanced-find-class))
+    (home-page "https://www.hexstreamsoft.com/libraries/compatible-metaclasses/")
+    (synopsis "Simplifies class mixins by validating superclasses")
+    (description
+     "This library validates superclasses according to a simple substitution
+model, thereby greatly simplifying the definition of class mixins.")
+    (license license:unlicense)))
+
+(define-public cl-compatible-metaclasses
+  (sbcl-package->cl-source-package sbcl-compatible-metaclasses))
+
+(define-public ecl-compatible-metaclasses
+  (sbcl-package->ecl-package sbcl-compatible-metaclasses))
+
+(define-public sbcl-class-options
+  (package
+    (name "sbcl-class-options")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/class-options")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-class-options" version))
+       (sha256
+        (base32 "1dkgr1vbrsra44jznzz2bvdf8nlpdrrkjcqrfs8aa7axksda3bqk"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-enhanced-boolean sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop sbcl-enhanced-find-class))
+    (home-page "https://www.hexstreamsoft.com/libraries/class-options/")
+    (synopsis "Accessing defining class and its options during modification")
+    (description
+     "This package provides easy access to the defining class and its options
+during initialization or reinitialization of its subcomponents.")
+    (license license:unlicense)))
+
+(define-public cl-class-options
+  (sbcl-package->cl-source-package sbcl-class-options))
+
+(define-public ecl-class-options
+  (sbcl-package->ecl-package sbcl-class-options))
+
+(define-public sbcl-enhanced-find-class
+  (package
+    (name "sbcl-enhanced-find-class")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-find-class")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-find-class" version))
+       (sha256
+        (base32 "1pf1mxb238zrmvgm9s0456s1x0m317ls23ls1d987riw69y3w9vx"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-find-class/")
+    (synopsis "Canonical way of converting class designators to classes")
+    (description
+     "This package provides a canonical way of converting class designators
+to classes.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-find-class
+  (sbcl-package->cl-source-package sbcl-enhanced-find-class))
+
+(define-public ecl-enhanced-find-class
+  (sbcl-package->ecl-package sbcl-enhanced-find-class))
+
+(define-public sbcl-definitions-systems
+  (package
+    (name "sbcl-definitions-systems")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/definitions-systems")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-definitions-systems" version))
+       (sha256
+        (base32 "009392mj0qdq4jy0dw5r41schnygwj286759yvyg7xja30a0psfq"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-canonicalized-initargs
+           sbcl-enhanced-defclass
+           sbcl-enhanced-find-class
+           sbcl-shared-preferences))
+    (home-page "https://www.hexstreamsoft.com/libraries/definitions-systems/")
+    (synopsis "Unified extensible way of processing named definitions")
+    (description
+     "@code{definitions-systems} provides a simple unified extensible way of
+processing named definitions.")
+    (license license:unlicense)))
+
+(define-public cl-definitions-systems
+  (sbcl-package->cl-source-package sbcl-definitions-systems))
+
+(define-public ecl-definitions-systems
+  (sbcl-package->ecl-package sbcl-definitions-systems))
+
+(define-public sbcl-smug
+  (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
+        (revision "0"))
+    (package
+     (name "sbcl-smug")
+     (version (git-version "0.0.0" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/drewc/smug")
+               (commit commit)))
+         (file-name (git-file-name "cl-smug" version))
+         (sha256
+          (base32 "13gzkj9skya2ziwclk041v7sif392ydbvhvikhg2raa3qjcxb3rq"))))
+     (build-system asdf-build-system/sbcl)
+     (arguments
+      `(#:tests? #f)) ; There are no tests.
+     (synopsis "Parser combinators for Common Lisp")
+     (description
+      "@code{cl-smug} is a library for parsing text, based on monadic parser
+combinators.  Using a simple technique from the functional programming
+camp, @code{cl-smug} makes it simple to create quick extensible recursive
+descent parsers without funky syntax or impenetrable macrology.")
+     (home-page "http://smug.drewc.ca/")
+     (license license:expat))))
+
+(define-public cl-smug
+  (sbcl-package->cl-source-package sbcl-smug))
+
+(define-public ecl-smug
+  (sbcl-package->ecl-package sbcl-smug))

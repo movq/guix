@@ -187,6 +187,9 @@ expressions."
                 xyz))))")
 
 (test-pretty-print "\
+(string-append \"a\\tb\" \"\\n\")")
+
+(test-pretty-print "\
 (description \"abcdefghijkl
 mnopqrstuvwxyz.\")"
                    #:max-width 30)
@@ -246,6 +249,14 @@ mnopqrstuvwxyz.\")"
                 (b 4))
            (+ a b))))
   (list x y z))")
+
+(test-pretty-print "\
+(begin
+  (chmod \"foo\" #o750)
+  (chmod port
+         (logand #o644
+                 (lognot (umask))))
+  (logand #x7f xyz))")
 
 (test-pretty-print "\
 (substitute-keyword-arguments (package-arguments x)

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -61,6 +61,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
@@ -88,6 +89,7 @@
   #:use-module (gnu packages logging)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
@@ -747,6 +749,12 @@ many more.")
        (sha256
         (base32 "1nyld18mf220ghm1vidnfnn0rdns9z5i4l9s66xgd0kfdgarb31f"))))
     (build-system cmake-build-system)
+    (arguments
+     ;; XXX: On i686-linux, tests fail due to rounding issues (excess
+     ;; precision), as was discussed and patched long ago:
+     ;; <https://issues.guix.gnu.org/22049>.  It seems the relevant fixes
+     ;; didn't make it upstream, so skip tests.
+     (list #:tests? (not (target-x86-32?))))
     (home-page "https://github.com/AcademySoftwareFoundation/Imath")
     (synopsis "Library of math operations for computer graphics")
     (description
@@ -771,11 +779,21 @@ applications, including the \"half\" 16-bit floating-point type.")
               (patches (search-patches "ilmbase-fix-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'change-directory
-                    (lambda _
-                      (chdir "IlmBase")
-                      #t)))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'change-directory
+                          (lambda _
+                            (chdir "IlmBase")
+                            #t))
+                        #$@(if (target-x86-32?)
+                               #~((add-after 'change-directory 'skip-test
+                                    (lambda _
+                                      ;; XXX: This test fails on i686,
+                                      ;; possibly due to excess precision when
+                                      ;; comparing floats.  Skip it.
+                                      (substitute* "ImathTest/testFun.cpp"
+                                        (("assert \\(bit_cast<unsigned>.*" all)
+                                         (string-append "// " all "\n"))))))
+                               #~()))))
     (home-page "https://www.openexr.com/")
     (synopsis "Utility C++ libraries for threads, maths, and exceptions")
     (description
@@ -1165,13 +1183,15 @@ with strong support for multi-part, multi-channel use cases.")
              #t))
          ,@(if (not (target-64bit?))
                `((add-after 'change-directory 'disable-broken-test
-                   ;; This test fails on i686. Upstream developers suggest that
-                   ;; this test is broken on i686 and can be safely disabled:
-                   ;; https://github.com/openexr/openexr/issues/67#issuecomment-21169748
                    (lambda _
                      (substitute* "IlmImfTest/main.cpp"
-                       ((".*testOptimizedInterleavePatterns.*") ""))
-                     #t)))
+                       ;; This test fails on i686. Upstream developers suggest
+                       ;; that this test is broken on i686 and can be safely
+                       ;; disabled:
+                       ;; https://github.com/openexr/openexr/issues/67#issuecomment-21169748
+                       ((".*testOptimizedInterleavePatterns.*") "")
+                       ;; This one fails similarly on i686.
+                       ((".*testCompression.*") "")))))
                '()))))
     (native-inputs
      (list pkg-config))
@@ -2286,71 +2306,89 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
     (license license:lgpl3+)))
 
 (define-public f3d
-  ;; There have been many improvements since the last tagged version (1.2.1,
-  ;; released in December 2021), including support for the Alembic file
-  ;; format.
-  (let ((commit "9cc79b65ed750b178f58012dbba091aa24722dab")
-        (revision "0"))
-    (package
-      (name "f3d")
-      (version (git-version "1.2.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/f3d-app/f3d")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "041gqi2wfny2br4j68vhifg0bd18kbl0qsaallkz7yywk47njxfi"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        ;; Many tests require files supplied by git-lfs.
-        ;; Also, some tests segfault (after an exception?) but the tested
-        ;; behavior, i.e., when the program is run manually, does not (for
-        ;; example, TestNonExistentConfigFile and TestInvalidConfigFile).
-        ;; Upstream is aware of occasionally flaky tests (see
-        ;; https://github.com/f3d-app/f3d/issues/92) but the tests run in CI
-        ;; seem to be passing.
-        ;; Anyway, the program runs and is able to open at least STL files
-        ;; without issue.
-        #:tests? #f
-        #:configure-flags
-        #~(list "-DBUILD_TESTING=OFF"
-                "-DF3D_MODULE_ALEMBIC=ON"
-                "-DF3D_MODULE_ASSIMP=ON"
-                "-DF3D_MODULE_OCCT=ON"
-                ;; Prefer Guix's versioned documentation directory to F3D's
-                ;; unversioned one.
-                (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
-                               "/share/doc/" #$name "-" #$version))))
-      (inputs
-       (list alembic
-             assimp
-             double-conversion
-             eigen
-             expat
-             fontconfig
-             freetype
-             glew
-             hdf5
-             imath
-             jsoncpp
-             libjpeg-turbo
-             libpng
-             libtiff
-             libx11
-             lz4
-             netcdf
-             opencascade-occt
-             vtk
-             zlib))
-      (home-page "https://f3d-app.github.io/f3d/")
-      (synopsis "VTK based 3D viewer")
-      (description "F3D (pronounced @samp{/fɛd/}) is a VTK-based 3D viewer, it
-has simple interaction mechanisms and is fully controllable using arguments on
-the command line.  It supports a range of file formats (including animated
+  (package
+    (name "f3d")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/f3d-app/f3d")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hdfgwf5d24ykab634xg4vv9r09nh96ss7hhnqnh5nmw4abhxzg7"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file "application/cxxopts.hpp")
+            (delete-file "application/json.hpp")
+            (substitute* "application/F3DOptionsParser.cxx"
+              (("^#include \"cxxopts\\.hpp\"")
+               "#include <cxxopts.hpp>")
+              (("^#include \"json\\.hpp\"")
+               "#include <nlohmann/json.hpp>"))))))
+    (build-system cmake-build-system)
+    ;; The package cannot easily be split into out and lib outputs because
+    ;; VTK's vtkModule.cmake complains, and also the CMake files in
+    ;; /lib/cmake/f3d expect the f3d executable and library to be available,
+    ;; as they set up targets for both of them.
+    (arguments
+     (list
+      ;; Many tests require files supplied by git-lfs.
+      ;; Also, some tests segfault (after an exception?) but the tested
+      ;; behavior, i.e., when the program is run manually, does not (for
+      ;; example, TestNonExistentConfigFile and TestInvalidConfigFile).
+      ;; Upstream is aware of occasionally flaky tests [1], but the tests
+      ;; run in CI seem to be passing.
+      ;; Anyway, the program runs and is able to open at least STL files
+      ;; without issue.
+      ;;
+      ;; [1]: https://github.com/f3d-app/f3d/issues/92
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
+                             "/share/doc/" #$name "-" #$version)
+              "-DBUILD_TESTING=OFF"
+              "-DF3D_GENERATE_MAN=ON"
+              "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE=ON"
+              "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE_IN_PREFIX=ON"
+              "-DF3D_INSTALL_MIME_TYPES_FILES=ON"
+              "-DF3D_INSTALL_THUMBNAILER_FILES=ON"
+              "-DF3D_MODULE_ALEMBIC=ON"
+              "-DF3D_MODULE_ASSIMP=ON"
+              "-DF3D_MODULE_EXTERNAL_RENDERING=ON"
+              "-DF3D_MODULE_OCCT=ON")))
+    (native-inputs
+     (list cxxopts
+           help2man
+           json-modern-cxx))
+    (inputs
+     (list alembic
+           assimp
+           double-conversion
+           eigen
+           expat
+           fontconfig
+           freetype
+           glew
+           hdf5
+           imath
+           jsoncpp
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           lz4
+           netcdf
+           opencascade-occt
+           vtk
+           zlib))
+    (home-page "https://f3d-app.github.io/f3d/")
+    (synopsis "VTK-based 3D viewer")
+    (description "F3D (pronounced @samp{/fɛd/}) is a VTK-based 3D viewer with
+simple interaction mechanisms and which is fully controllable using arguments
+on the command line.  It supports a range of file formats (including animated
 glTF, STL, STEP, PLY, OBJ, FBX), and provides numerous rendering and texturing
 options.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))

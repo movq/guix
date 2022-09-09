@@ -4113,17 +4113,17 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "3.38.1")
+    (version "3.38.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "1q933m76155gy30wgps2gdd8pxzsfhppydjqn0fhjrwj6kqz8mik"))))
+                "1ww69xrg9qrmq7dix2k48j6akgn58ss3340hm7pjvzx508x1j6n6"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-limma r-locfit r-rcpp r-statmod)) ;for estimateDisp
+     (list r-limma r-locfit r-rcpp))
     (home-page "http://bioinf.wehi.edu.au/edgeR")
     (synopsis "EdgeR does empirical analysis of digital gene expression data")
     (description "This package can do differential expression analysis of
@@ -4355,13 +4355,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.32.0")
+    (version "1.32.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "1ifmlc0488f5yzcf4p92dmdc7psxl5c0aa7qpxjk0a07gf7lldbi"))))
+                "09pg7822camyav5zvlpv360sj5gz8q1bhk528qa2da2qsz74a3cz"))))
     (properties
      `((upstream-name . "GenomicAlignments")))
     (build-system r-build-system)
@@ -8696,6 +8696,54 @@ Bayes Analyses of Microarrays} (EBAM).")
 to identify differentially methylated regions in epigenetic epidemiology
 studies.")
     (license license:artistic2.0)))
+
+(define-public r-milor
+  (package
+    (name "r-milor")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "miloR" version))
+              (sha256
+               (base32
+                "1jz9p3grnczx0bpdw6j64x21in8zgm3qy19hmm296har2rx9m5zs"))))
+    (properties `((upstream-name . "miloR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biocneighbors
+           r-biocparallel
+           r-biocsingular
+           r-cowplot
+           r-dplyr
+           r-edger
+           r-ggbeeswarm
+           r-ggplot2
+           r-ggraph
+           r-ggrepel
+           r-gtools
+           r-igraph
+           r-irlba
+           r-limma
+           r-matrix
+           r-matrixstats
+           r-patchwork
+           r-rcolorbrewer
+           r-s4vectors
+           r-singlecellexperiment
+           r-stringr
+           r-summarizedexperiment
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://marionilab.github.io/miloR")
+    (synopsis "Differential neighbourhood abundance testing on a graph")
+    (description
+     "Milo performs single-cell differential abundance testing.  Cell states
+are modelled as representative neighbourhoods on a nearest neighbour graph.
+Hypothesis testing is performed using a negative bionomial generalized linear
+model.")
+    (license license:gpl3)))
 
 (define-public r-minfi
   (package

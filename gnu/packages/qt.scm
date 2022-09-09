@@ -20,10 +20,11 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3742,6 +3743,9 @@ color-related widgets.")
      "QCustomPlot is a Qt C++ widget providing 2D plots, graphs and charts.")
     (license license:gpl3+)))
 
+;; TODO: Split shiboken2 binding generator into a dedicated output.
+;; This executable requires libxml2, libxslt, clang-toolchain at runtime.
+;; The libshiboken library only requires Qt and Python at runtime.
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
@@ -3764,30 +3768,31 @@ color-related widgets.")
            qtbase-5
            qtxmlpatterns))
     (arguments
-     `(#:tests? #f
-       ;; FIXME: Building tests fails
-       #:configure-flags '("-DBUILD_TESTS=off")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-shiboken-dir-only
-           (lambda _ (chdir "sources/shiboken2") #t))
-         (add-before 'configure 'make-files-writable-and-update-timestamps
-           (lambda _
-             ;; The build scripts need to modify some files in
-             ;; the read-only source directory, and also attempts
-             ;; to create Zip files which fails because the Zip
-             ;; format does not support timestamps before 1980.
-             (let ((circa-1980 (* 10 366 24 60 60)))
-               (for-each (lambda (file)
-                           (make-file-writable file)
-                           (utime file circa-1980 circa-1980))
-                         (find-files ".")))
-             #t))
-         (add-before 'configure 'set-build-env
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((llvm (assoc-ref inputs "clang-toolchain")))
-               (setenv "CLANG_INSTALL_DIR" llvm)
-               #t))))))
+     (list
+      #:tests? #f
+      ;; FIXME: Building tests fails
+      #:configure-flags #~(list "-DBUILD_TESTS=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-shiboken-dir-only
+            (lambda _ (chdir "sources/shiboken2") #t))
+          (add-before 'configure 'make-files-writable-and-update-timestamps
+            (lambda _
+              ;; The build scripts need to modify some files in
+              ;; the read-only source directory, and also attempts
+              ;; to create Zip files which fails because the Zip
+              ;; format does not support timestamps before 1980.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (for-each (lambda (file)
+                            (make-file-writable file)
+                            (utime file circa-1980 circa-1980))
+                          (find-files ".")))
+              #t))
+          (add-before 'configure 'set-build-env
+            (lambda _
+              (let ((llvm #$(this-package-input "clang-toolchain")))
+                (setenv "CLANG_INSTALL_DIR" llvm)
+                #t))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Shiboken generates bindings for C++ libraries using CPython source code")
@@ -3801,6 +3806,40 @@ color-related widgets.")
       license:lgpl3
       license:bsd-3))))
 
+(define-public python-shiboken-6
+  (package
+    (inherit python-shiboken-2)
+    (name "python-shiboken-6")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.qt.io/official_releases"
+                                  "/QtForPython/pyside6/PySide6-" version
+                                  "-src/pyside-setup-opensource-src-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0xwri69nnbhn6fajm7l045r0s0qv8nlq6qj8wcj87srli3b5xa75"))))
+    (build-system cmake-build-system)
+    (inputs
+     (modify-inputs (package-inputs python-shiboken-2)
+       (replace "qtbase" qtbase)
+       (delete "qtxmlpatterns")))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-shiboken-2)
+       ((#:phases p)
+        #~(modify-phases #$p
+            (replace 'use-shiboken-dir-only
+              (lambda _ (chdir "sources/shiboken6") #t))))
+       ((#:configure-flags flags)
+        #~(cons*
+           ;; The RUNPATH of shibokenmodule contains the entry in build
+           ;; directory instead of install directory.
+           "-DCMAKE_SKIP_RPATH=TRUE"
+           (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                          #$output "/lib")
+           #$flags))))))
+
 (define-public python-pyside-2
   (package
     (name "python-pyside-2")
@@ -3808,10 +3847,7 @@ color-related widgets.")
     (source (package-source python-shiboken-2))
     (build-system cmake-build-system)
     (inputs
-     (list libxml2
-           libxslt
-           clang-toolchain
-           qtbase-5
+     (list qtbase-5
            qtdatavis3d
            qtdeclarative-5
            qtlocation
@@ -3823,6 +3859,7 @@ color-related widgets.")
            qtsensors
            qtspeech
            qtsvg-5
+           qttools-5
            qtwebchannel-5
            qtwebengine-5
            qtwebsockets-5
@@ -3831,68 +3868,63 @@ color-related widgets.")
     (propagated-inputs
      (list python-shiboken-2))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)
-       ("which" ,which)))
+     (list python-wrapper))
     (arguments
-     `(#:tests? #f
-       ;; FIXME: Building tests fail.
-       #:configure-flags
-       (list "-DBUILD_TESTS=FALSE"
-             (string-append "-DPYTHON_EXECUTABLE="
-                            (assoc-ref %build-inputs "python")
-                            "/bin/python"))
-       #:modules ((guix build cmake-build-system)
+     (list
+      #:tests? #f
+      ;; FIXME: Building tests fail.
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=FALSE"
+              (string-append "-DPYTHON_EXECUTABLE="
+                             (search-input-file %build-inputs
+                                                "/bin/python")))
+      #:modules '((guix build cmake-build-system)
                   (guix build utils)
                   (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'go-to-source-dir
-           (lambda _ (chdir "sources/pyside2") #t))
-         (add-after 'go-to-source-dir 'fix-qt-module-detection
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Activate qt module support even if it not in the same
-             ;; directory as qtbase.
-             (substitute* "../cmake_helpers/helpers.cmake"
-               (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
-                "true"))
-             ;; Add include directories for qt modules.
-             (let ((dirs (map (lambda (name)
-                                (string-append (assoc-ref inputs name)
-                                               "/include/qt5"))
-                              '("qtdatavis3d"
-                                "qtdeclarative"
-                                "qtlocation"
-                                "qtmultimedia"
-                                "qtquickcontrols"
-                                "qtquickcontrols2"
-                                "qtscript"
-                                "qtscxml"
-                                "qtsensors"
-                                "qtspeech"
-                                "qtsvg"
-                                "qttools-5"
-                                "qtwebchannel"
-                                "qtwebengine"
-                                "qtwebsockets"
-                                "qtx11extras"
-                                "qtxmlpatterns"))))
-               (substitute* "cmake/Macros/PySideModules.cmake"
-                 (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
-                  (fold (lambda (dir paths)
-                          (string-append paths "${PATH_SEP}" dir))
-                        all
-                        dirs)))
-               (setenv "CXXFLAGS" (fold (lambda (dir paths)
-                                          (string-append paths " -I" dir))
-                                        ""
-                                        dirs)))))
-         (add-before 'configure 'set-clang-dir
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((clang (assoc-ref inputs "clang-toolchain")))
-               (setenv "CLANG_INSTALL_DIR" clang)
-               #t))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-to-source-dir
+            (lambda _ (chdir "sources/pyside2") #t))
+          (add-after 'go-to-source-dir 'fix-qt-module-detection
+            (lambda _
+              ;; Activate qt module support even if it not in the same
+              ;; directory as qtbase.
+              (substitute* "../cmake_helpers/helpers.cmake"
+                (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
+                 "true"))
+              ;; Add include directories for qt modules.
+              (let ((dirs (map (lambda (path)
+                                 (string-append path "/include/qt5"))
+                               (list
+                                #$@(map (lambda (name)
+                                          (this-package-input name))
+                                        '("qtdatavis3d"
+                                          "qtdeclarative"
+                                          "qtlocation"
+                                          "qtmultimedia"
+                                          "qtquickcontrols"
+                                          "qtquickcontrols2"
+                                          "qtscript"
+                                          "qtscxml"
+                                          "qtsensors"
+                                          "qtspeech"
+                                          "qtsvg"
+                                          "qttools"
+                                          "qtwebchannel"
+                                          "qtwebengine"
+                                          "qtwebsockets"
+                                          "qtx11extras"
+                                          "qtxmlpatterns"))))))
+                (substitute* "cmake/Macros/PySideModules.cmake"
+                  (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
+                   (fold (lambda (dir paths)
+                           (string-append paths "${PATH_SEP}" dir))
+                         all
+                         dirs)))
+                (setenv "CXXFLAGS" (fold (lambda (dir paths)
+                                           (string-append paths " -I" dir))
+                                         ""
+                                         dirs))))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "The Qt for Python product enables the use of Qt5 APIs in Python applications")
@@ -3914,6 +3946,78 @@ generate Python bindings for your C or C++ code.")
               license:gpl3
               license:gpl2))))
 
+(define-public python-pyside-6
+  (package
+    (inherit python-pyside-2)
+    (name "python-pyside-6")
+    (version (package-version python-shiboken-6))
+    (source (package-source python-shiboken-6))
+    ;; TODO: Add more Qt components if available.
+    (inputs
+     (list qtbase
+           qtdeclarative
+           qtmultimedia
+           qtnetworkauth
+           qtpositioning
+           qtsvg
+           qttools
+           qtwebchannel
+           qtwebengine
+           qtwebsockets))
+    (propagated-inputs
+     (list python-shiboken-6))
+    (native-inputs
+     (list python-wrapper))
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=FALSE"
+              (string-append "-DPYTHON_EXECUTABLE="
+                             (search-input-file %build-inputs
+                                                "/bin/python")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-to-source-dir
+            (lambda _ (chdir "sources/pyside6") #t))
+          (add-after 'go-to-source-dir 'fix-qt-module-detection
+            (lambda _
+              (substitute* "cmake/PySideHelpers.cmake"
+                (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
+                 "true"))
+              (let ((dirs (map (lambda (path)
+                                 (string-append path "/include/qt6"))
+                               (list
+                                #$@(map (lambda (name)
+                                          (this-package-input name))
+                                        '("qtdeclarative"
+                                          "qtmultimedia"
+                                          "qtnetworkauth"
+                                          "qtpositioning"
+                                          "qtsvg"
+                                          "qttools"
+                                          "qtwebchannel"
+                                          "qtwebengine"
+                                          "qtwebsockets"))))))
+                (substitute* "cmake/Macros/PySideModules.cmake"
+                  (("set\\(shiboken_include_dir_list " all)
+                   (string-append all (string-join dirs ";") " ")))
+                (setenv "CXXFLAGS"
+                        (string-join
+                         (map (lambda (dir)
+                                (string-append "-I" dir))
+                              dirs)
+                         " "))))))))
+    (synopsis
+     "The Qt for Python product enables the use of Qt6 APIs in Python applications")
+    (description
+     "The Qt for Python product enables the use of Qt6 APIs in Python
+applications.  It lets Python developers utilize the full potential of Qt,
+using the PySide6 module.  The PySide6 module provides access to the
+individual Qt modules such as QtCore, QtGui,and so on.  Qt for Python also
+comes with the Shiboken6 CPython binding code generator, which can be used to
+generate Python bindings for your C or C++ code.")))
+
 (define-public python-pyside-2-tools
   (package
     (name "python-pyside-2-tools")
@@ -3923,22 +4027,24 @@ generate Python bindings for your C or C++ code.")
     (inputs
      (list python-pyside-2 python-shiboken-2 qtbase-5))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list "-DBUILD_TESTS=off"
-             (string-append "-DPYTHON_EXECUTABLE="
-                            (assoc-ref %build-inputs "python")
-                            "/bin/python"))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'go-to-source-dir
-                    (lambda _ (chdir "sources/pyside2-tools") #t)))))
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=off"
+              (string-append "-DPYTHON_EXECUTABLE="
+                             (search-input-file %build-inputs
+                                                "/bin/python")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-to-source-dir
+            (lambda _ (chdir "sources/pyside2-tools") #t)))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
-     "Contains command line tools for PySide2")
+     "Command line tools for PySide2")
     (description
-     "Contains lupdate, rcc and uic tools for PySide2")
+     "Python-pyside-2-tools contains lupdate, rcc and uic tools for PySide2")
     (license license:gpl2)))
 
 (define-public libqglviewer
@@ -4057,3 +4163,64 @@ data.")
 also compatible with SGI and TGS Open Inventor, and the API is based on the API
 of the InventorXt GUI component toolkit.")
     (license license:bsd-3))))
+
+(define-public libdbusmenu-qt
+  (package
+    (name "libdbusmenu-qt")
+    (version "0.9.3+16.04.20160218-0ubuntu1")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from github rather than launchpad because launchpad trunk
+       ;; tarball hash is not deterministic.
+       (uri (git-reference
+             (url "https://github.com/unity8-team/libdbusmenu-qt")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b7ii1cvmpcyl79gqal9c3va9m55h055s4hx7fpxkhhqs9463ggg"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; XXX: Tests require a dbus session and some icons.
+     '(#:tests? #f))
+    (native-inputs
+     (list doxygen))
+    (inputs
+     (list qtbase-5))
+    (home-page "https://launchpad.net/libdbusmenu-qt")
+    (synopsis "Qt implementation of the DBusMenu spec")
+    (description "This library provides a Qt implementation of the DBusMenu
+protocol.  The DBusMenu protocol makes it possible for applications to export
+and import their menus over DBus.")
+    (license license:lgpl2.1+)))
+
+(define-public kdsoap
+  (package
+    (name "kdsoap")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/KDAB/KDSoap/releases/download/"
+                           "kdsoap-" version "/kdsoap-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vh4rzb09kks1ilay1y60q7gf64gwzdwsca60hmx1xx69w8672fi"))))
+    (build-system qt-build-system)
+    (inputs `(("qtbase" ,qtbase-5)))
+    (arguments
+     '(#:configure-flags '("-DKDSoap_TESTS=true")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "-E" ;; These tests try connect to the internet.
+                       "(kdsoap-webcalls|kdsoap-webcalls_wsdl|kdsoap-test_calc)"))
+             #t)))))
+    (home-page "https://www.kdab.com/development-resources/qt-tools/kd-soap/")
+    (synopsis "Qt SOAP component")
+    (description "KD SOAP is a tool for creating client applications for web
+services using the XML based SOAP protocol and without the need for a dedicated
+web server.")
+    (license (list license:gpl2 license:gpl3))))

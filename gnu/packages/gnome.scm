@@ -977,30 +977,30 @@ cloud integration is offered through GNOME Online Accounts.")
                  `("GUIX_PYTHONPATH" =
                    (,(getenv "GUIX_PYTHONPATH") ,pylib)))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("itstools" ,itstool)
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           itstool
+           pkg-config))
     (inputs
-     `(("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("grilo" ,grilo)
-       ("grilo-plugins" ,grilo-plugins)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gstreamer" ,gstreamer)
-       ("gvfs" ,gvfs)
-       ("json-glib" ,json-glib)
-       ("libdazzle" ,libdazzle)
-       ("libmediaart" ,libmediaart)
-       ("libsoup" ,libsoup-minimal-2)
-       ("pycairo" ,python-pycairo)
-       ("pygobject" ,python-pygobject)
-       ("python" ,python)
-       ("tracker" ,tracker)
-       ("tracker-miners" ,tracker-miners)))
+     (list `(,gnome-online-accounts "lib")
+           grilo
+           grilo-plugins
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           gvfs
+           json-glib
+           libdazzle
+           libmediaart
+           libsoup-minimal-2
+           python-pycairo
+           python-pygobject
+           python
+           tracker
+           tracker-miners))
     (synopsis "Simple music player for GNOME desktop")
     (description "GNOME Music is the new GNOME music playing application that
 aims to combine an elegant and immersive browsing experience with simple
@@ -3121,7 +3121,7 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
 (define-public glade3
   (package
     (name "glade")
-    (version "3.38.2")
+    (version "3.40.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3129,68 +3129,56 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dxsiz9ahqkxg2a1dw9sbd8jg59y5pdz4c1gvnbmql48gmj8gz4q"))
-              (patches (search-patches
-                        "glade-gls-set-script-name.patch"
-                        "glade-test-widget-null-icon.patch"))))
+                "171x7vshhw0nqgnhkcaqfylpr5qrmhclwmkva6wjm5s9m2pavj9i"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
 
-         ,@(if (this-package-native-input "gjs")
-               '()
-               '((add-after 'unpack 'skip-gjs-test
-                   (lambda _
-                     ;; When the optional dependency on GJS is missing, skip
-                     ;; the GJS plugin tests.
-                     (substitute* "tests/modules.c"
-                       (("g_test_add.*JavaScript.*" all)
-                        (string-append "// " all "\n")))
-                     (delete-file "tests/catalogs/gjsplugin.xml")))))
-
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "man/meson.build"
-               (("http://docbook.sourceforge.net/release/xsl/\
-current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" "/tmp")
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1"))))))
+          #$@(if (this-package-input "gjs")
+                 '()
+                 '((add-after 'unpack 'skip-gjs-test
+                     (lambda _
+                       ;; When the optional dependency on GJS is missing, skip
+                       ;; the GJS plugin tests.
+                       (substitute* "tests/modules.c"
+                         (("g_test_add.*JavaScript.*" all)
+                          (string-append "// " all "\n")))
+                       (delete-file "tests/catalogs/gjsplugin.xml")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
     (inputs
-     (list gtk+ libxml2))
+     (append
+      ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
+      ;; dependency on other platforms (FIXME).
+      (if (target-x86-64?)
+          (list gjs)
+          '())
+      (list gtk+ libxml2)))
     (native-inputs
-     `(("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("libxslt" ,libxslt) ;for xsltproc
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("python" ,python)
-       ("python-pygobject" ,python-pygobject)
-       ("gobject-introspection" ,gobject-introspection)
-
-       ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
-       ;; dependency on other platforms (FIXME).
-       ,@(if (target-x86-64?)
-             `(("gjs" ,gjs))
-             '())
-
-       ("pkg-config" ,pkg-config)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list docbook-xml-4.2
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           hicolor-icon-theme
+           itstool
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt                      ;for xsltproc
+           python
+           python-pygobject
+           pkg-config
+           xorg-server-for-tests))
     (home-page "https://glade.gnome.org")
     (synopsis "GTK+ rapid application development tool")
     (description "Glade is a rapid application development (RAD) tool to
@@ -3203,6 +3191,31 @@ the GNOME desktop environment.")
                                (search-path-specification
                                 (variable "GLADE_MODULE_SEARCH_PATH")
                                 (files '("lib/glade/modules")))))))
+
+(define-public blueprint-compiler
+  (let ((commit "87cedc2c7e48b01dc1b07aef937e2fe02111b18c"))
+    (package
+      (name "blueprint-compiler")
+      (version "0.2.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+                      (commit commit)))
+                (file-name (string-append name "-" commit "-checkout"))
+                (sha256
+                 (base32
+                  "1mrj5dyjf5d325yc28fpph588qfsz6bm2nx5nnsgcv02bagplxid"))))
+      (build-system meson-build-system)
+      (native-inputs (list gobject-introspection gtk))
+      (inputs (list python))
+      (synopsis "Template markup language")
+      (description
+       "Blueprint is a markup language for GTK user interfaces.  Internally, it
+compiles to GTKBuilder XML.")
+      (home-page "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+      (license license:lgpl3+))))
 
 (define-public cambalache
   (package
@@ -7119,7 +7132,7 @@ metadata in photo and video files of various formats.")
 (define-public shotwell
   (package
     (name "shotwell")
-    (version "0.30.12")
+    (version "0.30.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/shotwell/"
@@ -7127,7 +7140,7 @@ metadata in photo and video files of various formats.")
                                   "shotwell-" version ".tar.xz"))
               (sha256
                (base32
-                "1h5crjq59lqi8f8mdkadzi8pc3i9i2ik4lsx2nrhzq486fzdfhw6"))))
+                "1yhqfmz49qkls4i6xaznm5ybwzv19jxsqjdic60wn0ykvbxjr269"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -8186,7 +8199,7 @@ Cisco's AnyConnect SSL VPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.22.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -8194,18 +8207,18 @@ Cisco's AnyConnect SSL VPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "1gj6lqqi613j2m49v9i82lqg1rv7kwwc8z4nxjcwpaa0ins803f7"))))
+                "17742kgmbj9w545zwnirgr0i40zl0xzp8jx7b8c1krp93mc4h0sw"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
        #:configure-flags
        '("-Dappindicator=yes")))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin") ; for glib-compile-resources, etc.
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config))
     (propagated-inputs
      ;; libnm-gtk.pc refers to all these.
      (list dbus-glib gtk+ network-manager
@@ -8859,7 +8872,7 @@ like switching to windows and launching applications.")
 (define-public gtk-vnc
   (package
     (name "gtk-vnc")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -8868,36 +8881,38 @@ like switching to windows and launching applications.")
                        (version-major+minor version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1060ws037v556rx1qhfrcg02859rscksrzr8fq11himdg4d1y6m8"))))
+        (base32 "0jmr6igyzcj2wmx5v5ywaazvdz3hx6a6rys26yb4l4s71l281bvs"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
     (native-inputs
-     `(;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
-       ;; dependency on other platforms (FIXME).
-       ,@(if (target-x86-64?)
-             `(("gjs" ,gjs))
-             '())
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("node" ,node)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("vala" ,vala)))
+     (append
+      ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
+      ;; dependency on other platforms (FIXME).
+       (if (target-x86-64?)
+           (list gjs)
+           '())
+       (list gettext-minimal
+             `(,glib "bin")
+             gobject-introspection
+             node
+             perl
+             pkg-config
+             python-wrapper
+             vala)))
     (inputs
-     `(("cairo" ,cairo)
-       ("librsvg" ,(librsvg-for-system))
-       ("glib" ,glib)
-       ("gnutls" ,gnutls)
-       ("libgcrypt" ,libgcrypt)
-       ("libsasl" ,cyrus-sasl)
-       ("pulseaudio" ,pulseaudio)
-       ("x11" ,libx11)
-       ("zlib" ,zlib)))
+     (list cairo (librsvg-for-system)))
     (propagated-inputs
-     (list gtk+))
+     ;; These are all in Requires or Requires.private of the .pc files.
+     (list cyrus-sasl
+           gdk-pixbuf
+           glib
+           gnutls
+           gtk+
+           libgcrypt
+           libx11
+           pulseaudio
+           zlib))
     (synopsis "VNC client viewer widget for GTK+")
     (description "GTK-VNC is a project providing client side APIs for the RFB
 protocol / VNC remote desktop technology.  It is built using coroutines allowing
@@ -10733,16 +10748,15 @@ photo-booth-like software, such as Cheese.")
 (define-public cheese
   (package
     (name "cheese")
-    (version "3.38.0")
+    (version "41.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/" name "-"
+                                  (version-major version) "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0vyim2avlgq3a48rgdfz5g21kqk11mfb53b2l883340v88mp7ll8"))
-              (patches (search-patches "cheese-vala-update.patch"))))
+                "1y92glc0d6w323x2bdbc0gdh1jdffvkbv6cwlwm1rx0wgvv1svqh"))))
     (arguments
      `(#:glib-or-gtk? #t
        ;; Tests require GDK.
@@ -10755,15 +10769,6 @@ photo-booth-like software, such as Cheese.")
              (substitute* "meson_post_install.py"
                (("gtk-update-icon-cache") (which "true")))
              #t))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Avoid a network connection attempt during the build.
-             (substitute* '("docs/reference/cheese.xml"
-                            "docs/reference/cheese-docs.xml")
-               (("http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/docbookx.dtd")))
-             #t))
          (add-after 'install 'wrap-cheese
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out             (assoc-ref outputs "out"))
@@ -10773,16 +10778,16 @@ photo-booth-like software, such as Cheese.")
              #t)))))
     (build-system meson-build-system)
     (native-inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("itstool" ,itstool)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list docbook-xsl
+           docbook-xml-4.3
+           gettext-minimal
+           `(,glib "bin")
+           gtk-doc/stable
+           itstool
+           libxml2
+           libxslt
+           pkg-config
+           vala))
     (propagated-inputs
      (list gnome-video-effects
            clutter
@@ -12450,7 +12455,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.40.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -12460,7 +12465,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12l6qks4kwi75ss61yx1f515nb30d987qw3yhi4a36w5xz721p5z"))))
+         "17r059srxrx26w40swy47pdpyigyjdczp8550g4rfh86qs3ld4il"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

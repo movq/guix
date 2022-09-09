@@ -1092,7 +1092,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public pipe-viewer
   (package
     (name "pipe-viewer")
-    (version "0.2.0")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1102,7 +1102,7 @@ H.264 (MPEG-4 AVC) video streams.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19qfs0nv7l01468f14a5zbvaiff5hrsk3a4zqknh15014xnvw08s"))))
+        (base32 "0c2v4pj86442sp71ndjmvd2bl1grp6g9ya2ywdaihq1f2djk6jxl"))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules
@@ -1122,9 +1122,6 @@ H.264 (MPEG-4 AVC) video streams.")
          (add-after 'unpack 'patch-source
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (find-files "lib" "\\.pm$")
-               (("\"youtube-dl\"")
-                (format #f "\"~a/bin/youtube-dl\""
-                        (assoc-ref inputs "youtube-dl")))
                (("\"yt-dlp\"")
                 (format #f "\"~a/bin/yt-dlp\""
                         (assoc-ref inputs "yt-dlp"))))
@@ -1138,9 +1135,6 @@ H.264 (MPEG-4 AVC) video streams.")
                (("'xdg-open'")
                 (format #f "'~a/bin/xdg-open'"
                         (assoc-ref inputs "xdg-utils")))
-               (("'youtube-dl'")
-                (format #f "'~a/bin/youtube-dl'"
-                        (assoc-ref inputs "youtube-dl")))
                (("'yt-dlp'")
                 (format #f "'~a/bin/yt-dlp'"
                         (assoc-ref inputs "yt-dlp"))))))
@@ -1194,7 +1188,6 @@ H.264 (MPEG-4 AVC) video streams.")
            perl-uri-escape
            wget
            xdg-utils
-           youtube-dl
            yt-dlp))
     (propagated-inputs
      (list dconf))
@@ -1576,14 +1569,14 @@ operate properly.")
 (define-public ffmpeg-5
   (package
     (name "ffmpeg")
-    (version "5.1")
+    (version "5.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00wbd5skv6ba5yqq4ca505ncckhvpzwflcsall7madg2bsmnmssm"))))
+                "0d84pjmlb5ss1yybxic3wlyrr31wcsg29ysqx5qiwlcnqkw3zgwm"))))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -2488,7 +2481,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.08.08")
+    (version "2022.09.01")
     (source
      (origin
        (method git-fetch)
@@ -2497,7 +2490,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07qz1zdndlpki0asw35zk5hdjcwpl3n1g54nxg4yb1iykbyv7rll"))))
+        (base32 "0h46624zdqhjf79m78303v00m2r013yaccanv0010rls17v7y6pq"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
@@ -5216,7 +5209,12 @@ result in several formats:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))))
+         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "Cargo.toml"
+           (("\\[package\\]" m)
+            (string-append "cargo-features = [\"rust-version\"]\n" m))))))
     (build-system cargo-build-system)
     (arguments
      `(;; Strip the '--release' flag to work around the doctest failures with

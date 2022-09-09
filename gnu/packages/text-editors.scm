@@ -1,12 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
-;;; Copyright © 2017, 2018, 2020 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2017, 2018, 2020, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.org>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
@@ -494,7 +494,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20210609")
+    (version "20220614")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -503,7 +503,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04c2vqxg31mk15cfrhzrivykis8fmf0m1d8h1qdjdmlfxd4qwaqf"))
+                "145qk4bzys4igv98645vikswv9hqym46chh6xb9d82ihsvjq1wjk"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
@@ -651,7 +651,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
 (define-public ghostwriter
   (package
     (name "ghostwriter")
-    (version "2.0.2")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -660,7 +660,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19cf55b86yj2b5hdazbyw4iyp6xq155243aiyg4m0vhwh0h79nwh"))))
+                "1w8a6vkhmdbp4kzb7aprvfni9ny47dj0vigbcnsh539dn3sp1gan"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config qttools-5))       ; for lrelease
@@ -675,27 +675,26 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
     (propagated-inputs                  ; To get native-search-path
      (list qtwebengine-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "qmake" (string-append "PREFIX=" out)))))
-         (add-after 'configure 'create-translations
-           (lambda _
-             ;; `lrelease` will not overwrite, so delete existing .qm files
-             (for-each delete-file (find-files "translations" ".*\\.qm"))
-             (apply invoke "lrelease" (find-files "translations" ".*\\.ts"))))
-         ;; Ensure that icons are found at runtime.
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/ghostwriter")
-                 `("QT_PLUGIN_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/plugins/"))
-                         '("qtsvg-5" "qtmultimedia-5"))))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake" (string-append "PREFIX=" #$output))))
+          (add-after 'configure 'create-translations
+            (lambda _
+              ;; `lrelease` will not overwrite, so delete existing .qm files
+              (for-each delete-file (find-files "translations" ".*\\.qm"))
+              (apply invoke "lrelease" (find-files "translations" ".*\\.ts"))))
+          ;; Ensure that icons are found at runtime.
+          (add-after 'install 'wrap-executable
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ghostwriter")
+                `("QT_PLUGIN_PATH" ":" prefix
+                  #$(map (lambda (label)
+                           (file-append (this-package-input label)
+                                        "/lib/qt5/plugins"))
+                         '("qtsvg" "qtmultimedia")))))))))
     (home-page "https://wereturtle.github.io/ghostwriter/")
     (synopsis "Write without distractions")
     (description
@@ -899,14 +898,14 @@ Octave.  TeXmacs is completely extensible via Guile.")
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.2.4")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "0rncbac9r9ahkxgmv7faj4dms4wy0ik2axmb0lp1ffx4r6419vsa"))))
+        (base32 "0ys0836qjljzqk0wj6y9pnmrcw7ydzn8c06rwbawjk74dpsn0lpx"))))
     (build-system gnu-build-system)
     (arguments
      (list

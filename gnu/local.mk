@@ -343,6 +343,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kawa.scm				\
   %D%/packages/kde.scm				\
   %D%/packages/kde-frameworks.scm		\
+  %D%/packages/kde-games.scm			\
   %D%/packages/kde-internet.scm			\
   %D%/packages/kde-multimedia.scm		\
   %D%/packages/kde-pim.scm			\
@@ -416,7 +417,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/moe.scm				\
   %D%/packages/motti.scm			\
   %D%/packages/monitoring.scm			\
-  %D%/packages/mono.scm				\
   %D%/packages/moreutils.scm			\
   %D%/packages/mpd.scm				\
   %D%/packages/mp3.scm				\
@@ -939,6 +939,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/calibre-remove-test-sqlite.patch		\
   %D%/packages/patches/calibre-remove-test-unrar.patch		\
   %D%/packages/patches/catdoc-CVE-2017-11110.patch		\
+  %D%/packages/patches/chez-scheme-bin-sh.patch			\
   %D%/packages/patches/circos-remove-findbin.patch		\
   %D%/packages/patches/cdparanoia-fpic.patch			\
   %D%/packages/patches/cdrkit-libre-cross-compile.patch	\
@@ -946,7 +947,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ceph-disable-cpu-optimizations.patch	\
   %D%/packages/patches/ceph-boost-compat.patch			\
   %D%/packages/patches/ceph-rocksdb-compat.patch		\
-  %D%/packages/patches/cheese-vala-update.patch		        \
   %D%/packages/patches/chmlib-inttypes.patch			\
   %D%/packages/patches/cl-asdf-config-directories.patch		\
   %D%/packages/patches/clamav-config-llvm-libs.patch		\
@@ -1172,8 +1172,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
   %D%/packages/patches/ghostscript-no-header-creationdate.patch \
   %D%/packages/patches/giara-fix-login.patch                      \
-  %D%/packages/patches/glade-gls-set-script-name.patch	        \
-  %D%/packages/patches/glade-test-widget-null-icon.patch	\
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\
   %D%/packages/patches/glib-networking-32-bit-time.patch	\
@@ -1454,7 +1452,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libxml2-terminating-newline.patch	\
   %D%/packages/patches/libxml2-xpath-recursion-limit.patch	\
   %D%/packages/patches/libxml2-xpath0-Add-option-xpath0.patch	\
-  %D%/packages/patches/libxmlb-install-xb-tool-into-bindir.patch \
   %D%/packages/patches/libxslt-generated-ids.patch		\
   %D%/packages/patches/libxt-guix-search-paths.patch		\
   %D%/packages/patches/lierolibre-check-unaligned-access.patch	\
@@ -1532,7 +1529,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/mpg321-gcc-10.patch			\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
   %D%/packages/patches/monero-use-system-miniupnpc.patch			\
-  %D%/packages/patches/mono-mdoc-timestamping.patch		\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
@@ -1698,6 +1694,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-3-fix-tests.patch			\
   %D%/packages/patches/python-3-hurd-configure.patch		\
   %D%/packages/patches/python-3-no-static-lib.patch		\
+  %D%/packages/patches/python-apsw-3.39.2.1-test-fix.patch	\
   %D%/packages/patches/python-aionotify-0.2.0-py3.8.patch	\
   %D%/packages/patches/python-argcomplete-1.11.1-fish31.patch	\
   %D%/packages/patches/python-cross-compile.patch		\
@@ -1779,7 +1776,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
-  %D%/packages/patches/racket-minimal-sh-via-rktio.patch	\
+  %D%/packages/patches/racket-backport-8.6-zuo.patch		\
+  %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
+  %D%/packages/patches/racket-rktio-bin-sh.patch		\
+  %D%/packages/patches/racket-zuo-bin-sh.patch			\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
   %D%/packages/patches/retroarch-LIBRETRO_DIRECTORY.patch	\
@@ -1833,6 +1833,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/slim-reset.patch				\
   %D%/packages/patches/slim-login.patch				\
   %D%/packages/patches/slim-display.patch			\
+  %D%/packages/patches/stex-copy-from-immutable-store.patch	\
   %D%/packages/patches/syslinux-gcc10.patch			\
   %D%/packages/patches/syslinux-strip-gnu-property.patch	\
   %D%/packages/patches/snappy-add-O2-flag-in-CmakeLists.txt.patch	\
@@ -1890,6 +1891,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\
   %D%/packages/patches/tup-unbundle-dependencies.patch		\
+  %D%/packages/patches/turbovnc-custom-paths.patch		\
+  %D%/packages/patches/turbovnc-find-system-packages.patch	\
   %D%/packages/patches/tuxpaint-stamps-path.patch		\
   %D%/packages/patches/twinkle-bcg729.patch			\
   %D%/packages/patches/u-boot-allow-disabling-openssl.patch	\
