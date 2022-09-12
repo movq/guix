@@ -41,10 +41,12 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -493,11 +495,42 @@ integrated into the main branch.")
 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
 
+(define dxvk-toolchain-i686
+  (package
+    (name "dxvk-toolchain-i686")
+    (source #f)
+    (version "10.3.0") ;; XXX: (package-version gcc) doesn't work for some reason
+    (build-system trivial-build-system)
+    (arguments
+     '(#:modules ((guix build union))
+       #:builder (begin
+                   (use-modules (guix build union))
+                   (union-build (assoc-ref %outputs "out")
+                                (map (lambda (x) (cdr x)) %build-inputs)))))
+    (inputs
+     (let* ((triplet "i686-w64-mingw32")
+            (xgcc-base (cross-gcc triplet
+                                  #:xbinutils (cross-binutils triplet)
+                                  #:libc mingw-w64-i686-winpthreads))
+            (xgcc (package
+                    (inherit xgcc-base)
+                    (arguments
+                     (substitute-keyword-arguments (package-arguments xgcc-base)
+                       ((#:configure-flags flags)
+                        `(append '("--enable-threads=posix")
+                                 ,flags)))))))
+       (list xgcc
+             (cross-binutils triplet))))
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
 (define dxvk32
   ;; This package provides 32-bit dxvk libraries on 64-bit systems.
   (package
     (name "dxvk32")
-    (version "1.5.5")
+    (version "1.10.3")
     (home-page "https://github.com/doitsujin/dxvk/")
     (source (origin
               (method git-fetch)
@@ -507,17 +540,38 @@ version)")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1inl0qswgvbp0fs76md86ilqf9mbshkpjm8ga81khn9zd6v3fvan"))))
+                "0qcjfcij6qx372ac1h382bg9spf2b6nfk8zzmimnl93kbk5dkpag"))))
     (build-system meson-build-system)
     (arguments
-     `(#:system "i686-linux"
-       #:configure-flags (list "--cross-file"
-                               (string-append (assoc-ref %build-inputs "source")
-                                              "/build-wine32.txt"))))
+     (list #:system "i686-linux"
+           #:configure-flags '(list "--cross-file"
+                                    (string-append (assoc-ref %build-inputs "source")
+                                                   "/build-win32.txt"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'setenv
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "CROSS_LIBRARY_PATH"
+                           (string-join (list (string-append #$mingw-w64-i686-winpthreads "/lib"))
+                                        ":"))
+                   (setenv "CROSS_C_INCLUDE_PATH"
+                           (string-join (list (string-append #$mingw-w64-i686-winpthreads "/include"))
+                                        ":"))
+                   (setenv "CROSS_CPLUS_INCLUDE_PATH"
+                           (string-join (list
+                                         (string-append #$dxvk-toolchain-i686 "/include/c++")
+                                         (string-append #$mingw-w64-i686-winpthreads "/include"))
+                                        ":"))))
+               (replace 'strip
+                 (lambda _
+                   (for-each (lambda (file)
+                               (invoke "i686-w64-mingw32-strip" file))
+                             (find-files (string-append #$output) "\\.dll$")))))))
     (native-inputs
-     `(("glslang" ,glslang)))
+     (list glslang
+           dxvk-toolchain-i686))
     (inputs
-     `(("wine" ,wine-staging)))
+     (list mingw-w64-i686-winpthreads wine-staging))
     (synopsis "Vulkan-based D3D9, D3D10 and D3D11 implementation for Wine")
     (description "A Vulkan-based translation layer for Direct3D 9/10/11 which
 allows running complex 3D applications with high performance using Wine.
@@ -526,45 +580,100 @@ Use @command{setup_dxvk} to install the required libraries to a Wine prefix.")
     (supported-systems '("x86_64-linux"))
     (license license:zlib)))
 
+(define dxvk-toolchain-x86_64
+  (package
+    (name "dxvk-toolchain-x86_64")
+    (source #f)
+    (version "10.3.0") ;; XXX: (package-version gcc) doesn't work for some reason
+    (build-system trivial-build-system)
+    (arguments
+     '(#:modules ((guix build union))
+       #:builder (begin
+                   (use-modules (guix build union))
+                   (union-build (assoc-ref %outputs "out")
+                                (map (lambda (x) (cdr x)) %build-inputs)))))
+    (inputs
+     (let* ((triplet "x86_64-w64-mingw32")
+            (xgcc-base (cross-gcc triplet
+                                  #:xbinutils (cross-binutils triplet)
+                                  #:libc mingw-w64-x86_64-winpthreads))
+            (xgcc (package
+                    (inherit xgcc-base)
+                    (arguments
+                     (substitute-keyword-arguments (package-arguments xgcc-base)
+                       ((#:configure-flags flags)
+                        `(append '("--enable-threads=posix")
+                                 ,flags)))))))
+       (list xgcc
+             (cross-binutils triplet))))
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
 (define-public dxvk
   (package
     (inherit dxvk32)
     (name "dxvk")
     (arguments
-     `(#:configure-flags (list "--cross-file"
-                               (string-append (assoc-ref %build-inputs "source")
-                                              "/build-wine"
-                                              ,(match (%current-system)
-                                                 ("x86_64-linux" "64")
-                                                 (_ "32"))
-                                              ".txt"))
+     (list #:configure-flags #~(list "--cross-file"
+                                   (string-append (assoc-ref %build-inputs "source")
+                                                  "/build-win"
+                                                  #$(match (%current-system)
+                                                     ("x86_64-linux" "64")
+                                                     (_ "32"))
+                                                  ".txt"))
        #:phases
-       (modify-phases %standard-phases
-         ,@(if (string=? (%current-system) "x86_64-linux")
-             `((add-after 'unpack 'install-32
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (dxvk32 (assoc-ref inputs "dxvk32")))
-                     (mkdir-p (string-append out "/lib32"))
-                     (copy-recursively (string-append dxvk32 "/lib")
-                                       (string-append out "/lib32"))
-                     #t))))
-             '())
-         (add-after 'install 'install-setup
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/setup_dxvk")))
-               (mkdir-p (string-append out "/bin"))
-               (copy-file "../source/setup_dxvk.sh"
-                          bin)
-               (chmod bin #o755)
-               (substitute* bin
-                 (("wine=\"wine\"")
-                  (string-append "wine=" (assoc-ref inputs "wine") "/bin/wine"))
-                 (("x32") ,(match (%current-system)
-                             ("x86_64-linux" "../lib32")
-                             (_ "../lib")))
-                 (("x64") "../lib"))))))))
+       #~(modify-phases %standard-phases
+           #$@(if (string=? (%current-system) "x86_64-linux")
+                  `((add-after 'unpack 'install-32
+                      (lambda* (#:key inputs outputs #:allow-other-keys)
+                        (let* ((out (assoc-ref outputs "out"))
+                               (dxvk32 (assoc-ref inputs "dxvk32")))
+                          (mkdir-p (string-append out "/lib32"))
+                          (copy-recursively (string-append dxvk32 "/bin")
+                                            (string-append out "/lib32"))
+                          #t))))
+                  '())
+           (add-after 'install 'install-setup
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin/setup_dxvk")))
+                 (mkdir-p (string-append out "/bin"))
+                 (copy-file "../source/setup_dxvk.sh"
+                            bin)
+                 (chmod bin #o755)
+                 (substitute* bin
+                   (("x32") #$(match (%current-system)
+                               ("x86_64-linux" "../lib32")
+                               (_ "../lib")))
+                   (("x64") "../lib")))))
+           (add-after 'install 'move-dlls
+             (lambda _
+               (with-directory-excursion (string-append #$output "/bin")
+                 (for-each (lambda (file)
+                             (rename-file file (string-append "../lib/" file)))
+                           (find-files "." "\\.dll$")))
+               ))
+           (add-before 'configure 'setenv
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "CROSS_LIBRARY_PATH"
+                           (string-join (list (string-append #$mingw-w64-x86_64-winpthreads "/lib"))
+                                        ":"))
+                   (setenv "CROSS_C_INCLUDE_PATH"
+                           (string-join (list (string-append #$mingw-w64-x86_64-winpthreads "/include"))
+                                        ":"))
+                   (setenv "CROSS_CPLUS_INCLUDE_PATH"
+                           (string-join (list
+                                         (string-append #$dxvk-toolchain-x86_64 "/include/c++")
+                                         (string-append #$mingw-w64-x86_64-winpthreads "/include"))
+                                        ":"))))
+           (replace 'strip
+             (lambda _
+               (for-each (lambda (file)
+                           (make-file-writable file)
+                           (invoke "x86_64-w64-mingw32-strip" file))
+                         (find-files (string-append #$output) "\\.dll$")))))))
     (inputs
      `(("wine" ,(match (%current-system)
                   ;; ("x86_64-linux" wine64)
@@ -574,5 +683,8 @@ Use @command{setup_dxvk} to install the required libraries to a Wine prefix.")
        ,@(match (%current-system)
            ("x86_64-linux"
             `(("dxvk32" ,dxvk32)))
-           (_ '()))))
+           (_ '()))
+       ("mingw-w64-x86_64" ,mingw-w64-x86_64)
+       ))
+    (native-inputs (list dxvk-toolchain-x86_64 glslang))
     (supported-systems '("i686-linux" "x86_64-linux"))))
