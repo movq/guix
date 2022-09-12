@@ -212,6 +212,21 @@ integrate Windows applications into your desktop.")
     (supported-systems '("i686-linux" "x86_64-linux" "armhf-linux"))
     (license license:lgpl2.1+)))
 
+(define-public lutris-wine-7.2-2
+  (package
+    (inherit wine)
+    (name "lutris-wine")
+    (version "7.2-2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lutris/wine")
+             (commit (string-append "lutris" "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h7k3dhs6q1jc5ba67s0spd16r636bg2x04nz7dqvrxjawv7ncdw"))))))
+
 (define-public wine64
   (package
     (inherit wine)
@@ -300,6 +315,23 @@ integrate Windows applications into your desktop.")
                                (package-arguments wine))))
     (synopsis "Implementation of the Windows API (WoW64 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
+
+(define-public lutris-wine64-7.2-2
+  (package
+    (inherit wine64)
+    (name "lutris-wine64")
+    (version "7.2-2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lutris/wine")
+             (commit (string-append "lutris" "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h7k3dhs6q1jc5ba67s0spd16r636bg2x04nz7dqvrxjawv7ncdw"))))
+    (inputs (modify-inputs (package-inputs lutris-wine-7.2-2)
+              (prepend lutris-wine-7.2-2)))))
 
 ;; This minimal build of Wine is needed to prevent a circular dependency with
 ;; vkd3d.
