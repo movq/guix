@@ -653,8 +653,12 @@ Use @command{setup_dxvk} to install the required libraries to a Wine prefix.")
                (with-directory-excursion (string-append #$output "/bin")
                  (for-each (lambda (file)
                              (rename-file file (string-append "../lib/" file)))
-                           (find-files "." "\\.dll$")))
-               ))
+                           (find-files "." "\\.dll$")))))
+           (add-after 'install 'delete-static-libs
+             (lambda _
+               (for-each (lambda (file)
+                           (delete-file file))
+                         (find-files #$output "\\.a$"))))
            (add-before 'configure 'setenv
                  (lambda* (#:key inputs #:allow-other-keys)
                    (setenv "CROSS_LIBRARY_PATH"
@@ -684,7 +688,126 @@ Use @command{setup_dxvk} to install the required libraries to a Wine prefix.")
            ("x86_64-linux"
             `(("dxvk32" ,dxvk32)))
            (_ '()))
-       ("mingw-w64-x86_64" ,mingw-w64-x86_64)
-       ))
+       ("mingw-w64-x86_64" ,mingw-w64-x86_64)))
     (native-inputs (list dxvk-toolchain-x86_64 glslang))
     (supported-systems '("i686-linux" "x86_64-linux"))))
+
+(define vkd3d-proton32
+  (package
+    (name "vkd3d-proton32")
+    (version "2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/HansKristian-Work/vkd3d-proton")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256 (base32 "05q2fla04ylq2825rlzr63ipjrkdmac20vm64wcczi033bvbrkj1"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--cross-file" (string-append (assoc-ref %build-inputs "source") "/build-win32.txt"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-git-version
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("command : .*abbrev.*$") "command : ['echo', '3e5aab6fb3e18f8'],"))))
+               (add-before 'configure 'setenv
+                 (lambda _
+                   (setenv "CROSS_LIBRARY_PATH"
+                           (string-join (list (string-append #$mingw-w64-i686-winpthreads "/lib"))
+                                        ":"))
+                   (setenv "CROSS_C_INCLUDE_PATH"
+                           (string-join (list (string-append #$mingw-w64-i686-winpthreads "/include"))
+                                        ":"))
+                   (setenv "CROSS_CPLUS_INCLUDE_PATH"
+                           (string-join (list
+                                         (string-append #$dxvk-toolchain-i686 "/include/c++")
+                                         (string-append #$mingw-w64-i686-winpthreads "/include"))
+                                        ":"))))
+               (add-after 'install 'move-dlls
+                 (lambda _
+                   (with-directory-excursion (string-append #$output "/bin")
+                     (for-each (lambda (file)
+                                 (rename-file file (string-append "../lib/" file)))
+                               (find-files "." "\\.dll$")))))
+               (replace 'strip
+                 (lambda _
+                   (for-each (lambda (file)
+                               (make-file-writable file)
+                               (invoke "i686-w64-mingw32-strip" file))
+                             (find-files (string-append #$output) "\\.dll$")))))))
+    (native-inputs (list dxvk-toolchain-i686 glslang wine-staging))
+    (inputs (list mingw-w64-i686))
+    (home-page "https://github.com/HansKristian-Work/vkd3d-proton")
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
+(define-public vkd3d-proton
+  (package
+    (inherit vkd3d-proton32)
+    (name "vkd3d-proton")
+    (arguments
+     (list #:configure-flags
+           #~(list "--cross-file" (string-append (assoc-ref %build-inputs "source") "/build-win64.txt"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-git-version
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("command : .*abbrev.*$") "command : ['echo', '3e5aab6fb3e18f8'],"))))
+               (add-before 'configure 'setenv
+                 (lambda _
+                   (setenv "CROSS_LIBRARY_PATH"
+                           (string-join (list (string-append #$mingw-w64-x86_64-winpthreads "/lib"))
+                                        ":"))
+                   (setenv "CROSS_C_INCLUDE_PATH"
+                           (string-join (list (string-append #$mingw-w64-x86_64-winpthreads "/include"))
+                                        ":"))
+                   (setenv "CROSS_CPLUS_INCLUDE_PATH"
+                           (string-join (list
+                                         (string-append #$dxvk-toolchain-x86_64 "/include/c++")
+                                         (string-append #$mingw-w64-x86_64-winpthreads "/include"))
+                                        ":"))))
+               (add-after 'install 'move-dlls
+                 (lambda _
+                   (with-directory-excursion (string-append #$output "/bin")
+                     (for-each (lambda (file)
+                                 (rename-file file (string-append "../lib/" file)))
+                               (find-files "." "\\.dll$")))))
+               (add-after 'install 'install-setup
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin/setup_vkd3d_proton")))
+                     (mkdir-p (string-append out "/bin"))
+                     (copy-file "../source/setup_vkd3d_proton.sh"
+                                bin)
+                     (chmod bin #o755)
+                     (substitute* bin
+                       (("x86") #$(match (%current-system)
+                                    ("x86_64-linux" "../lib32")
+                                    (_ "../lib")))
+                       (("x64") "../lib")))))
+               (add-after 'unpack 'install-32
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (vkd3d-proton32 (assoc-ref inputs "vkd3d-proton32")))
+                     (mkdir-p (string-append out "/lib32"))
+                     (copy-recursively (string-append vkd3d-proton32 "/lib")
+                                       (string-append out "/lib32"))
+                     #t)))
+               (replace 'strip
+                 (lambda _
+                   (for-each (lambda (file)
+                               (make-file-writable file)
+                               (invoke "x86_64-w64-mingw32-strip" file))
+                             (find-files (string-append #$output) "\\.dll$")))))))
+    (native-inputs (list dxvk-toolchain-x86_64 glslang wine64-staging vkd3d-proton32))
+    (inputs (list mingw-w64-x86_64))
+    (home-page "https://github.com/HansKristian-Work/vkd3d-proton")
+    (synopsis #f)
+    (description #f)
+    (license #f)))
