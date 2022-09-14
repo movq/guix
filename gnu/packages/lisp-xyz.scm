@@ -7366,8 +7366,8 @@ cl-plumbing libraries.")
   (sbcl-package->ecl-package sbcl-cl-octet-streams))
 
 (define-public sbcl-lzlib
-  (let ((commit "c8102fc8c959b7c418eb60657bd6c8b875f10ba9")
-        (revision "1"))
+  (let ((commit "22767ca12d1c1bd59a7ae1f9c5ef7d2e937206bb")
+        (revision "2"))
     (package
       (name "sbcl-lzlib")
       (version (git-version "2.0" revision commit))
@@ -7379,7 +7379,7 @@ cl-plumbing libraries.")
                (commit commit)))
          (file-name (git-file-name "cl-lzlib" version))
          (sha256
-          (base32 "1glg1y1s1mqgypvxp0ss11cicrddri006wqwhy47lgq7mk5853zz"))))
+          (base32 "1dxzlkay7aqcs65h2f7j7rl4sdjija60dshlahzyllfw174p9d3m"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
@@ -23865,6 +23865,39 @@ processing named definitions.")
 (define-public ecl-definitions-systems
   (sbcl-package->ecl-package sbcl-definitions-systems))
 
+(define-public sbcl-draw-cons-tree
+  (let ((commit "04334f5885a85cd7127db8dda3f6d6686a0438b1")
+        (revision "0"))
+    (package
+      (name "sbcl-draw-cons-tree")
+      (version (git-version "1.0" revision commit))
+      ;; https://github.com/quicklisp/quicklisp-projects/issues/2149
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/draw-cons-tree")
+               (commit commit)))
+         (file-name (git-file-name "cl-draw-cons-tree" version))
+         (sha256
+          (base32 "1523bdkq8a5qn0qp9q7r16w47y6jb0hkfj7hbjfj6mg3xv001s3x"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam sbcl-split-sequence))
+      (inputs
+       (list sbcl-alexandria))
+      (synopsis "Draw an ascii picture of a cons tree")
+      (description
+       "@code{cl-draw-cons-tree} draws a cons tree in ASCII-art style.")
+      (home-page "https://github.com/phoe/draw-cons-tree/")
+      (license license:unlicense))))
+
+(define-public cl-draw-cons-tree
+  (sbcl-package->cl-source-package sbcl-draw-cons-tree))
+
+(define-public ecl-draw-cons-tree
+  (sbcl-package->ecl-package sbcl-draw-cons-tree))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
@@ -23897,3 +23930,9 @@ descent parsers without funky syntax or impenetrable macrology.")
 
 (define-public ecl-smug
   (sbcl-package->ecl-package sbcl-smug))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

@@ -14984,7 +14984,7 @@ international community.")
 (define-public kraken2
   (package
     (name "kraken2")
-    (version "2.1.1")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14993,7 +14993,7 @@ international community.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h7a7vygd7y5isbrnc6srwq6xj1rmyd33pm8mmcgfkmlxlg5vkg3"))))
+                "1pl6ml1ldg2hnhy8ps56q0fl1wq3g91qkhinj6pb4yjjhv1rxsjf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #false                  ; there are none
@@ -16721,3 +16721,9 @@ handling.")))
     (description
      "Bíogo is a bioinformatics library for the Go language.")
     (license license:bsd-3)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

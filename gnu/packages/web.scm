@@ -1938,7 +1938,7 @@ from streaming URLs.  It is a command-line wrapper for the libquvi library.")
         (base32 "1k47gbgpp52049andr28y28nbwh9m36bbb0g8p0aka3pqlhjv72l"))))
     (build-system scons-build-system)
     (propagated-inputs
-     (list apr apr-util openssl))
+     (list apr apr-util openssl-1.1))
     (inputs
      (list ;; TODO: Fix build with gss.
            ;;("gss" ,gss)
@@ -8220,3 +8220,9 @@ You can feed it URLs one at a time, or schedule regular imports.  It saves
 snapshots of the URLs you feed it in several formats.")
     (home-page "https://archivebox.io/")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;
