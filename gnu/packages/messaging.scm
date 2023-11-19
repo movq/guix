@@ -2636,11 +2636,11 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (let ((commit "4d1d22d6f477d61f6ff2b8f6e49de1847092c5b4")
+  (let ((commit "4ed0b23c9c99868ab4d2d28e8ff244687f7b3144")
         (revision "0"))
     (package
       (name "tdlib")
-      (version (git-version "1.8.16" revision commit))
+      (version (git-version "1.8.20" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2648,7 +2648,7 @@ replacement.")
                (url "https://github.com/tdlib/td")
                (commit commit)))
          (sha256
-          (base32 "0nv921k795kq0l993rxzd5pm5v3l3mnwbaxb7d7d0m0506l4w9fk"))
+          (base32 "16kprlcnphi89yfwgnlaxjwwb1xx24az8xd710rx8cslb4zv00qw"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
@@ -3381,7 +3381,7 @@ Weechat communicate over the Matrix protocol.")
 (define-public weechat-wee-slack
   (package
     (name "weechat-wee-slack")
-    (version "2.9.1")
+    (version "2.10.1")
     (source
      (origin
        (method git-fetch)
@@ -3391,7 +3391,7 @@ Weechat communicate over the Matrix protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zhiwbljh4rgbj8i9rrcimi9v3a7g1nm7v2m2f754rnddck9343z"))))
+         "0ykzmn4q592ih9d6m5ks2dzbxkz3mj81sxwsn9g2vzsxj7w3p2r7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3416,9 +3416,9 @@ Weechat communicate over the Matrix protocol.")
              (when tests?
                (invoke "pytest")))))))
     (inputs
-     (list python-mock python-websocket-client))
+     (list python-websocket-client))
     (native-inputs
-     (list python-pytest))
+     (list python-mock python-pytest))
     (home-page "https://github.com/wee-slack/wee-slack")
     (synopsis "Weechat Slack script")
     (description "@code{weechat-wee-slack} is a WeeChat native client for

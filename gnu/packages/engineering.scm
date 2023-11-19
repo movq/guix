@@ -1092,7 +1092,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.8")
+    (version "7.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1100,7 +1100,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1gaj833hm3avyb7gyjnl4jk9cckcmj8084y6q45ysjvh283rxsy4"))
+                "1hq9rba1gcks14zwbr8nbicpsil4imslgfch6ll33fhizbks3fq4"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1200,7 +1200,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ya9kwcbsh8cqbinjr1hr14sd0g6rls1awmvw8hwd7715f97x8fg"))))
+                "14dg99fvl6av9sn6gig6d6k1sdcf2svxy4fipqcz994z2khhz1sj"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1234,7 +1234,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "176zb7df25vz3wbhs94plmpabcgzxsnzbqmpdyssqr7m2wb2424a"))))
+                "0ynsnjq3z126cjkgm1fjbjvdvpc0walnr42ya9dv46l27kxy2j77"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1263,7 +1263,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1560m5mwwq0jrjhr8zdh2xrm1w7pgr250p81xzhdc4wj7zsb0rrp"))))
+                "16a4c2xs4i8wbm01a901yxabxk0qdsjkzlccfawddv82bkh4b87h"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1280,7 +1280,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ypy2nzs1x8i98jr5kmlxfd6y592qs22aq73yl8nq0s6640fc4kk"))))
+                "1cly28vc07i54v487zbb8d1h70nrd3naxvq146b0xnbrjwnd2q28"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1357,42 +1357,47 @@ the 'showing the effect of'-style of operation.")
     (license license:gpl2+)))
 
 (define-public valeronoi
-(package
-  (name "valeronoi")
-  (version "0.1.6")
-  (source
-   (origin
-     (method git-fetch)
-     (uri
-      (git-reference
-       (url "https://github.com/ccoors/Valeronoi")
-       (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "1hpyh4mmjnxgkij7a6rynk2ril5413nkdvf8syn0lqvrmibdg7wv"))))
-  (build-system cmake-build-system)
-  (arguments
-   `(#:phases
-     (modify-phases %standard-phases
-       (replace 'check
-         (lambda* (#:key tests? #:allow-other-keys)
-           (when tests?
-             (invoke "./valeronoi-tests")))))))
-  (inputs
-   (list boost
-         cgal
-         gmp
-         libxkbcommon
-         mpfr
-         openssl
-         qtbase-5
-         qtsvg-5))
-  (home-page "https://github.com/ccoors/Valeronoi")
-  (synopsis "WiFi mapping companion application for Valetudo")
-  (description
-   "Valeronoi (Valetudo + Voronoi) is a companion for Valetudo for generating
+  (package
+    (name "valeronoi")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ccoors/Valeronoi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qkhrqkjsmm0h1bxf2ihkqfhdr18xx5x1i2ds1mla13zm0bw2570"))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (delete-file-recursively "3rdparty")
+                    (substitute* '("tests/test_colormap.cpp"
+                                   "tests/test_main.cpp")
+                      (("catch\\.hpp")
+                       "catch2/catch.hpp"))))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "./valeronoi-tests")))))))
+    (inputs (list boost
+                  cgal
+                  gmp
+                  libxkbcommon
+                  mpfr
+                  openssl
+                  qtbase
+                  qtsvg))
+    (native-inputs (list catch2))
+    (home-page "https://github.com/ccoors/Valeronoi")
+    (synopsis "WiFi mapping companion application for Valetudo")
+    (description
+     "Valeronoi (Valetudo + Voronoi) is a companion for Valetudo for generating
 WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
-  (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public volk
   (package
@@ -3248,18 +3253,21 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
                   (delete-file "libpoke/pvm-vm1.c")
                   (delete-file "libpoke/pvm-vm2.c")))))
     (build-system gnu-build-system)
-    ;; The GUI, which we elide, requires tcl and tk.
     (native-inputs (list bison dejagnu flex libtool pkg-config))
     ;; FIXME: Enable NBD support by adding `libnbd' (currently unpackaged).
-    (inputs (list json-c libgc readline libtextstyle))
+    (inputs (list libgc readline libtextstyle))
     (arguments
-     ;; To build the GUI, add the `--enable-gui' configure flag.
-     ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
-     `(#:configure-flags
-       '("--enable-mi"
-         "--disable-static"
-         ;; The emacs files are provided in emacs-poke.
-         "--with-lispdir=/tmp/share/emacs")))
+     (list
+      #:imported-modules `((guix build emacs-build-system)
+                           (guix build emacs-utils)
+                           ,@%gnu-build-system-modules)
+      #:modules '((guix build gnu-build-system)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  (guix build utils))
+      #:configure-flags
+      #~(list "--disable-static"
+              (string-append "--with-lispdir="
+                             (emacs:elpa-directory #$output)))))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
@@ -3269,22 +3277,9 @@ data structures and to operate on them.")
     (license license:gpl3+)))
 
 (define-public emacs-poke
-  (package
-    (inherit poke)
-    (name "emacs-poke")
-    (build-system emacs-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-before 'expand-load-path 'change-working-directory
-             (lambda _ (chdir "etc"))))))
-    (inputs '())
-    (native-inputs '())
-    (synopsis "GNU Poke major modes for Emacs")
-    (description
-     "This package provides two Emacs major modes for working with GNU Poke:
-@code{Poke Ras mode} and @code{Poke Map mode}.")))
+  ;; The 'emacs-poke' name may eventually refer to 'poke' from ELPA, which is
+  ;; a different beast.
+  (deprecated-package "emacs-poke" poke))
 
 (define-public pcb2gcode
   (package

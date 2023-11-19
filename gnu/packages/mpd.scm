@@ -253,7 +253,7 @@ protocol.")
                    (let* ((out (assoc-ref outputs "out"))
                           (contrib (string-append out "/share/doc/mpc/contrib"))
                           (completion
-                           (string-append out "/etc/bash-completion.d/")))
+                           (string-append out "/etc/bash_completion.d/")))
                      (mkdir-p completion)
                      (rename-file (string-append contrib "/mpc-completion.bash")
                                   (string-append completion "/mpc"))))))))
@@ -654,7 +654,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "12.0.4")
+    (version "12.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -663,7 +663,7 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06g0b7j12lrrz8mrg6wp2fxy0qm4x9z2fri05by40399z1akgsx4"))))
+                "1bal31xmdmq46bi0qmia07sqcwy695vcz5y5hxwkz71rcfywbsf9"))))
     (build-system cmake-build-system)
     (arguments
      (list

@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -349,16 +350,48 @@ implements several methods for sequential model-based optimization.
 @code{skopt} aims to be accessible and easy to use in many contexts.")
     (license license:bsd-3)))
 
+(define-public python-tdda
+  (package
+    (name "python-tdda")
+    (version "2.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tdda" version))
+       (sha256
+        (base32 "1xs91s8b7cshjcqw88qsrjh10xly799k5rf2ycawqfz2mw8sy3br"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("pandas>=1.5.2")
+                         "pandas"))))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "tdda" "test")))))))
+    (native-inputs (list python-numpy python-pandas))
+    (home-page "https://www.stochasticsolutions.com")
+    (synopsis "Test-driven data analysis library for Python")
+    (description
+     "The TDDA Python module provides command-line and Python API support
+for the overall process of data analysis, through tools that peform
+reference testing, constraint discovery for data, automatic inference
+of regular expressions from text data and automatic test generation.")
+    (license license:expat))) ; MIT License
+
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.22.1")
+    (version "3.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trimesh" version))
        (sha256
-        (base32 "1ck4dkhz1x6sznd83c1hlvsv2m6d22fr82na0947j5jf47a4c1gl"))))
+        (base32 "08967axlnmfv98n05dhrkynyrmcc814hl8184gzzmcy4rjg6dzdx"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
@@ -810,7 +843,7 @@ functions and around einops with an API and features adapted to xarray.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.14.2")
+    (version "2.17.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -819,7 +852,7 @@ functions and around einops with an API and features adapted to xarray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1428l1v7yrnls8875xjx1svn48cmz0q83sv7sg0xdqghkfnyi7xx"))))
+                "1694apl8gjdrl6hrfly9yixmfimmmh51vacxmxx63nn4k5qnsgbg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1628,7 +1661,7 @@ and aims to provide a similar API and functionality in Python.")
 (define-public python-pyvista
   (package
     (name "python-pyvista")
-    (version "0.39.1")
+    (version "0.42.3")
     (source
      ;; The PyPI tarball does not contain the tests.
      ;; (However, we don't yet actually run the tests.)
@@ -1639,7 +1672,7 @@ and aims to provide a similar API and functionality in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00nij00z5r35f6dx7mwndsrpmiw43adjk8x35mk308c369ylbv9p"))))
+        (base32 "1qxq0y0hc72hb60w3qq48fma8l6ffz7bdm75ymn1020bvfqrm1s4"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-imageio
@@ -1658,7 +1691,7 @@ and aims to provide a similar API and functionality in Python.")
          (delete 'check)
          ;; Disable the sanity check, which fails with the following error:
          ;;
-         ;;   ...checking requirements: ERROR: pyvista==0.39.1 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
+         ;;   ...checking requirements: ERROR: pyvista==0.42.3 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
          (delete 'sanity-check))))
     (home-page "https://docs.pyvista.org/")
     (synopsis "3D plotting and mesh analysis through VTK")
@@ -2028,6 +2061,33 @@ documentation for more information.")
     (description "Vaex is a high performance Python library for lazy
 Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
 tabular datasets.  This package provides the core modules of Vaex.")
+    (license license:expat)))
+
+(define-public python-salib
+  (package
+    (name "python-salib")
+    (version "1.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SALib/SALib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18xfyzircsx2q2lmfc9lxb6xvkxicnc83qzghd7df1jsprr5ymch"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-multiprocess
+                             python-numpy
+                             python-pandas
+                             python-scipy))
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://salib.readthedocs.io/en/latest/")
+    (synopsis "Tools for global sensitivity analysis")
+    (description "SALib provides tools for global sensitivity analysis.  It
+contains Sobol', Morris, FAST, DGSM, PAWN, HDMR, Moment Independent and
+fractional factorial methods.")
     (license license:expat)))
 
 (define-public python-pylems

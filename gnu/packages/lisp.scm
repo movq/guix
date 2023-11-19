@@ -1061,8 +1061,9 @@ the HTML documentation of TXR.")
                                '("txr-manpage.html" "txr-manpage.pdf")))))
                (add-after 'install 'install-vim-files
                  (lambda _
-                   (let ((syntax (string-append #$output
-                                                "/share/vim/vimfiles/syntax")))
+                   (let ((syntax (string-append
+                                   #$output
+                                   "/share/vim/vimfiles/pack/guix/start/txr/syntax")))
                      (install-file "tl.vim" syntax)
                      (install-file "txr.vim" syntax)))))))
     (native-inputs
@@ -1439,7 +1440,7 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
 (define-public eisl
   (package
     (name "eisl")
-    (version "3.00")
+    (version "3.50")
     (source
      (origin
        (method git-fetch)
@@ -1448,7 +1449,7 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nppbzfdx4cjy72b4n0yk177i7063a0nhsrs9b1y45y4avbrbl00"))))
+        (base32 "18alxwpvkcjfm63bc5kp6nn8351fl0p0ccxc8j9a7nb3fmg4fvyb"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal freeglut gdbm libiconv ncurses tcl tk))

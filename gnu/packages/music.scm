@@ -40,7 +40,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
@@ -553,7 +553,7 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.18")
+    (version "1.0.21")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -562,7 +562,7 @@ you create custom user interfaces for your MIDI hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1knijckphq2jxrz8nmv4cb64zl1rz3bjyq5ipac09hnj2gvv5rmw"))
+                "1ibs7x7i1zz2r13wg238c5bhr1j4x8vl7hvjg01vdl5hfrh2gk1i"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -619,6 +619,7 @@ you create custom user interfaces for your MIDI hardware.")
            gst-plugins-good
            icu4c
            libcdio
+           libebur128
            libmtp
            protobuf
            pulseaudio
@@ -3780,7 +3781,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.9.2")
+    (version "2.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3788,7 +3789,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "1gd4mypqcmpf8xnil1kqfv56znqg9pllvsj7fx8nq8jqaaw9cy6g"))))
+                "0f9rvif9m83jhal9n9x8kks17c0cgcipi1hjqmki7a296lz175ss"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -4981,7 +4982,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.0.2")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
@@ -4990,14 +4991,11 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yri94xs4xw0lsvmk5q7bqnpgmdadchfn08r7bb2y07jsi8qgm6w"))
+        (base32 "12h26k9qnsq027gdpch579nchwrqva1ymwm2fj5xmlh0aayrwy4d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Remove unused libraries...
-           (for-each delete-file-recursively
-                     '("thirdparty/freetype"))
-           ;; ... and precompiled binaries.
+           ;; Delete precompiled binaries.
            (delete-file-recursively "src/diagnostics/crashpad_handler")
            (substitute* "src/diagnostics/CMakeLists.txt"
              (("install") "#install"))))))
@@ -6790,7 +6788,7 @@ plugin support, JACK support and chord assistance.")
 (define-public dragonfly-reverb
   (package
     (name "dragonfly-reverb")
-    (version "3.2.5")
+    (version "3.2.10")
     (source
      (origin
        (method git-fetch)
@@ -6802,7 +6800,7 @@ plugin support, JACK support and chord assistance.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14kia9wjs0nqfx4psnr3vf4x6hihkf80gb0mjzmdnnnk4cnrdydm"))))
+        (base32 "11i2k888m3zj4gz9si4y5mach8dwdq3yksbvjn1syrbwj99phwk1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target

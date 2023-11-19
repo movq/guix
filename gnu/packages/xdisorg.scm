@@ -783,7 +783,8 @@ and Matrox.")
     (arguments
      `(#:configure-flags
        '("--disable-static")
-       ,@(if (and (target-riscv64?)
+       ,@(if (and (or (target-riscv64?)
+                      (target-aarch64?))
                   (%current-target-system))
            `(#:phases
              (modify-phases %standard-phases
@@ -798,7 +799,8 @@ and Matrox.")
                              '("config.guess" "config.sub"))))))
            '())))
     (native-inputs
-     (if (and (target-riscv64?)
+     (if (and (or (target-riscv64?)
+                  (target-aarch64?))
               (%current-target-system))
        (list config)
        '()))
@@ -3248,7 +3250,7 @@ using @command{dmenu}.")
 (define-public fuzzel
   (package
     (name "fuzzel")
-    (version "1.9.1")
+    (version "1.9.2")
     (home-page "https://codeberg.org/dnkl/fuzzel")
     (source (origin
               (method git-fetch)
@@ -3256,7 +3258,7 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k65nl2yifxnb95nv6nnikqxdanng2baw7gl47ji1av3gsdx3bsm"))))
+                "1pmxqdr00x9qbg0h23q3kywhd06qna0f6r5kfa8a1v7x2n1gylsz"))))
     (build-system meson-build-system)
     (arguments
      (list #:build-type "release"

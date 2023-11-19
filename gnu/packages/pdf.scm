@@ -117,7 +117,7 @@
 (define-public capypdf
   (package
     (name "capypdf")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -125,7 +125,7 @@
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1mb3i0jq04gg5cm1l07mn9kal5s748miql97j6fpaf1x1j2lcrsx"))))
+               (base32 "15l8zwc83l65xh739s0qddlv5qv537wnx74s8fcwlm1r8y7kf2x4"))))
     (build-system meson-build-system)
     (arguments
      (list #:meson meson/newer
@@ -824,14 +824,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.23.3")
+    (version "1.23.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
-                           "mupdf-" version "-source.tar.gz"))
+                           "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "1b8ajj5xmi2p9c92l8fd46amfshmxdw6zcg1hqajg8y0kd0ady8y"))
+        (base32 "0068swdrlq9q7pkg3dxn4rschxm5j37pd4vz0cb2pcry75rdmxpc"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -1003,7 +1003,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -1012,7 +1012,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18slm517yazysvd0ii0gi7kg4hzyf17d86w2bflgfaz9ccclswbn"))))
+        (base32 "1svmdj43z1shm3wnkrdrq1h6rba843mp4x4d8jmxsx7kwiiz9l78"))))
     (build-system cmake-build-system)
     (arguments
      (list

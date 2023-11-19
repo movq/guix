@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014 Sou Bunnbu <iyzsong@gmail.com>
@@ -108,6 +108,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gtk)
@@ -117,6 +118,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages language)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -1836,14 +1838,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.24")
+    (version "1.8.25")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "0nda218iz72pvh6v10s2qlihp1mdxzir6yb4hqdxc5xbmaql8rmx"))))
+        (base32 "0f6pa8kdlfingw6yf61dshnxgygx5v6ykcmnn3h6zllpnfxivzid"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -1865,7 +1867,8 @@ addons which can add many functionalities to the base client.")
                       (doc (string-append out "/share/doc/msmtp"))
                       (msmtpq "scripts/msmtpq")
                       (msmtpqueue "scripts/msmtpqueue")
-                      (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
+                      (vimfiles (string-append
+                                  out "/share/vim/vimfiles/pack/guix/start/msmtp/syntax")))
                  (install-file (string-append msmtpq "/msmtpq") bin)
                  (install-file (string-append msmtpq "/msmtp-queue") bin)
                  (install-file (string-append msmtpqueue "/msmtp-enqueue.sh") bin)
@@ -3182,26 +3185,32 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.3.0p2")
+    (version "7.4.0p0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "0kjs5cxbh9lq51b8p20hxmiah61cfm8yzkcwpw9005cdp72zpkgw"))))
+        (base32 "0x731hi7i01mxaz07p1l5q3gwmyl422h404yc61ya4aa8g1wr0f1"))))
     (build-system gnu-build-system)
     (inputs
+     ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
+     ;; https://www.mail-archive.com/misc@opensmtpd.org/msg05909.html for why.
      (list bdb
+           libbsd          ;https://github.com/OpenSMTPD/OpenSMTPD/issues/1233
            libevent
            libressl
            linux-pam
            zlib))
     (native-inputs
-     (list bison groff))               ; for man pages
+     (list bison
+           groff                        ;for man pages
+           pkg-config))
     (arguments
      `(#:configure-flags
        (list "--localstatedir=/var"
+             "--with-libbsd"
              ;; This is the default only if it exists at build time—it doesn't.
              "--with-path-socket=/var/run"
              "--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt"
@@ -4242,10 +4251,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
              (file-name (git-file-name name version))))
     (build-system perl-build-system)
     (arguments
-     `(#:imported-modules (,@%perl-build-system-modules
-                           (guix build syscalls))
-       #:modules ((guix build perl-build-system)
-                  (guix build syscalls)
+     `(#:modules ((guix build perl-build-system)
                   (guix build utils)
                   (ice-9 match))
        #:phases
@@ -4282,18 +4288,20 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                     (setenv "TMP" "/tmp")
                     (setenv "TMPDIR" "/tmp")
 
-                    ;; Use tini so that signals are properly handled and
-                    ;; doubly-forked processes get reaped; otherwise,
-                    ;; lei-daemon is kept as a zombie and the testsuite
-                    ;; fails thinking that it didn't quit as it should.
-                    (set-child-subreaper!)
-                    (apply execlp "tini" "--"
+                    (apply execlp "make"
                            "make" "check" test-flags))
-                   (pid
-                    (match (waitpid pid)
-                      ((_ . status)
-                       (unless (zero? status)
-                         (error "`make check' exited with status" status))))))
+                   (make-pid
+                    ;; Reap child processes; otherwise, lei-daemon is kept as
+                    ;; a zombie and the testsuite fails thinking that it
+                    ;; didn't quit as it should.
+                    (let loop ()
+                      (match (waitpid WAIT_ANY)
+                        ((pid . status)
+                         (if (= pid make-pid)
+                             (unless (zero? status)
+                               (error "`make check' exited with status"
+                                      status))
+                             (loop)))))))
                  (format #t "test suite not run~%"))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -4313,7 +4321,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                 (find-files (string-append out "/bin")))))))))
     (native-inputs
      (list ;; For testing.
-           lsof openssl tini))
+           lsof openssl))
     (inputs
      (append
       (if (not (target-64bit?))

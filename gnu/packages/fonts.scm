@@ -580,6 +580,10 @@ The unified Libertinus family consists of:
     (outputs (list "out" "pcf-8bit" "otb"))
     (arguments
      `(#:tests? #f                      ; no test target in tarball
+       #:modules
+       ((guix build gnu-build-system)
+        (guix build utils)
+        (ice-9 match))
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-more-bits
@@ -601,7 +605,16 @@ The unified Libertinus family consists of:
            (lambda* (#:key make-flags outputs #:allow-other-keys)
              (let ((otb (assoc-ref outputs "otb")))
                (apply invoke "make" "install-otb" (string-append "prefix=" otb)
-                      make-flags)))))))
+                      make-flags))))
+         (add-after 'install 'install-documentation
+           ;; There's no way to decypher the cryptic file names without this.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (for-each (match-lambda
+                         ((name . directory)
+                          (install-file "README"
+                                        (string-append directory "/share/doc/"
+                                                       ,name "-" ,version))))
+                       outputs))))))
     (native-inputs
      (list bdftopcf font-util mkfontdir pkg-config python))
     (home-page "https://terminus-font.sourceforge.net/")
@@ -1002,15 +1015,16 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "20171025")
+    (version "23.11.1")
     (source
      (origin
-       (method url-fetch/zipbomb)
-       (uri (string-append "https://noto-website-2.storage.googleapis.com/"
-                           "pkgs/Noto-hinted.zip"))
-       (file-name (string-append name "-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/notofonts/notofonts.github.io")
+             (commit (string-append "noto-monthly-release-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1bp42whyin7xcgmrbnfvz3rvd98xmxaz3ywqybbjmqzwaa9llyw3"))))
+        (base32 "0vvxhky35l4i0ha60yw0gj26f3v33hpf2zax17yyj16mww4cn4d8"))))
     (build-system font-build-system)
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
