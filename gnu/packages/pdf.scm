@@ -761,6 +761,7 @@ interaction.")
               (uri (git-reference
                     (url "https://github.com/podofo/podofo")
                     (commit version)))
+              (patches (search-patches "podofo-gcc-14.patch"))
               (file-name (git-file-name name version))
               (sha256
                (base32
