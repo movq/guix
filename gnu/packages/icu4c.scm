@@ -51,7 +51,7 @@
    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
    "-src.tgz"))
 
-(define-public icu4c
+(define-public icu4c-76
   (package
     (name "icu4c")
     (version "76.1")
@@ -124,7 +124,7 @@ C/C++ part.")
 
 (define-public icu4c-71
   (package
-    (inherit icu4c)
+    (inherit icu4c-76)
     (name "icu4c")
     (version "71.1")
     (source (origin
@@ -136,7 +136,7 @@ C/C++ part.")
 
 (define-public icu4c-73
   (package
-    (inherit icu4c)
+    (inherit icu4c-76)
     (name "icu4c")
     (version "73.1")
     (source (origin
@@ -149,6 +149,8 @@ C/C++ part.")
                (search-patches
                 "icu4c-icu-22132-fix-vtimezone.patch"
                 "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch"))))))
+
+(define-public icu4c icu4c-73)
 
 (define-public icu4c-75
   (package
