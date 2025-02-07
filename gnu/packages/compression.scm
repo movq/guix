@@ -41,7 +41,7 @@
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024, 2025 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1763,14 +1763,14 @@ or junctions, and always follows hard links.")
 (define-public zstd
   (package
     (name "zstd")
-    (version "1.5.2")
+    (version "1.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/facebook/zstd/releases/download/"
                            "v" version "/zstd-" version ".tar.gz"))
        (sha256
-        (base32 "1l1zm1imcc2ixayykyh4y421shdj3pzp7g2xm2k2js8jmipxahkw"))))
+        (base32 "18vgkvh7w6zw4jn2aj1mp0yv98m4fk52ay6da0wh4pm194gyaczb"))))
     (build-system gnu-build-system)
     (outputs '("out"                    ;1.5MiB executables and documentation
                "lib"                    ;1.2MiB shared library and headers
@@ -1807,7 +1807,7 @@ or junctions, and always follows hard links.")
                        (rename-file (string-append shared-libs "/libzstd.a")
                                     (string-append static-libs "/libzstd_static.lib"))
                        (delete-file-recursively
-                         (string-append shared-libs "/pkgconfig"))
+                        (string-append shared-libs "/pkgconfig"))
                        ;; no binary for interpreter `sh' found in $PATH
                        (delete-file (string-append out "/bin/zstdgrep"))
                        (delete-file (string-append out "/bin/zstdless"))
@@ -1865,32 +1865,18 @@ speed.")
                    license:public-domain ; zlibWrapper/examples/fitblk*
                    license:zlib))))      ; zlibWrapper/{gz*.c,gzguts.h}
 
-(define-public zstd-1.5.7
-  (package
-    (inherit zstd)
-    ;; Don't hide this package from the UI.
-    (properties '())
-    (version "1.5.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/facebook/zstd/releases/download/"
-                           "v" version "/zstd-" version ".tar.gz"))
-       (sha256
-        (base32 "18vgkvh7w6zw4jn2aj1mp0yv98m4fk52ay6da0wh4pm194gyaczb"))))))
-
 (define-public pzstd
-  (package/inherit zstd-1.5.7
+  (package/inherit zstd
     (name "pzstd")
     (outputs '("out"))
     (inputs
      `(,@(if (%current-target-system)
-           `(("googletest" ,googletest))
-           '())))
+             `(("googletest" ,googletest))
+             '())))
     (native-inputs
      `(,@(if (%current-system)
-           `(("googletest" ,googletest))
-           '())))
+             `(("googletest" ,googletest))
+             '())))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
