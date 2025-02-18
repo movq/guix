@@ -41224,6 +41224,25 @@ lexer.")
     (description "This package provides MAC address types.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-macro-rules-attribute-proc-macro-0.2
+  (package
+    (name "rust-macro-rules-attribute-proc-macro")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "macro_rules_attribute-proc_macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s45j4zm0a5d041g3vcbanvr76p331dfjb7gw9qdmh0w8mnqbpdq"))))
+    (build-system cargo-build-system)
+    (home-page
+     "https://github.com/danielhenrymantilla/macro_rules_attribute-rs")
+    (synopsis "Use declarative macros as proc_macro attributes or derives")
+    (description
+     "This package provides declarative macros as proc_macro attributes or derives.")
+    (license license:expat)))
+
 (define-public rust-macrotest-1
   (package
     (name "rust-macrotest")
