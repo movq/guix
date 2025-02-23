@@ -1251,7 +1251,7 @@ WireGuard was added to Linux 5.6.")
        ("bash" ,bash)                   ; for scripts using /dev/tcp
        ("procps" ,procps)
        ("iproute" ,iproute)
-       ("iptables" ,iptables)))
+       ("iptables" ,iptables-nft)))
     (home-page "https://www.wireguard.com/")
     (synopsis "Tools for configuring WireGuard tunnels")
     (description
