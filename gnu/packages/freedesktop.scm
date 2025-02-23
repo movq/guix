@@ -3159,7 +3159,7 @@ compatible with the well-known scripts of the same name.")
 (define-public libportal
   (package
     (name "libportal")
-    (version "0.7.1")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3168,7 +3168,7 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ypl9ds5g5jzyirjg4ic0r7lzv39w67yrh8njz1cw566g4j1kfny"))))
+                "1rbqkmvvfig98ig8gsf93waiizrminj7gywxbza15hzx3an3hwh9"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3204,7 +3204,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.18.4")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
@@ -3213,15 +3213,34 @@ compatible with the well-known scripts of the same name.")
              version "/xdg-desktop-portal-" version ".tar.xz"))
        (sha256
         (base32
-         "0r8y8qmzcfj7b7brqcxr9lg8pavfds815ffvj0kqc378fhgaln5q"))
-       (patches (search-patches
-                 ;; Disable portal tests since they try to use fuse.
-                 "xdg-desktop-portal-disable-portal-tests.patch"
-                 "xdg-desktop-portal-disable-configuration-search-exit.patch"))))
+         "0fjjaymvpvsjcz7scv5g3i3qzp1f4yyvscfmxlxkzpzgd7qndmik"))))
     (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config
+           `(,glib "bin")
+           gettext-minimal
+           python
+           python-dbusmock
+           python-pytest
+           python-pytest-xdist))
+    (inputs
+      (list bubblewrap
+            gdk-pixbuf
+            glib
+            gst-plugins-base
+            flatpak
+            fontconfig
+            json-glib
+            libportal
+            dbus
+            geoclue
+            pipewire
+            fuse))
     (arguments
-     `(#:configure-flags
-       (list "-Dsystemd=disabled")
+     `(#:tests? #f
+       #:configure-flags
+       (list "-Dsystemd=disabled"
+             "-Dtests=disabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'po-chmod
@@ -3273,7 +3292,7 @@ and others.")
 (define-public xdg-desktop-portal-gtk
   (package
     (name "xdg-desktop-portal-gtk")
-    (version "1.14.1")
+    (version "1.15.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3281,8 +3300,8 @@ and others.")
                     version "/xdg-desktop-portal-gtk-" version ".tar.xz"))
               (sha256
                (base32
-                "002p19j1q3fc8x338ndzxnicwframpgafw31lwvv5avy329akqiy"))))
-    (build-system glib-or-gtk-build-system)
+                "02rh6ni0k1sh5sr2a8qkig9lb85p5ndc4c97f97ckn60gwjaz582"))))
+    (build-system meson-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -3296,27 +3315,15 @@ and others.")
        ;; Enable Gnome portal backends
        #:configure-flags
        (list
-        "--enable-appchooser"
-        "--enable-wallpaper"
-        "--enable-screenshot"
-        "--enable-screencast"
-        "--enable-background"
-        "--enable-settings")))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("libxml2" ,libxml2)
-       ("glib:bin" ,glib "bin")
-       ("which" ,which)
-       ("gettext" ,gettext-minimal)))
-    (inputs
-     `(("glib" ,glib)
-       ("gtk" ,gtk+)
-       ("fontconfig" ,fontconfig)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)))
+        "-Dappchooser=enabled"
+        "-Dwallpaper=enabled"
+        "-Dsettings=enabled")))
+    (native-inputs (list pkg-config gettext-minimal))
+    (inputs (list `(,glib "bin")
+                  gtk+
+                  fontconfig
+                  gnome-desktop
+                  gsettings-desktop-schemas))
     (propagated-inputs
      (list xdg-desktop-portal))
     (home-page "https://github.com/flatpak/xdg-desktop-portal-gtk")
