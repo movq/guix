@@ -541,7 +541,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
                    ,(string-append #$conmon         "/bin")
                    ,(string-append #$crun           "/bin")
                    ,(string-append #$gcc            "/bin") ; cpp
-                   ,(string-append #$iptables       "/sbin")
+                   ,(string-append #$iptables-nft   "/sbin")
                    ,(string-append #$passt          "/bin")
                    ,(string-append #$procps         "/bin") ; ps
                    "/run/privileged/bin")))))
