@@ -9286,14 +9286,14 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
 (define-public rust-bstr-1
   (package
     (name "rust-bstr")
-    (version "1.11.1")
+    (version "1.11.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bstr" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1j32ghvgwvc40bc6g38ximk52dv1xfknkzfmdwpgjnrsd1yk0skq"))))
+                "1q3g2wmrvclgx7lk2p6mpzhqxzx41hyg962gkmlyxql1liar26jk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
