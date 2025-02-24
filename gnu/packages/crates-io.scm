@@ -93023,6 +93023,31 @@ and native running processes.")
         (base32 "19kslk9pv1bcyp85w63dn1adbp13kz7kjha80abnwz27bmbxvz9j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-wast-35
+  (package
+    (name "rust-wast")
+    (version "35.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s2d43g326dw21bygpalzjnr1fi83lx4afimg1h5hilrnkql1w9f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; use of undeclared crate or module `wat`
+       #:cargo-inputs (("rust-leb128" ,rust-leb128-0.2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-rayon" ,rust-rayon-1))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wast")
+    (synopsis
+     "Customizable Rust parsers for the WebAssembly text formats WAT and WAST")
+    (description
+     "This package provides customizable Rust parsers for the WebAssembly text formats WAT and WAST.")
+    (license (list license:asl2.0)))) ; with LLVM exception
+
 (define-public rust-watchexec-2
   (package
     (name "rust-watchexec")
