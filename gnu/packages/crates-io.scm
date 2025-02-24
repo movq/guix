@@ -94039,6 +94039,28 @@ UTF-32 types are provided, including support for malformed encoding.")
      `(#:cargo-development-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-wiggle-macro-29
+  (package
+    (name "rust-wiggle-macro")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wiggle-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0315xqcj3a4rw1d81848mc61237z2gvhjf3z6wnnr3hrsirw9i88"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-wiggle-generate" ,rust-wiggle-generate-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Wiggle code generator macros")
+    (description "This package provides macros for the Wiggle code generator.")
+    (license (list license:asl2.0)))) ; with LLVM exception
+
 (define-public rust-wiggle-generate-29
   (package
     (name "rust-wiggle-generate")
