@@ -4037,7 +4037,11 @@ Unicode-to-LaTeX conversion.")
                    (substitute* "setup.cfg"
                      (("doctest_optionflags.*")
                       "")
-                     (("--cov.*")
+                     (("--cov.*")))))
+               (add-after 'unpack 'remove-unwanted-dev-dependencies
+                 (lambda _
+                   (substitute* "requirements-dev.txt"
+                     (("(check-manifest|coverage|coveralls|pytest-cov|twine)")
                       "")))))))
     (propagated-inputs
      (list python-numpy))
@@ -4045,6 +4049,7 @@ Unicode-to-LaTeX conversion.")
      (list python-cython
            python-pytest
            python-setuptools
+           python-sphinx
            python-twine
            python-wheel))
     (home-page "https://unidata.github.io/cftime/")
@@ -7270,7 +7275,7 @@ e.g. filters, callbacks and errbacks can all be promises.")
                      "not test_seed_link_via_app_data"
                      ;; AssertionError: assert 'python' in ['python3',
                      ;; 'python3.11'].
-                     ;; 
+                     ;;
                      ;; PythonInfo() returns: 'system_executable':
                      ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
                      "test_fallback_existent_system_executable")
@@ -9899,7 +9904,7 @@ capabilities.")
     (arguments
      (list
       ;; TODO: Tests fail on setup, there is some issue with vendored-meson.
-      #:tests? #f 
+      #:tests? #f
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
