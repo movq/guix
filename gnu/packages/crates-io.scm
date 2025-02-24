@@ -93987,6 +93987,30 @@ combinators library.")
      "This package provides runtime support for the `wit-bindgen` crate.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-witx-0.9
+  (package
+    (name "rust-witx")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "witx" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jzgmayh2jjbv70jzfka38g4bk4g1fj9d0m70qkxpkdbbixg4rp3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wast" ,rust-wast-35))
+       #:cargo-development-inputs (("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/WebAssembly/WASI")
+    (synopsis "Parse and validate the WebAssembly WITX file format")
+    (description "This package provides parsing and validation of the WebAssembly
+WITX file format.")
+    (license license:asl2.0)))
+
 (define-public rust-wl-clipboard-rs-0.8
   (package
     (name "rust-wl-clipboard-rs")
