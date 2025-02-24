@@ -1248,14 +1248,10 @@ to create devices with respective mappings for the ATARAID sets discovered.")
            python-wrapper))
     (inputs
      (append
-<<<<<<< HEAD
-      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
       (if (supported-package? multipath-tools)
           (list multipath-tools)
           '())
-=======
-      (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
->>>>>>> f2f5bb5271 (gnu: Use cryptsetup-minimal instead of cryptsetup.)
       (list bcache-tools
             btrfs-progs
             dosfstools
