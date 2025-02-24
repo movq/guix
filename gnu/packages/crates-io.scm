@@ -92752,17 +92752,17 @@ attribute that is not in the shared backend crate.")
 and native running processes.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-wasmparser-0.218
+(define-public rust-wasmparser-0.224
   (package
     (name "rust-wasmparser")
-    (version "0.218.0")
+    (version "0.224.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasmparser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p65jvj1i6bh180hd656z8yzkn3zx8vs3a6i5lmsgspczk3ld7mh"))))
+        (base32 "1x93si3wwvacxl5d8yb7ymdw02dbhvqppckvcimn8hyx9xk1m235"))))
     (build-system cargo-build-system)
     (arguments
      ;; The test suite fails with error "failed to resolve: use of undeclared
@@ -92788,6 +92788,33 @@ and native running processes.")
      "This package provides a simple event-driven library for parsing
 @code{WebAssembly} binary files.")
     (license license:asl2.0)))
+
+(define-public rust-wasmparser-0.218
+  (package
+    (inherit rust-wasmparser-0.224)
+    (name "rust-wasmparser")
+    (version "0.218.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p65jvj1i6bh180hd656z8yzkn3zx8vs3a6i5lmsgspczk3ld7mh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rayon" ,rust-rayon-1))))))
 
 (define-public rust-wasmparser-0.118
   (package
