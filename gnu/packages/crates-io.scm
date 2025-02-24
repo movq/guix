@@ -70488,14 +70488,14 @@ Mandatory Access Control for Linux.")
 (define-public rust-semver-1
   (package
     (name "rust-semver")
-    (version "1.0.24")
+    (version "1.0.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "semver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fmvjjkd3f64y5fqr1nakkq371mnwzv09fbz5mbmdxril63ypdiw"))))
+        (base32 "00sy306qpi7vfand7dxm2vc76nlc8fkh1rrhdy0qh12v50nzx7gp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
