@@ -74576,14 +74576,14 @@ I/O programming.")
 (define-public rust-smallbitvec-2
   (package
     (name "rust-smallbitvec")
-    (version "2.5.1")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "smallbitvec" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0plrbldsjpwip3afbzd8fgrnvdhizcg5z4ncfqs4q6x4qjflzkkm"))))
+                "0gqf2nj32gwrk5v4xx9v7b8c2vfanqm1h8i994d0wmhqs4yjc7fk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
