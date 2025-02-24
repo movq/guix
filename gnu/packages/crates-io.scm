@@ -97261,6 +97261,36 @@ UTF-32 types are provided, including support for malformed encoding.")
      `(#:cargo-development-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-wiggle-29
+  (package
+    (name "rust-wiggle")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wiggle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07bmwswj7y8wpa01j95l514icnbrl2lj0ls6c7155732r5dz76jb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-wasmtime" ,rust-wasmtime-29)
+                       ("rust-wiggle-macro" ,rust-wiggle-macro-29)
+                       ("rust-witx" ,rust-witx-0.9))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-wasmtime" ,rust-wasmtime-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Runtime components of the wiggle code generator")
+    (description
+     "This package provides runtime components of the wiggle code generator.")
+    (license (list license:asl2.0)))) ; with LLVM exception
+
 (define-public rust-wiggle-25
   (package
     (name "rust-wiggle")
