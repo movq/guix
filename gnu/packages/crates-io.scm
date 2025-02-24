@@ -30975,7 +30975,7 @@ OpenGL's old and error-prone API.")
 (define-public rust-glob-0.3
   (package
     (name "rust-glob")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
       (origin
         (method url-fetch)
@@ -30983,7 +30983,7 @@ OpenGL's old and error-prone API.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "16zca52nglanv23q5qrwd5jinw3d3as5ylya6y1pbx47vkxvrynj"))))
+          "1cm2w34b5w45fxr522h5b0fv1bxchfswcj560m3pnjbia7asvld8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
