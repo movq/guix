@@ -87,6 +87,7 @@ and replace development dependencies with tree-sitter grammar node modules."
 
 (define* (check #:key grammar-directories tests? #:allow-other-keys)
   (when tests?
+    (setenv "CC" "gcc")
     (for-each (lambda (dir)
                 (with-directory-excursion dir
                   (invoke "tree-sitter" "test")))
