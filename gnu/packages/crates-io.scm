@@ -93455,6 +93455,24 @@ and native running processes.")
     (description "This package provides support macros for `wasmtime-c-api`.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-slab-29
+  (package
+    (name "rust-wasmtime-slab")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-slab" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kswbqx53kcnsgd78nnvafh2jxydsnrqn5bvphaaq17sjqd85dgw"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Uni-typed slab with a free list for use in Wasmtime")
+    (description
+     "This package provides a uni-typed slab with a free list for use in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-wmemcheck-29
   (package
     (name "rust-wasmtime-wmemcheck")
