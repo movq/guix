@@ -16683,6 +16683,31 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides Rust bindings to \"Valgrind Client Request\" interface.")
     (license license:expat)))
 
+(define-public rust-cranelift-isle-0.116
+  (package
+    (name "rust-cranelift-isle")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-isle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kclhdj14l7av24k2h2hlrm4vkza5pyfzabj196h8w2hdrbhv8hw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
+                       ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page
+     "https://github.com/bytecodealliance/wasmtime/tree/main/cranelift/isle")
+    (synopsis
+     "A domain-specific language for instruction selection in Cranelift")
+    (description
+     "This package provides ISLE: Instruction Selection and Lowering Expressions, a domain-specific
+language for instruction selection in Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
