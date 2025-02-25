@@ -96137,6 +96137,26 @@ component model in Wasmtime.")
 @acronym{WAT, WebAssembly Text format}.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wasmtime-c-api-macros-29
+  (package
+    (name "rust-wasmtime-c-api-macros")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-c-api-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nxndnwfwx490yw5rwc1gn2xvd66c5z3sil29lw5sk8jw7mpjah2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Support macros for `wasmtime-c-api`")
+    (description "This package provides support macros for `wasmtime-c-api`.")
+    (license (list license:asl2.0))))
+
 (define-public rust-watchexec-2
   (package
     (name "rust-watchexec")
