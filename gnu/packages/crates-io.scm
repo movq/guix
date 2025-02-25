@@ -93286,6 +93286,28 @@ and native running processes.")
     (description "This package provides support macros for `wasmtime-c-api`.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-jit-icache-coherence-29
+  (package
+    (name "rust-wasmtime-jit-icache-coherence")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-jit-icache-coherence" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1la7aw71kavh11d9k9nig7nbv2pd9xq72c99wp1fd4hnw198appc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Utilities for JIT icache maintenance")
+    (description "This package provides utilities for JIT icache maintenance.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-slab-29
   (package
     (name "rust-wasmtime-slab")
