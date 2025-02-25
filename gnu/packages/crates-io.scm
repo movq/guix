@@ -16978,6 +16978,50 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package provides a forest of B+-trees for wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-codegen-0.116
+  (package
+    (name "rust-cranelift-codegen")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kihpw7gaj9wx4rw2x9lkn0x3nkcy93vn5pm3hvmh9dl9hn068ic"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bumpalo" ,rust-bumpalo-3)
+                       ("rust-capstone" ,rust-capstone-0.12)
+                       ("rust-cranelift-bforest" ,rust-cranelift-bforest-0.116)
+                       ("rust-cranelift-bitset" ,rust-cranelift-bitset-0.116)
+                       ("rust-cranelift-codegen-meta" ,rust-cranelift-codegen-meta-0.116)
+                       ("rust-cranelift-codegen-shared" ,rust-cranelift-codegen-shared-0.116)
+                       ("rust-cranelift-control" ,rust-cranelift-control-0.116)
+                       ("rust-cranelift-entity" ,rust-cranelift-entity-0.116)
+                       ("rust-cranelift-isle" ,rust-cranelift-isle-0.116)
+                       ("rust-gimli" ,rust-gimli-0.31)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-postcard" ,rust-postcard-1)
+                       ("rust-pulley-interpreter" ,rust-pulley-interpreter-29)
+                       ("rust-regalloc2" ,rust-regalloc2-0.11)
+                       ("rust-rustc-hash" ,rust-rustc-hash-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-souper-ir" ,rust-souper-ir-2)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-similar" ,rust-similar-2))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Low-level code generator library")
+    (description "This package provides a low-level code generator library.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-codegen-0.112
   (package
     (name "rust-cranelift-codegen")
