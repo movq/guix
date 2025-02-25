@@ -87178,6 +87178,29 @@ be used directly.  See @code{rust-trackable} for more information.")
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
+(define-public rust-trait-variant-0.1
+  (package
+    (name "rust-trait-variant")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trait-variant" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19vpbnbcsxdiznwdw854pd0vya7rm7v7hnl3nh741621603pg5vh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-lang/impl-trait-utils")
+    (synopsis "Utilities for working with impl traits in Rust")
+    (description
+     "This package provides utilities for working with impl traits in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-traitobject-0.1
   (package
     (name "rust-traitobject")
