@@ -2831,8 +2831,31 @@ too long errors.")
 integers.")
     (license license:expat)))
 
+(define-public rust-ariadne-0.2
+  (package
+    (name "rust-ariadne")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ariadne" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00jprfhqydhdnwibjzbcv7g0aj5zbyy0fislhz88hx9hhynx0zrn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-concolor" ,rust-concolor-0.0.11)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-yansi" ,rust-yansi-0.5))))
+    (home-page "https://github.com/zesterer/ariadne")
+    (synopsis "Fancy diagnostics & reporting crate")
+    (description
+     "This package provides a fancy diagnostics & reporting crate.")
+    (license license:expat)))
+
 (define-public rust-ariadne-0.1
   (package
+    (inherit rust-ariadne-0.2)
     (name "rust-ariadne")
     (version "0.1.5")
     (source (origin
@@ -2845,11 +2868,7 @@ integers.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-yansi" ,rust-yansi-0.5))))
-    (home-page "https://github.com/zesterer/ariadne")
-    (synopsis "Fancy diagnostics & reporting crate")
-    (description "This package provides a fancy diagnostics & reporting crate.")
-    (license license:expat)))
+       (("rust-yansi" ,rust-yansi-0.5))))))
 
 (define-public rust-arr-macro-0.1
   (package
