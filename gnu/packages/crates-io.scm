@@ -95296,6 +95296,28 @@ component model in Wasmtime.")
      "This package provides a uni-typed slab with a free list for use in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-versioned-export-macros-29
+  (package
+    (name "rust-wasmtime-versioned-export-macros")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-versioned-export-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nvvm5xh6yclnf7511cnvzfi79l710lwhh6yc8229h3d47dqdzw6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Macros for defining versioned exports in Wasmtime")
+    (description
+     "This package provides macros for defining versioned exports in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-wmemcheck-29
   (package
     (name "rust-wasmtime-wmemcheck")
