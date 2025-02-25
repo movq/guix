@@ -91344,6 +91344,26 @@ of help files.")
         ("rust-serde" ,rust-serde-1)
         ("rust-sha1" ,rust-sha1-0.2))))))
 
+(define-public rust-uuid-0.3
+  (package
+    (inherit rust-uuid-0.5)
+    (name "rust-uuid")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uuid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qni2i2h45h7rfprsh935j2990ffyvcckwxs6wpy5xyaarqzb7qs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; Fails with: error: `...` range patterns are deprecated
+       #:cargo-inputs (("rust-rand" ,rust-rand-0.3)
+                       ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+                       ("rust-serde" ,rust-serde-0.8)
+                       ("rust-sha1" ,rust-sha1-0.2))))))
+
 (define-public rust-uuid-macro-internal-1
   (package
     (name "rust-uuid-macro-internal")
