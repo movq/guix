@@ -47849,6 +47849,35 @@ combinators library.")
        #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-0.2)
                        ("rust-regex" ,rust-regex-0.2))))))
 
+(define-public rust-nom-1
+  (package
+    (inherit rust-nom-2)
+    (name "rust-nom")
+    (version "1.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kjh42w67z1hh1dw3jrilgqrf54jk2xcvhw4rcdm4wclzmbc5f55"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" ; Cannot find file for tests.
+         "--skip=stream::tests::seeking_consumer"
+         "--skip=big_bunny_test"
+         "--skip=small_test")
+       #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-0.2)
+                       ("rust-regex" ,rust-regex-0.1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-missing-readme
+           (lambda _
+             ; Fix "error: readme `README.md` does not appear to exist"
+             (substitute* "Cargo.toml"
+               (("readme = \"README.md\"\n") "")))))))))
+
 (define-public rust-nom-derive-0.10
   (package
     (name "rust-nom-derive")
