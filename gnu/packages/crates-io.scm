@@ -94030,6 +94030,26 @@ and native running processes.")
     (description "This package provides utilities for JIT icache maintenance.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-math-29
+  (package
+    (name "rust-wasmtime-math")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-math" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05yy3npnfk6h199bvibjm00yqf8g12pysp30ai6hzq15mb10w899"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Low-level math routines used in Wasmtime")
+    (description
+     "This package provides low-level math routines used in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-slab-29
   (package
     (name "rust-wasmtime-slab")
