@@ -96317,6 +96317,25 @@ component model in Wasmtime.")
     (description "This package provides support macros for `wasmtime-c-api`.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-component-util-29
+  (package
+    (name "rust-wasmtime-component-util")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-component-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vh5dzz2nn7clnbdy5igd07nm3igbgxy5krhdcv5maqjq6rwfzbh"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis
+     "Utility types and functions to support the component model in Wasmtime")
+    (description
+     "This package provides utility types and functions to support the component model in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-jit-icache-coherence-29
   (package
     (name "rust-wasmtime-jit-icache-coherence")
