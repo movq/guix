@@ -95345,6 +95345,25 @@ component model in Wasmtime.")
     (description "This package provides a memcheck implementation for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmprinter-0.221
+  (package
+    (inherit rust-wasmprinter-0.226)
+    (name "rust-wasmprinter")
+    (version "0.221.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmprinter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10xjs2bzvppwr4qdsgfqqmafjah9290bd0gz35w6r4pjjwmc8hvk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; failed to resolve: use of undeclared crate or module `wat`
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.221))))))
+
 (define-public rust-wast-226
   (package
     (name "rust-wast")
