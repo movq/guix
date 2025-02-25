@@ -16659,6 +16659,25 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides Rust bindings to \"Valgrind Client Request\" interface.")
     (license license:expat)))
 
+(define-public rust-cranelift-control-0.116
+  (package
+    (name "rust-cranelift-control")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-control" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vymgmnqqnmirvkyqraah03hgnjr2wbzqaj7cfali2mxs3335l96"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "White-box fuzz testing framework")
+    (description "This package provides a white-box fuzz testing framework.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-isle-0.116
   (package
     (name "rust-cranelift-isle")
