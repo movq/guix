@@ -702,8 +702,38 @@ the Rust programming language.")
     (license (list license:bsd-3
                    license:zlib))))
 
+(define-public rust-afl-0.15
+  (package
+    (name "rust-afl")
+    (version "0.15.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "afl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v4q8b7a792pdl21ciqmncvdnf08cxjw78rja36ks7cwljs7dawj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; We don't want to add AFL as an input.
+       #:cargo-inputs (("rust-home" ,rust-home-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs (("rust-arbitrary" ,rust-arbitrary-1))
+       #:phases (modify-phases %standard-phases
+                  ;; Custom archive file for test suite.
+                  (delete 'check-for-pregenerated-files))))
+    (home-page "https://github.com/rust-fuzz/afl.rs")
+    (synopsis
+     "Fuzzing Rust code with american-fuzzy-lop")
+    (description
+     "Fuzz Rust code with american-fuzzy-lop.")
+    (license license:asl2.0)))
+
 (define-public rust-afl-0.12
   (package
+    (inherit rust-afl-0.15)
     (name "rust-afl")
     (version "0.12.17")
     (source (origin
@@ -731,13 +761,7 @@ the Rust programming language.")
         ("rust-tempfile" ,rust-tempfile-3))
        #:phases (modify-phases %standard-phases
                   ;; Custom archive file for test suite.
-                  (delete 'check-for-pregenerated-files))))
-    (home-page "https://github.com/rust-fuzz/afl.rs")
-    (synopsis
-     "Fuzzing Rust code with american-fuzzy-lop")
-    (description
-     "Fuzz Rust code with american-fuzzy-lop.")
-    (license license:asl2.0)))
+                  (delete 'check-for-pregenerated-files))))))
 
 (define-public rust-afl-0.11
   (package
