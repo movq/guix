@@ -10813,6 +10813,31 @@ tracking memory usage and enabling limits to be set.")
     (description "This package provides capability-based primitives.")
     (license (list license:asl2.0 license:expat)))) ; expat, ASL2 or ASL2 with LLVM exception
 
+(define-public rust-cap-std-3
+  (package
+    (name "rust-cap-std")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-std" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02anyab4z2dja2yl0y9g0gdiqa71d542c4mmnk6dd4yhx3ld7ny3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arf-strings" ,rust-arf-strings-0.7)
+                       ("rust-camino" ,rust-camino-1)
+                       ("rust-cap-primitives" ,rust-cap-primitives-3)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Capability-based version of the Rust standard library")
+    (description
+     "This package provides a capability-based version of the Rust standard library.")
+    (license (list license:asl2.0 license:expat)))) ; expat, ASL2 or ASL2 with LLVM exception
+
 (define-public rust-cap-tempfile-3
   (package
     (name "rust-cap-tempfile")
