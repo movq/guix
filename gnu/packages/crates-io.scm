@@ -94159,6 +94159,43 @@ and native running processes.")
      "This package provides utility types and functions to support the component model in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-cranelift-29
+  (package
+    (name "rust-wasmtime-cranelift")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-cranelift" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11wyks7pdzshspw6ks5k5z45r28ngm6vrg0g559z2jsdcwiffsrn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cranelift-codegen" ,rust-cranelift-codegen-0.116)
+                       ("rust-cranelift-control" ,rust-cranelift-control-0.116)
+                       ("rust-cranelift-entity" ,rust-cranelift-entity-0.116)
+                       ("rust-cranelift-frontend" ,rust-cranelift-frontend-0.116)
+                       ("rust-cranelift-native" ,rust-cranelift-native-0.116)
+                       ("rust-gimli" ,rust-gimli-0.31)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-object" ,rust-object-0.36)
+                       ("rust-pulley-interpreter" ,rust-pulley-interpreter-29)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.221)
+                       ("rust-wasmtime-environ" ,rust-wasmtime-environ-29)
+                       ("rust-wasmtime-versioned-export-macros" ,rust-wasmtime-versioned-export-macros-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Integration between Cranelift and Wasmtime")
+    (description
+     "This package provides integration between Cranelift and Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-environ-29
   (package
     (name "rust-wasmtime-environ")
