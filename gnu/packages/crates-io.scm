@@ -93703,6 +93703,26 @@ and native running processes.")
      "This package provides customizable Rust parsers for the WebAssembly text formats WAT and WAST.")
     (license (list license:asl2.0)))) ; with LLVM exception
 
+(define-public rust-wasmtime-asm-macros-29
+  (package
+    (name "rust-wasmtime-asm-macros")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-asm-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wk4rwn8085nllba4nz4z68ihl9ypm4zisjvyzlzn0aj286qn5qz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Macros for defining asm functions in Wasmtime")
+    (description
+     "This package provides macros for defining asm functions in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-c-api-macros-29
   (package
     (name "rust-wasmtime-c-api-macros")
