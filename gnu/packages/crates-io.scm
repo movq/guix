@@ -41574,6 +41574,26 @@ lexer.")
     (description "This package provides MAC address types.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-macho-0.4
+  (package
+    (name "rust-macho")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "macho" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "011p1j9jlndbanmqy5y7lk1vn3mh4jk3chgjiw3wwnbfzkicdsvg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-1)
+                       ("rust-uuid" ,rust-uuid-0.3))))
+    (home-page "https://github.com/richo/macho-rs")
+    (synopsis "Mach-O parser")
+    (description "This package provides a Mach-O parser.")
+    (license license:expat)))
+
 (define-public rust-macro-rules-attribute-0.2
   (package
     (name "rust-macro-rules-attribute")
