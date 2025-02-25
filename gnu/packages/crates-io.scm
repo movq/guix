@@ -94286,6 +94286,36 @@ and native running processes.")
      "This package provides macros for defining asm functions in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-c-api-impl-29
+  (package
+    (name "rust-wasmtime-c-api-impl")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-c-api-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "037dcqkjwl8vxmnfh6pqlzcpcdjgpb0r9fvvgiwyabcgc3rwwc7a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-wasmtime" ,rust-wasmtime-29)
+                       ("rust-wasmtime-c-api-macros" ,rust-wasmtime-c-api-macros-29)
+                       ("rust-wasmtime-wasi" ,rust-wasmtime-wasi-29)
+                       ("rust-wat" ,rust-wat-1))))
+    (native-inputs (list cmake))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "C API to expose the Wasmtime runtime")
+    (description "This package provides a C API to expose the Wasmtime runtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-c-api-macros-29
   (package
     (name "rust-wasmtime-c-api-macros")
