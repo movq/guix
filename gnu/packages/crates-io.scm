@@ -93723,6 +93723,43 @@ and native running processes.")
     (description "This package provides support macros for `wasmtime-c-api`.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-cache-29
+  (package
+    (name "rust-wasmtime-cache")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-cache" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z2gw8phnwchqdxh0ihxr3qikh6xrq6c92rm0zmdx018yv4624cb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=config::tests::test_disabled")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-directories-next" ,rust-directories-next-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-postcard" ,rust-postcard-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59)
+                       ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs (("rust-filetime" ,rust-filetime-0.2)
+                                   ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs (list `(,zstd "lib")))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Support for automatic module caching with Wasmtime")
+    (description
+     "This package provides Support for automatic module caching with Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-component-util-29
   (package
     (name "rust-wasmtime-component-util")
