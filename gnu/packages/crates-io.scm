@@ -104,6 +104,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -11162,6 +11163,24 @@ engine.")
        (method url-fetch)
        (uri (crate-uri "capstone-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
+       (snippet
+         #~(begin (use-modules (guix build utils))
+                  (delete-file-recursively "capstone")
+                  (delete-file-recursively "pre_generated")
+                  (substitute* "Cargo.toml"
+                    (("default =.*") "default = [\"use_bindgen\"]\n"))
+                  (substitute* "build.rs"
+                    ; don't build the bundled copy
+                    (("build_capstone_cc\\(\\);") "")
+                    ; link libcapstone dynamically
+                    (("link_type = Some\\(LinkType::Static\\);")
+                      "link_type = Some(LinkType::Dynamic);")
+                    ; search in C_INCLUDE_PATHS for the right copy of libcapstone
+                    ; headers
+                    (("header_search_paths\\.push.*")
+                      "for path in
+                      std::env::var(\"C_INCLUDE_PATH\").unwrap().split(\":\") {
+                      header_search_paths.push([path, \"capstone\"].iter().collect()); }"))))
        (sha256
         (base32 "1qshi53z72yciyqskswyll6i9q40yjxf90347b3bgzqi2wkq6wgy"))))
     (build-system cargo-build-system)
@@ -11170,6 +11189,8 @@ engine.")
                        ("rust-cc" ,rust-cc-1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-regex" ,rust-regex-1))))
+    (inputs (list capstone))
+    (native-inputs (list clang))
     (home-page
      "https://github.com/capstone-rust/capstone-rs/tree/master/capstone-sys")
     (synopsis "System bindings for the capstone disassembly library")
