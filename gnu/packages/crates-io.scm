@@ -42201,8 +42201,28 @@ consumption.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
 
+(define-public rust-logos-derive-0.14
+  (package
+    (name "rust-logos-derive")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "logos-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07bk3q4jry9f8blrnsiy872ivilzy62xaglnn2ni5p590qmp5yr4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-logos-codegen" ,rust-logos-codegen-0.14))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Create ridiculously fast Lexers")
+    (description "Create ridiculously fast Lexers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-logos-derive-0.13
   (package
+    (inherit rust-logos-derive-0.14)
     (name "rust-logos-derive")
     (version "0.13.0")
     (source
@@ -42214,11 +42234,7 @@ consumption.")
         (base32 "0zi6s400yfw1ma7wnawyjjgbq1nqmx0xjdh18j8dfhhzkwi0vz6v"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-logos-codegen" ,rust-logos-codegen-0.13))))
-    (home-page "https://github.com/maciejhirsz/logos")
-    (synopsis "Create ridiculously fast Lexers")
-    (description "Create ridiculously fast Lexers.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-logos-codegen" ,rust-logos-codegen-0.13))))))
 
 (define-public rust-logos-derive-0.12
   (package
