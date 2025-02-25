@@ -7222,6 +7222,12 @@ efficient where possible.")
      (list
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-rednose-dependency
+           (lambda _
+             (substitute* "setup.py"
+               (("'rednose'") ""))
+             (substitute* '("requirements.txt" "setup.cfg")
+               (("rednose.*") ""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -7235,7 +7241,6 @@ efficient where possible.")
            python-httplib2
            python-nose
            python-pyparsing
-           python-rednose
            python-requests
            python-sure
            python-tornado))
