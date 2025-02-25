@@ -17159,6 +17159,28 @@ generator library.")
        (sha256
         (base32 "121cw7yn0ffjrica9pcj7sn1zpd5syipxfwn70r039g06nqgqfsc"))))))
 
+(define-public rust-cranelift-entity-0.116
+  (package
+    (name "rust-cranelift-entity")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-entity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08xk00xzncxycxm0z1g6daysq2g0qs503pbryvxp8m1732b0sbab"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-bitset" ,rust-cranelift-bitset-0.116)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Data structures using entity references as mapping keys")
+    (description
+     "This package provides data structures using entity references as mapping keys.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-entity-0.112
   (package
     (name "rust-cranelift-entity")
