@@ -94306,6 +94306,27 @@ combinators library.")
         ("rust-memchr" ,rust-memchr-2)
         ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
+(define-public rust-winx-0.36
+  (package
+    (name "rust-winx")
+    (version "0.36.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winx" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bgls70sd0lxyhbklbs6ccchx0r2bbz0rcmgwxibhn0ryxvd6grz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/sunfishcode/winx")
+    (synopsis "Windows API helper library")
+    (description "This package provides a collection of miscellaneous Windows
+API utilities")
+    (license (list license:asl2.0))))
+
 (define-public rust-wit-bindgen-rt-0.33
   (package
     (name "rust-wit-bindgen-rt")
