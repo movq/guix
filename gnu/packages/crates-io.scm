@@ -42248,6 +42248,35 @@ parallelize and optimize.")
 async code in Rust.")
     (license license:expat)))
 
+(define-public rust-maybe-owned-0.3
+  (package
+    (name "rust-maybe-owned")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "maybe-owned" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3sqiv59i06k73x6p7mf294zgdfb2qkky127ipfnjj9mr9wgb2g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rustonaut/maybe-owned")
+    (synopsis
+     "provides a `MaybeOwned` (and `MaybeOwnedMut`) type similar to std's `Cow` but
+it implements `From<T>` and `From<&'a T>` and does not require `ToOwned`")
+    (description "This crate provides a @code{MaybeOwned<'a,T>} enum. Different to
+@code{std::borrow::Cow} it implements @code{From<T>} and @code{From<&'a T>} and does
+not require a @code{ToOwned} implementation. While this can be nice for APIs mainly
+consuming @code{T}s not implementing @code{ToOwned} or implementing @code{ToOwned}
+through @code{Clone}, it also means its borrowed version of @code{String} is
+@code{&String} and not @code{&str} making it less performant for cases like
+@code{String} or @code{Vec}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-maybe-rayon-0.1
   (package
     (name "rust-maybe-rayon")
