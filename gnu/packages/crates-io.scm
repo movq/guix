@@ -94396,6 +94396,29 @@ and native running processes.")
      "This package provides integration between Wasmtime and Winch.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wit-bindgen-29
+  (package
+    (name "rust-wasmtime-wit-bindgen")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wit-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rh6ds0kcslrwks8k7rz6hand5c4myjx7if1wdwxpr6i5nf32n43"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-heck" ,rust-heck-0.5)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-wit-parser" ,rust-wit-parser-0.221))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Internal `*.wit` support for the `wasmtime` crate's macros")
+    (description
+     "This package provides internal `*.wit` support for the `wasmtime` crate's macros.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-wmemcheck-29
   (package
     (name "rust-wasmtime-wmemcheck")
