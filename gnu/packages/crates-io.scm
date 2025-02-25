@@ -94007,6 +94007,32 @@ and native running processes.")
      "This package provides utility types and functions to support the component model in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-fiber-29
+  (package
+    (name "rust-wasmtime-fiber")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-fiber" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05qis8ry2z3mqkw2hlpz3yz1g9ih0xjqa10rj751n24z27a91fnc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-wasmtime-asm-macros" ,rust-wasmtime-asm-macros-29)
+                       ("rust-wasmtime-versioned-export-macros" ,rust-wasmtime-versioned-export-macros-29)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs (("rust-backtrace" ,rust-backtrace-0.3))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Fiber support for Wasmtime")
+    (description "This package provides Fiber support for Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-jit-debug-29
   (package
     (name "rust-wasmtime-jit-debug")
