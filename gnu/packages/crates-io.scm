@@ -10691,6 +10691,31 @@ canonical filesystem paths.")
 tracking memory usage and enabling limits to be set.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cap-tempfile-3
+  (package
+    (name "rust-cap-tempfile")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cb57s3q81yfsq40ws3j414fxk4k5zjh7sdjp91dfn29vh71ryhz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-camino" ,rust-camino-1)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Capability-based temporary directories")
+    (description
+     "This package provides capability-based temporary directories.")
+    (license (list license:asl2.0 license:expat)))) ; expat, ASL2 or ASL2 with LLVM exception
+
 (define-public rust-capnp-0.19
   (package
     (name "rust-capnp")
