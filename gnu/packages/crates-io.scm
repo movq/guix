@@ -16993,6 +16993,25 @@ generator library.")
      `(#:cargo-inputs
          (("rust-cranelift-codegen-shared" ,rust-cranelift-codegen-shared-0.111))))))
 
+(define-public rust-cranelift-codegen-shared-0.116
+  (package
+    (name "rust-cranelift-codegen-shared")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen-shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1src5xxbh4va2g0f1n5lgcfyrqhsk20589ccx1668bspjxa0y620"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis
+     "For code shared between cranelift-codegen-meta and cranelift-codegen")
+    (description
+     "This package provides code shared between cranelift-codegen-meta and cranelift-codegen.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-codegen-shared-0.112
   (package
     (name "rust-cranelift-codegen-shared")
