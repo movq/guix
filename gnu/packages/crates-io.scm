@@ -16911,6 +16911,32 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides data structures using entity references as mapping keys.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-frontend-0.116
+  (package
+    (name "rust-cranelift-frontend")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-frontend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0msd90p3p5hs1bl687hf21k2h1zv60vrw32b2y9p6419czhl3b2g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.116)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13))
+       #:cargo-development-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.116)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-similar" ,rust-similar-2))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Cranelift IR builder helper")
+    (description "This package provides the Cranelift IR builder helper.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-isle-0.116
   (package
     (name "rust-cranelift-isle")
