@@ -94053,6 +94053,30 @@ attribute that is not in the shared backend crate.")
 and native running processes.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-wasm-wave-0.221
+  (package
+    (name "rust-wasm-wave")
+    (version "0.221.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasm-wave" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ysjy5gp0yflbmlly1scdfpd4m99m2gwc8pzppsyrkinpla86i1w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-logos" ,rust-logos-0.14)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wit-parser" ,rust-wit-parser-0.221))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wasm-wave")
+    (synopsis "WebAssembly Value Encoding")
+    (description "This package provides WebAssembly Value Encoding.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-wasmparser-0.226
   (package
     (name "rust-wasmparser")
