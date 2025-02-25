@@ -61348,6 +61348,35 @@ in codeblocks, while assuring quality with a powerful test suite.")
        (("rust-indoc" ,rust-indoc-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
+(define-public rust-pulley-interpreter-29
+  (package
+    (name "rust-pulley-interpreter")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulley-interpreter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pg7rvnqkj47vz91zyqh0b1rvkw8m14jy64qhdqa4jfzfn2mznb2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; could not find `encode` in `pulley_interpreter`
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-cranelift-bitset" ,rust-cranelift-bitset-0.116)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-sptr" ,rust-sptr-0.3)
+                       ("rust-wasmtime-math" ,rust-wasmtime-math-29))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-object" ,rust-object-0.36))))
+    (home-page "https://github.com/bytecodealliance/wasmtime/tree/main/pulley")
+    (synopsis
+     "The Pulley interpreter, its bytecode definition, encoder, decoder, and etc..")
+    (description
+     "This package provides the Pulley interpreter, its bytecode definition, encoder, decoder, and etc...")
+    (license (list license:asl2.0))))
+
 (define-public rust-pulley-interpreter-0.1
   (package
     (name "rust-pulley-interpreter")
