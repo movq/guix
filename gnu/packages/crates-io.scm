@@ -95256,6 +95256,23 @@ component model in Wasmtime.")
     (description "This package provides support macros for `wasmtime-c-api`.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wmemcheck-29
+  (package
+    (name "rust-wasmtime-wmemcheck")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wmemcheck" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xr8c79cvb4hkwpy9pj8vfwmv8y1nb9qfxnqx2ahcg7fbrn8z617"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Memcheck implementation for Wasmtime")
+    (description "This package provides a memcheck implementation for Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-watchexec-2
   (package
     (name "rust-watchexec")
