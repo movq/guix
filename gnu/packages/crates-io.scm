@@ -11068,6 +11068,46 @@ capabilities.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-capstone-0.12
+  (package
+    (name "rust-capstone")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capstone" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    (("\"std\",\n" all) (string-append all "\"use_bindgen\"\n")))
+                  ; fix error[E0004]: non-exhaustive patterns
+                  (substitute* "src/arch/arm64.rs"
+                    (("ARM64_OP_BARRIER.*" all)
+                     (string-append all "_ => panic!(\"Unsupported operand type\"),\n")))
+                  ; fix error[E0063]: missing field `post_index` in initializer of `capstone_sys::cs_arm`
+                  (substitute* "src/arch/arm.rs"
+                    (("writeback: false," all)
+                     (string-append all "post_index: false,\n")))))
+       (sha256
+        (base32 "0v2vfzpibdbbabi7nzqrbxn2i5p0a7m8hbhcdchjnnjqv4wa935h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=test::test_arch_arm64_detail")
+       #:cargo-inputs (("rust-capstone-sys" ,rust-capstone-sys-0.16)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-macho" ,rust-macho-0.4)
+                                   ("rust-rayon" ,rust-rayon-1))))
+    (inputs (list capstone clang))
+    (home-page "https://github.com/capstone-rust/capstone-rs")
+    (synopsis
+     "High-level Rust bindings to capstone disassembly engine (https://capstone-engine.org/)")
+    (description
+     "This package provides high-level bindings to capstone disassembly engine
+(https://capstone-engine.org/).")
+    (license license:expat)))
+
 (define-public rust-capstone-sys-0.16
   (package
     (name "rust-capstone-sys")
