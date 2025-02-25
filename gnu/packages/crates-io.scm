@@ -96873,6 +96873,34 @@ component model in Wasmtime.")
      "This package provides macros for defining versioned exports in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-winch-29
+  (package
+    (name "rust-wasmtime-winch")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-winch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13yg8dx7nf37fp6syyj8i2cyaak8sgmbk4hhv3hxa0h5yawbzfpx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cranelift-codegen" ,rust-cranelift-codegen-0.116)
+                       ("rust-gimli" ,rust-gimli-0.31)
+                       ("rust-object" ,rust-object-0.36)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13)
+                       ("rust-wasmparser" ,rust-wasmparser-0.221)
+                       ("rust-wasmtime-cranelift" ,rust-wasmtime-cranelift-29)
+                       ("rust-wasmtime-environ" ,rust-wasmtime-environ-29)
+                       ("rust-winch-codegen" ,rust-winch-codegen-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Integration between Wasmtime and Winch")
+    (description
+     "This package provides integration between Wasmtime and Winch.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-wmemcheck-29
   (package
     (name "rust-wasmtime-wmemcheck")
