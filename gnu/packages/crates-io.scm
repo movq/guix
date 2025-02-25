@@ -16767,6 +16767,27 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides various bitset stuff for use inside Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-codegen-meta-0.116
+  (package
+    (name "rust-cranelift-codegen-meta")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen-meta" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f70xrardmbpvfij1djkavllzrlxy9wi6jkzh9bzq9qvqrqvq169"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen-shared" ,rust-cranelift-codegen-shared-0.116)
+                       ("rust-pulley-interpreter" ,rust-pulley-interpreter-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Metaprogram for cranelift-codegen code generator library")
+    (description
+     "This package provides the metaprogram for the cranelift-codegen code generator library.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-codegen-shared-0.116
   (package
     (name "rust-cranelift-codegen-shared")
