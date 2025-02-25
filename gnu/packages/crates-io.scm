@@ -42149,8 +42149,38 @@ and attach/detach semantics.")
        #:cargo-inputs
        (("rust-logos-derive" ,rust-logos-derive-0.12))))))
 
+(define-public rust-logos-codegen-0.14
+  (package
+    (name "rust-logos-codegen")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "logos-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gwnx7lk4y7xc4yk6pr0knrddard5z22rxaz9xrnc38cc1lh1y2r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-beef" ,rust-beef-0.5)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-rstest" ,rust-rstest-0.18))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Implementation details for logos-codegen and logos-derive")
+    (description
+     "Implementation details for logos-codegen and logos-derive.  Not for public
+consumption.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-logos-codegen-0.13
   (package
+    (inherit rust-logos-codegen-0.14)
     (name "rust-logos-codegen")
     (version "0.13.0")
     (source
@@ -42169,13 +42199,7 @@ and attach/detach semantics.")
                        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
                        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
-    (home-page "https://github.com/maciejhirsz/logos")
-    (synopsis "Implementation details for logos-codegen and logos-derive")
-    (description
-     "Implementation details for logos-codegen and logos-derive.  Not for public
-consumption.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
 
 (define-public rust-logos-derive-0.13
   (package
