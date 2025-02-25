@@ -16745,6 +16745,25 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides Rust bindings to \"Valgrind Client Request\" interface.")
     (license license:expat)))
 
+(define-public rust-cranelift-bforest-0.116
+  (package
+    (name "rust-cranelift-bforest")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-bforest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i13rpcpzi2b26nf1fajf2jcvmpzjgv8rmlav3m3djw6rsh08pg1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-entity" ,rust-cranelift-entity-0.116))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Forest of B+-trees")
+    (description "This package provides a forest of B+-trees.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-bitset-0.116
   (package
     (name "rust-cranelift-bitset")
