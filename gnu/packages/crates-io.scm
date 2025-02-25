@@ -96181,6 +96181,52 @@ component model in Wasmtime.")
      "This package provides macros for defining versioned exports in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wasi-29
+  (package
+    (name "rust-wasmtime-wasi")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wasi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "190cgq4k8r6nwxhv1f91isf2p6dbjnb1yyma9p3xl6xbzjdyc6wd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cap-fs-ext" ,rust-cap-fs-ext-3)
+                       ("rust-cap-net-ext" ,rust-cap-net-ext-3)
+                       ("rust-cap-rand" ,rust-cap-rand-3)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-cap-time-ext" ,rust-cap-time-ext-3)
+                       ("rust-fs-set-times" ,rust-fs-set-times-0.20)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-system-interface" ,rust-system-interface-0.27)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-trait-variant" ,rust-trait-variant-0.1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-wasmtime" ,rust-wasmtime-29)
+                       ("rust-wiggle" ,rust-wiggle-29)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-test-log" ,rust-test-log-0.2)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+                                   ("rust-wasmtime" ,rust-wasmtime-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "WASI (WebAssembly System Interface) implementation in Rust")
+    (description "This package provides a WASI (WebAssembly System Interface) implementation in Rust.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-winch-29
   (package
     (name "rust-wasmtime-winch")
