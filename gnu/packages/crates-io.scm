@@ -70357,6 +70357,25 @@ for use with schemars.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
 
+(define-public rust-scoped-env-2
+  (package
+    (name "rust-scoped-env")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scoped-env" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09n0q6v9plj1s3vmd8s3nh8wclcwirayrx0bnwdswn4hinkkhqx8"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Nokel81/scoped-env")
+    (synopsis "Lifetime-scoped environment variable setting")
+    (description
+     "This package provides a helper struct (mostly for tests) that scopes an
+environment variable lifetime to that of a rust scope")
+    (license license:expat)))
+
 (define-public rust-scoped-threadpool-0.1
   (package
     (name "rust-scoped-threadpool")
