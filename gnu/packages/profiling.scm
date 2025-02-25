@@ -26,6 +26,7 @@
   #:use-module ((guix licenses) #:prefix license:) ; avoid zlib, expat clashes
   #:use-module (guix download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -414,3 +415,26 @@ sampling profiler for games and other applications.")
               (delete "libxkbcommon" "wayland")
               (prepend glfw)))
     (synopsis "Frame profiler (X11 version)")))
+
+(define-public ittapi
+  (package
+    (name "ittapi")
+    (version "3.25.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/ittapi")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "08j84hi3qkch5hbyr14hsp6igp8dl5p5vnx1lchczmi2ssm7kzv8"))))
+    (build-system cmake-build-system)
+    (arguments
+      (list #:tests? #f)) ; there are no tests
+    (home-page "https://github.com/intel/ittapi")
+    (synopsis "Instrumentation and Tracing Technology (ITT) and Just-In-Time (JIT)
+profiling API")
+    (description "A library to enable applications to generate and control the
+collection of trace data during execution.")
+    (license (list license:gpl2 license:bsd-3))))
