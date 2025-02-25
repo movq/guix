@@ -41474,8 +41474,29 @@ and attach/detach semantics.")
     ;; This means asl2.0 OR expat.
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-logos-0.14
+  (package
+    (name "rust-logos")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "logos" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n349vin9mx326fkz68bsa4vc5sdn9n8qnfz7n1yqynbz1p3albj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-logos-derive" ,rust-logos-derive-0.14))
+       #:cargo-development-inputs (("rust-ariadne" ,rust-ariadne-0.2))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Create ridiculously fast Lexers")
+    (description "Create ridiculously fast Lexers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-logos-0.13
   (package
+    (inherit rust-logos-0.14)
     (name "rust-logos")
     (version "0.13.0")
     (source
@@ -41488,11 +41509,7 @@ and attach/detach semantics.")
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included
-       #:cargo-inputs (("rust-logos-derive" ,rust-logos-derive-0.13))))
-    (home-page "https://github.com/maciejhirsz/logos")
-    (synopsis "Create ridiculously fast Lexers")
-    (description "Create ridiculously fast Lexers.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-logos-derive" ,rust-logos-derive-0.13))))))
 
 (define-public rust-logos-codegen-0.14
   (package
