@@ -95664,6 +95664,34 @@ command-line, uniformly on all platforms")
 multi-character wildcard operator.")
     (license license:expat)))
 
+(define-public rust-winch-codegen-29
+  (package
+    (name "rust-winch-codegen")
+    (version "29.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winch-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1745a92ni167lczz20rc5vjld613m9x4id7l1aib0v7lqpr9x11g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cranelift-codegen" ,rust-cranelift-codegen-0.116)
+                       ("rust-gimli" ,rust-gimli-0.31)
+                       ("rust-regalloc2" ,rust-regalloc2-0.11)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.221)
+                       ("rust-wasmtime-cranelift" ,rust-wasmtime-cranelift-29)
+                       ("rust-wasmtime-environ" ,rust-wasmtime-environ-29))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Winch code generation library")
+    (description "This package provides the winch code generation library.")
+    (license (list license:asl2.0))))
+
 (define-public rust-winnow-0.6
   (package
     (name "rust-winnow")
