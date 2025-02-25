@@ -16936,6 +16936,28 @@ to the @code{is_x86_feature_detected!} macro.")
 language for instruction selection in Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-native-0.116
+  (package
+    (name "rust-cranelift-native")
+    (version "0.116.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-native" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ivna3w02yxa1hs2kkcv6xj8gs8g6mgcrwbpj6x4qb0z7wpyipmq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.116)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Support for targeting the host with Cranelift")
+    (description
+     "This package provides support for targeting the host with Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
