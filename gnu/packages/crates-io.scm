@@ -1319,6 +1319,27 @@ contain numerals.")
      "Rust bindings for OpenAL 1.1 and extensions (including EFX).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ambient-authority-0.0.2
+  (package
+    (name "rust-ambient-authority")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ambient-authority" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fxsfyhy64jx7zrkb85h1vhr5nfqncja3pwpikid471d8w6yxm79"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/sunfishcode/ambient-authority")
+    (synopsis "Provides a type used in function signatures to declare that they use
+ambient authority.")
+    (description "In capability-based security contexts, ambient authority means
+anything a program can do that interacts with the outside world that
+isn't represented by a handle. This crate defines an empty function,
+ambient_authority, which returns a value of type AmbientAuthority.")
+    (license (list license:asl2.0 license:expat)))) ; expat, ASL2 or ASL2 with LLVM exception
+
 (define-public rust-amd-0.2
   (package
     (name "rust-amd")
