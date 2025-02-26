@@ -124,7 +124,8 @@ and replace development dependencies with tree-sitter grammar node modules."
                       ((source-file "src/scanner.cc")
                        => (lambda (file) (list file)))
                       (else '()))
-                   "-xc" "src/parser.c")))))
+                   "-xc" "src/parser.c"
+                   "-Isrc")))))
     (for-each compile-language grammar-directories)))
 
 (define* (install-js #:key native-inputs inputs outputs #:allow-other-keys)
