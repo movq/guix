@@ -4542,6 +4542,29 @@ and get great output.")
 variables from the pattern into scope.")
     (license license:mpl2.0)))
 
+(define-public rust-assert-no-alloc-1
+  (package
+    (name "rust-assert-no-alloc")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "assert_no_alloc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18vqq5wmbzihlbzcmq0q9w09hkv85ajypcff2vcn2ba8g89q7jjm"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-test-flags '("--features" "warn_debug" "--tests")))
+    (home-page "https://github.com/Windfisch/rust-assert-no-alloc")
+    (synopsis
+     "Custom Rust allocator allowing to temporarily disable memory (de)allocations
+for a thread")
+    (description
+     "This package provides a custom Rust allocator allowing to temporarily disable memory (de)allocations for
+a thread. Aborts or prints a warning if allocating although forbidden.")
+    (license license:bsd-2)))
+
 (define-public rust-assert2-0.3
   (package
     (name "rust-assert2")
