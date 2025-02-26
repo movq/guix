@@ -79805,6 +79805,24 @@ references")
     (description "This package provides a CMSIS-SVD base structures.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-svg-0.13
+  (package
+    (name "rust-svg")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "svg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04kim0zxjfcif7aksd4rwrsgxva5hr24hhjd6z94k13y6fnibn02"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bodoni/svg")
+    (synopsis "SVG composer and parser")
+    (description
+     "This package provides an SVG composer and parser.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-svgtypes-0.5
   (package
     (name "rust-svgtypes")
