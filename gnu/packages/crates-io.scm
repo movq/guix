@@ -21775,8 +21775,30 @@ writing derives macros for enums.")
 backslashes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-deser-hjson-2
+  (package
+    (name "rust-deser-hjson")
+    (version "2.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deser-hjson" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qc82vh683wb3359fs5r9fwi37wjnb17zfmrwkbxw22w172am53x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency chain.
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-glassbench" ,rust-glassbench-0.3))))
+    (home-page "https://github.com/Canop/deser-hjson")
+    (synopsis "Hjson deserializer for Serde")
+    (description "This package provides an Hjson deserializer for Serde.")
+    (license license:expat)))
+
 (define-public rust-deser-hjson-1
   (package
+    (inherit rust-deser-hjson-2)
     (name "rust-deser-hjson")
     (version "1.2.0")
     (source
@@ -21789,11 +21811,7 @@ backslashes.")
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency chain.
-       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Canop/deser-hjson")
-    (synopsis "Hjson deserializer for Serde")
-    (description "This package provides an Hjson deserializer for Serde.")
-    (license license:expat)))
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-detect-desktop-environment-1
   (package
