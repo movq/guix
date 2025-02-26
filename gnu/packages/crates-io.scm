@@ -31473,6 +31473,25 @@ timers.")
 libraries GMP, MPFR, and MPC.")
     (license license:lgpl3+)))
 
+(define-public rust-gnuplot-0.0.23
+  (package
+    (name "rust-gnuplot")
+    (version "0.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gnuplot" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j2mzlfaxcddkm8ca3r3mxzq771lcpyksx933i6v5z8l5311ng0i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-argparse-rs" ,rust-argparse-rs-0.1))))
+    (home-page "https://github.com/SiegeLord/RustGnuplot")
+    (synopsis "Rust gnuplot controller")
+    (description "This package provides a Rust gnuplot controller.")
+    (license license:lgpl3)))
+
 (define-public rust-goblin-0.9
   (package
     (name "rust-goblin")
