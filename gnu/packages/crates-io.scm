@@ -13791,6 +13791,31 @@ Clap.")
 the OS-level clipboard.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cli-log-2
+  (package
+    (name "rust-cli-log")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cli-log" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ip0lir1dc5g0706isx48zhqq4034kjygy2ll1rx8p1rwm3al872"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=init::try_init_cli_log")
+       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-file-size" ,rust-file-size-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-proc-status" ,rust-proc-status-0.1))))
+    (home-page "https://github.com/Canop/cli-log")
+    (synopsis
+     "A simple logging and timing facility configured with an env variable")
+    (description
+     "This package provides a simple logging and timing facility configured with an env variable.")
+    (license license:expat)))
+
 (define-public rust-clicolors-control-1
   (package
     (name "rust-clicolors-control")
