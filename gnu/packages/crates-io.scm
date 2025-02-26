@@ -6136,6 +6136,30 @@ with custom types.")
      "This package provides a simple interface for querying atty.")
     (license license:expat)))
 
+(define-public rust-auto-args-0.3
+  (package
+    (name "rust-auto-args")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "auto-args" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rhldf7brvd48hmbc2iwgcb1wbwp2xai5ni7qnkwzbswq0353bcw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=simple_doc_comment"
+                            "--skip=enum_missing_flag")
+       #:cargo-inputs (("rust-auto-args-derive" ,rust-auto-args-derive-0.1)
+                       ("rust-meval" ,rust-meval-0.2))))
+    (home-page "https://github.com/droundy/auto-args")
+    (synopsis "Parse command line arguments by defining a struct")
+    (description
+     "This package provides the ability to create a command line argument parser by
+defining a struct.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-auto-args-derive-0.1
   (package
     (name "rust-auto-args-derive")
