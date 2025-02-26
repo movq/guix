@@ -92588,6 +92588,28 @@ mile, ...).")
     (description "This package provides minimal request library in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ureq-proto-0.3
+  (package
+    (name "rust-ureq-proto")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ureq-proto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16lfbii98gy8js0pkc1cgnm2gv3rs5qx0pahl5pavqvd30p8ds5q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-httparse" ,rust-httparse-1)
+                       ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/algesten/ureq-proto")
+    (synopsis "ureq support crate")
+    (description "This package provides a ureq support crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-url-2
   (package
     (name "rust-url")
