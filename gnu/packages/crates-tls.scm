@@ -476,8 +476,8 @@ version of AWS-LC.")
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
-       #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.12)
-                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.23)
+       #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.13)
+                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.26)
                        ("rust-paste" ,rust-paste-1)
                        ("rust-untrusted" ,rust-untrusted-0.7)
                        ("rust-zeroize" ,rust-zeroize-1))
