@@ -1091,14 +1091,17 @@ used to override the build phases."
    #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
 
 (define-public tree-sitter-erlang
-  ;; Versions newer than 0.4.0 use tree-sitter 0.22.1
-  (let ((version "0.4.0") ; In Cargo.toml, but untagged
-        (commit "57e69513efd831f9cc8207d65d96bad917ca4aa4")
+  (let ((version "0.12.0") ; In Cargo.toml, but untagged
+        (commit "370cea629eb62a8686504b9fb3252a5e1ae55313")
         (revision "0"))
   (tree-sitter-grammar
    "erlang" "Erlang"
-   "1h0c9qc6i0kz5a0yq68xp623f84g4mc8hcp00khdbf7y7z7b9izc"
+   "01if10jrnmjdp8ksyrlypmr6g0ybm8pj4fqkhbwcma2xmyabj684"
    (git-version version revision commit)
+   #:phases #~(modify-phases %standard-phases
+                (add-before 'check 'delete-highlight-tests
+                  (lambda _
+                    (delete-file-recursively "test/highlight"))))
    #:repository-url "https://github.com/WhatsApp/tree-sitter-erlang"
    #:commit commit)))
 
