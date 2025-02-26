@@ -31492,6 +31492,38 @@ still need to manually handle the graphics pipeline, but without having to use
 OpenGL's old and error-prone API.")
     (license license:asl2.0)))
 
+(define-public rust-glassbench-0.3
+  (package
+    (name "rust-glassbench")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glassbench" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gpfnw8s7v7ak1pqjznj4nh8ddabq616sx1948y77jhdvn3zyygv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.13)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-csv2svg" ,rust-csv2svg-0.1)
+                       ("rust-git2" ,rust-git2-0.14)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-open" ,rust-open-1)
+                       ("rust-rusqlite" ,rust-rusqlite-0.24)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-termimad" ,rust-termimad-0.25)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.4 zlib))
+    (home-page "https://github.com/Canop/glassbench")
+    (synopsis "Rust benchmarking library with memory")
+    (description "This package provides a Rust benchmarking library with memory.")
+    (license license:expat)))
+
 (define-public rust-glium-0.31
   (package
     (inherit rust-glium-0.32)
