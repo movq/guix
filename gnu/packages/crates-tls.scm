@@ -1005,8 +1005,30 @@ implementation.")
 formatting Object Identifiers (OIDs).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-oid-registry-0.8
+  (package
+    (name "rust-oid-registry")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oid-registry" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dxm6qkkkk4dq3ln1v83d80k8bvicm6mspsxrj3n06yy7pzhrx0j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.7))))
+    (home-page "https://github.com/rusticata/oid-registry")
+    (synopsis "Object Identifier (OID) database")
+    (description "This crate is a helper crate, containing a database of
+OID objects.  These objects are intended for use when manipulating ASN.1
+grammars and BER/DER encodings, for example.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-oid-registry-0.7
   (package
+    (inherit rust-oid-registry-0.8)
     (name "rust-oid-registry")
     (version "0.7.1")
     (source
@@ -1018,13 +1040,7 @@ formatting Object Identifiers (OIDs).")
         (base32 "1navxdy0gx7f92ymwr6n02x35fypp2izdfcf49wszkc9ji6h7n58"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.6))))
-    (home-page "https://github.com/rusticata/oid-registry")
-    (synopsis "Object Identifier (OID) database")
-    (description "This crate is a helper crate, containing a database of
-OID objects.  These objects are intended for use when manipulating ASN.1
-grammars and BER/DER encodings, for example.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.6))))))
 
 (define-public rust-oid-registry-0.6
   (package
