@@ -2855,6 +2855,28 @@ too long errors.")
 integers.")
     (license license:expat)))
 
+(define-public rust-argparse-rs-0.1
+  (package
+    (name "rust-argparse-rs")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argparse-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "042kyri24pjv68iaj42h80smgsxb5dnk86na8m8faj5xcxckgdw6"))))
+    (build-system cargo-build-system)
+    (arguments
+      '(#:tests? #f)) ; can't find crate for `argparse`
+    (home-page "https://github.com/MarkJr94/argparser-rs")
+    (synopsis
+     "Simple argument parser inspired by the Python ArgumentParser")
+    (description
+     "This package provides a simple argument parser, meant to parse command line
+input.  It is inspired by the Python @code{ArgumentParser}.")
+    (license license:expat)))
+
 (define-public rust-ariadne-0.2
   (package
     (name "rust-ariadne")
