@@ -27118,6 +27118,24 @@ prime field implementations in rust.")
 @code{MacOS}) and file IDs (Windows).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-file-size-1
+  (package
+    (name "rust-file-size")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "file-size" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cyj7067fs7ml8pjrwzjy3qrns3yxaxakf0na1v5fffk0l0z2i4m"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Canop/file-size")
+    (synopsis "A function for formatting file sizes in 4 chars")
+    (description
+     "This package provides a function for formatting file sizes in 4 chars.")
+    (license license:expat)))
+
 (define-public rust-filedescriptor-0.8
   (package
     (name "rust-filedescriptor")
