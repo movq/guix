@@ -92701,8 +92701,54 @@ mile, ...).")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
+(define-public rust-ureq-3
+  (package
+    (name "rust-ureq")
+    (version "3.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ureq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pkb6lliv6s2xc4q8091axc292ljifwgl10qskjq0mz9yjyjsbna"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Many network test failures.
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-brotli-decompressor" ,rust-brotli-decompressor-4)
+                       ("rust-cookie-store" ,rust-cookie-store-0.21)
+                       ("rust-der" ,rust-der-0.7)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-rustls" ,rust-rustls-0.23)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-rustls-platform-verifier" ,rust-rustls-platform-verifier-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-socks" ,rust-socks-0.3)
+                       ("rust-ureq-proto" ,rust-ureq-proto-0.3)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-utf-8" ,rust-utf-8-0.7)
+                       ("rust-webpki-root-certs" ,rust-webpki-root-certs-0.26)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.26))
+       #:cargo-development-inputs (("rust-assert-no-alloc" ,rust-assert-no-alloc-1)
+                                   ("rust-auto-args" ,rust-auto-args-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-rustls" ,rust-rustls-0.23)
+                                   ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/algesten/ureq")
+    (synopsis "Simple, safe HTTP client")
+    (description "This package provides a minimal request library in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ureq-2
   (package
+    (inherit rust-ureq-3)
     (name "rust-ureq")
     (version "2.12.1")
     (source (origin
@@ -92740,11 +92786,7 @@ mile, ...).")
        (("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-rustls" ,rust-rustls-0.23)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/algesten/ureq")
-    (synopsis "Simple, safe HTTP client")
-    (description "This package provides minimal request library in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-ureq-proto-0.3
   (package
