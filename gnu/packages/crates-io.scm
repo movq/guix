@@ -79768,13 +79768,13 @@ languages and compilers.")
 (define-public rust-syn-2
   (package
     (name "rust-syn")
-    (version "2.0.90")
+    (version "2.0.98")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "syn" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-                (base32 "0cfg5dsr1x0hl6b9hz08jp1197mx0rq3xydqmqaws36xlms3p7ci"))))
+                (base32 "1cfk0qqbl4fbr3dz61nw21d5amvl4rym6nxwnfsw43mf90d7y51n"))))
     (build-system cargo-build-system)
     (arguments
      ;; Tests fail to compile
