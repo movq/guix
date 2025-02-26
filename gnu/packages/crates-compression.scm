@@ -163,14 +163,14 @@ included code is safe.")
 (define-public rust-brotli-decompressor-4
   (package
     (name "rust-brotli-decompressor")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "brotli-decompressor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qn39c7n6wm40i2bm0d3q2qslmaavlh804iv0ccbba4m80pbsics"))))
+        (base32 "0dqb0vbhrc77c09qf6qmbylgkfnbjaq8629qp0z42gc0gnnhbykl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; not all test files included
