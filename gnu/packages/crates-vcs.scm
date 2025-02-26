@@ -8393,8 +8393,40 @@ It's part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-libgit2-sys-0.18
+  (package
+    (name "rust-libgit2-sys")
+    (version "0.18.0+1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (delete-file-recursively "libgit2")))
+       (sha256
+        (base32 "1v7zcw1kky338grxs70y7fwpy70g846bpa5yzvl9f5bybr31g8g1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libssh2-sys" ,rust-libssh2-sys-0.3)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.9 openssl zlib))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Native bindings to the libgit2 library")
+    (description
+     "This package provides native Rust bindings to the @code{libgit2}
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libgit2-sys-0.17
   (package
+    (inherit rust-libgit2-sys-0.18)
     (name "rust-libgit2-sys")
     (version "0.17.0+1.8.1")
     (source
@@ -8416,13 +8448,7 @@ It's part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
                        ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.8 openssl zlib))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Native bindings to the libgit2 library")
-    (description
-     "This package provides native Rust bindings to the @code{libgit2}
-library.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.8 openssl zlib))))
 
 (define-public rust-libgit2-sys-0.16
   (package
