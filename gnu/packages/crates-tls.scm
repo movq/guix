@@ -387,8 +387,51 @@
     (license (list license:expat license:asl2.0))))
 
 ;; TODO: Unbundle aws-lc-fips.
+(define-public rust-aws-lc-fips-sys-0.13
+  (package
+    (name "rust-aws-lc-fips-sys")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-fips-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet
+         #~(begin
+             ; Relax constraint of 'regex' so we can use any 1.x version.
+             (substitute* "Cargo.toml"
+               (("~1\\.9\\.6") "1.9.6"))))
+       (sha256
+        (base32 "088by4wi3rxwyd9mkwr5n2l43a2jlinp5ywv2g0nb51b3dl3l019"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-regex" ,rust-regex-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-home-directory
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (native-inputs (list cmake-minimal go perl))
+    (home-page "https://github.com/aws/aws-lc-rs")
+    (synopsis
+     "AWS-LC is a general-purpose cryptographic library (FIPS version)")
+    (description
+     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
+Cryptography team for AWS and their customers.  This is the FIPS validated
+version of AWS-LC.")
+    (license (list license:isc license:openssl license:asl2.0))))
+
 (define-public rust-aws-lc-fips-sys-0.12
   (package
+    (inherit rust-aws-lc-fips-sys-0.13)
     (name "rust-aws-lc-fips-sys")
     (version "0.12.15")
     (source
@@ -412,27 +455,19 @@
          (add-after 'unpack 'set-home-directory
            (lambda _
              (setenv "HOME" "/tmp"))))))
-    (native-inputs (list cmake-minimal go perl))
-    (home-page "https://github.com/aws/aws-lc-rs")
-    (synopsis
-     "AWS-LC is a general-purpose cryptographic library (FIPS version)")
-    (description
-     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
-Cryptography team for AWS and their customers.  This is the FIPS validated
-version of AWS-LC.")
-    (license (list license:isc license:openssl license:asl2.0))))
+    (native-inputs (list cmake-minimal go perl))))
 
 (define-public rust-aws-lc-rs-1
   (package
     (name "rust-aws-lc-rs")
-    (version "1.11.1")
+    (version "1.12.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18z5wvb8ay1183vw3cbp8wpqil3pl2p8bxfcxrkx4sdn2v6bhyzl"))
+        (base32 "1l7vj2n2505vd7bc32qww7pampp3kcc4m50xwdqzcz3hz6nmbmsc"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
