@@ -18539,6 +18539,37 @@ number ``crunching``.")
     (description "On disk CSV indexing data structures.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-csv2svg-0.1
+  (package
+    (name "rust-csv2svg")
+    (version "0.1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "csv2svg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "145n8v7rnwy8hzbsmim10yxj0g47d72rp6h840p9kp3cc59crkrn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-argh" ,rust-argh-0.1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-cli-log" ,rust-cli-log-2)
+                       ("rust-crossterm" ,rust-crossterm-0.23)
+                       ("rust-csv" ,rust-csv-1)
+                       ("rust-directories-next" ,rust-directories-next-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-open" ,rust-open-1)
+                       ("rust-svg" ,rust-svg-0.13)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Canop/csv2svg")
+    (synopsis "Conversion from csv to svg")
+    (description "This package provides a library for conversion from csv to svg.")
+    (license license:expat)))
+
 (define-public rust-ct-codecs-1
   (package
     (name "rust-ct-codecs")
