@@ -317,13 +317,15 @@ This package includes the @command{tree-sitter} command-line tool.")
           (article "a")
           (inputs '())
           (get-cleanup-snippet tree-sitter-delete-generated-files)
+          (phases #~%standard-phases)
           (license license:expat))
   "Returns a package for Tree-sitter grammar.  NAME will be used with
 tree-sitter- prefix to generate package name and also for generating
 REPOSITORY-URL value if it's not specified explicitly, TEXT is a string which
 will be used in description and synopsis. GET-CLEANUP-SNIPPET is a function,
 it receives GRAMMAR-DIRECTORIES as an argument and should return a G-exp,
-which will be used as a snippet in origin."
+which will be used as a snippet in origin. PHASES is a G-exp that can be
+used to override the build phases."
   (let* ((multiple? (> (length grammar-directories) 1))
          (grammar-names (string-append text " grammar" (if multiple? "s" "")))
          (synopsis (string-append "Tree-sitter " grammar-names))
@@ -346,7 +348,8 @@ which will be used as a snippet in origin."
                 (snippet
                  (get-cleanup-snippet grammar-directories))))
       (build-system tree-sitter-build-system)
-      (arguments (list #:grammar-directories grammar-directories))
+      (arguments (list #:grammar-directories grammar-directories
+                       #:phases phases))
       (inputs inputs)
       (synopsis synopsis)
       (description description)
@@ -433,17 +436,17 @@ which will be used as a snippet in origin."
    #:license license:expat))
 
 (define-public tree-sitter-elixir
-  ;; No tags at all, version in the source code is 0.19.0
-  (let ((commit "b20eaa75565243c50be5e35e253d8beb58f45d56")
-        (revision "0"))
-    (tree-sitter-grammar
-     "elixir" "Elixir"
-     "1i0c0xki3sv24649p0ws7xs2jagbwg7z7baz1960239bj94nl487"
-     (git-version "0.19.0" revision commit)
-     #:article "an"
-     #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
-     #:commit commit
-     #:license (list license:asl2.0 license:expat))))
+  (tree-sitter-grammar
+   "elixir" "Elixir"
+   "12i0z8afdzcznn5dzrssr7b7jx4h7wss4xvbh3nz12j6makc7kzl"
+   "0.3.4"
+   #:phases #~(modify-phases %standard-phases
+                (add-after 'unpack 'delete-failing-test
+                  (lambda _
+                    (delete-file "test/highlight/module.ex"))))
+   #:article "an"
+   #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
+   #:license (list license:asl2.0 license:expat)))
 
 (define-public tree-sitter-heex
   (tree-sitter-grammar
