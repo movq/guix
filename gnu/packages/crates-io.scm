@@ -40436,14 +40436,14 @@ macros on libc without stdlib.")
 (define-public rust-libloading-0.8
   (package
     (name "rust-libloading")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libloading" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "194dvczq4sifwkzllfmw0qkgvilpha7m5xy90gd6i446vcpz4ya9"))
+        (base32 "0d2ccr88f8kv3x7va2ccjxalcjnhrci4j2kwxp7lfmbkpjs4wbzw"))
        (modules '((guix build utils)))
        (snippet
         '(begin (for-each delete-file
