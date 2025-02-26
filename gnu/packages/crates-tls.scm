@@ -808,8 +808,40 @@ targets")
      "This crate provides a macro to encode DER oids at compile time.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-der-parser-10
+  (package
+    (name "rust-der-parser")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "der-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19n13gjidjcbj23ps6fww322zx8mz4kfs4cvsd6kqnjx84b51nh7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.7)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-test-case" ,rust-test-case-3))))
+    (home-page "https://github.com/rusticata/der-parser")
+    (synopsis "Parser/encoder for ASN.1 BER/DER data")
+    (description "This crate provides a parser for Basic Encoding Rules (BER
+[X.690]) and Distinguished Encoding Rules(DER [X.690]), implemented with the
+@code{nom} parser combinator framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-der-parser-9
   (package
+    (inherit rust-der-parser-10)
     (name "rust-der-parser")
     (version "9.0.0")
     (source
@@ -831,13 +863,7 @@ targets")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-test-case" ,rust-test-case-3))))
-    (home-page "https://github.com/rusticata/der-parser")
-    (synopsis "Parser/encoder for ASN.1 BER/DER data")
-    (description "This crate provides a parser for Basic Encoding Rules (BER
-[X.690]) and Distinguished Encoding Rules(DER [X.690]), implemented with the
-@code{nom} parser combinator framework.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-test-case" ,rust-test-case-3))))))
 
 (define-public rust-der-parser-8
   (package
