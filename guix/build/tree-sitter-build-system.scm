@@ -51,6 +51,8 @@ and replace development dependencies with tree-sitter grammar node modules."
     (map (match-lambda
            (("dependencies" @ . _)
             '("dependencies" @))
+           (("peerDependencies" @ . _)
+            '("peerDependencies" @))
            (("devDependencies" @ . _)
             `("devDependencies" @
               ,@(filter-map (match-lambda
