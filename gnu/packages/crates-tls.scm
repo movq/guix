@@ -125,8 +125,44 @@
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))))
 
+(define-public rust-asn1-rs-0.7
+  (package
+    (name "rust-asn1-rs")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w3r3nwbamnpxzdkm0plkqsp9rwrgyi6cqbspbxpic8kf7n9ax30"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs-derive" ,rust-asn1-rs-derive-0.6)
+                       ("rust-asn1-rs-impl" ,rust-asn1-rs-impl-0.2)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-colored" ,rust-colored-3)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-colored" ,rust-colored-3)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-pem" ,rust-pem-3)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Parser/encoder for ASN.1 BER/DER data")
+    (description
+     "This package provides a parser/encoder for ASN.1 BER/DER data.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-0.6
   (package
+    (inherit rust-asn1-rs-0.7)
     (name "rust-asn1-rs")
     (version "0.6.2")
     (source
@@ -153,12 +189,7 @@
        #:cargo-development-inputs (("rust-colored" ,rust-colored-2)
                                    ("rust-hex-literal" ,rust-hex-literal-0.4)
                                    ("rust-pem" ,rust-pem-3)
-                                   ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/rusticata/asn1-rs")
-    (synopsis "Parser/encoder for ASN.1 BER/DER data")
-    (description
-     "This package provides a parser/encoder for ASN.1 BER/DER data.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-asn1-rs-0.5
   (package
