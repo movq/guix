@@ -8742,14 +8742,14 @@ self-signed X.509 format for use with crates other than webpki.")
 (define-public rust-webpki-roots-0.26
   (package
     (name "rust-webpki-roots")
-    (version "0.26.7")
+    (version "0.26.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webpki-roots" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zpykqqk4jnrx55jc8wcysnprhfdcwh35dsiwhm2fybydgqjyr2x"))))
+        (base32 "1jf54brni9lk4ak5pkma2pn18hli22gr7i7wp9zn2lzayy8v4412"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
@@ -8761,7 +8761,7 @@ self-signed X.509 format for use with crates other than webpki.")
                                    ("rust-rustls" ,rust-rustls-0.23)
                                    ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-x509-parser" ,rust-x509-parser-0.16)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.17)
                                    ("rust-yasna" ,rust-yasna-0.5))))
     (native-inputs
      (list pkg-config))
