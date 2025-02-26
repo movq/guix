@@ -8712,14 +8712,14 @@ Verification.")
 (define-public rust-webpki-root-certs-0.26
   (package
     (name "rust-webpki-root-certs")
-    (version "0.26.7")
+    (version "0.26.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webpki-root-certs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p15xwdlibwqlmkqjb6qqikypyxqb0lwxf70rxa01wzipm4xmmcw"))))
+        (base32 "1i462gigwj2mfxa7fxa2cvjmz19pr2j37aiz9cs1hb4dbqgxdbh9"))))
     (build-system cargo-build-system)
     (arguments
      (list #:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
@@ -8731,7 +8731,7 @@ Verification.")
                  rust-ring-0.17
                  rust-rustls-webpki-0.102
                  rust-tokio-1
-                 rust-x509-parser-0.16)))
+                 rust-x509-parser-0.17)))
     (home-page "https://github.com/rustls/webpki-roots")
     (synopsis "Mozilla trusted certificate authorities in self-signed X.509 format")
     (description
