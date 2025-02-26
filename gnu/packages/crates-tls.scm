@@ -1403,14 +1403,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-0.23
   (package
     (name "rust-rustls")
-    (version "0.23.19")
+    (version "0.23.23")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lgqjf1vh09kghyj34a4svn1max18pmhka6bwbxb61mv61240jwk"))))
+        (base32 "15gk2bmry78cps3ya38a7cn4jxc36xv1r7gndr0fbz40qjc6qya7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
@@ -1430,15 +1430,17 @@ grammars and BER/DER encodings, for example.")
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.22)
         ("rust-bencher" ,rust-bencher-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-log" ,rust-log-0.4)
+        ("rust-macro-rules-attribute" ,rust-macro-rules-attribute-0.2)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-rcgen" ,rust-rcgen-0.13)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-time" ,rust-time-0.3)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26)
+        ("rust-x509-parser" ,rust-x509-parser-0.17))))
     (home-page "https://github.com/rustls/rustls")
     (synopsis "Modern TLS library written in Rust")
     (description
