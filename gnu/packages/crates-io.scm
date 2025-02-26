@@ -6138,6 +6138,29 @@ with custom types.")
      "This package provides a simple interface for querying atty.")
     (license license:expat)))
 
+(define-public rust-auto-args-derive-0.1
+  (package
+    (name "rust-auto-args-derive")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "auto-args-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kw9nl3r4c84rjhyvnnihw0r2npyg1xrn06idjq80k2d9ilbqk3d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+                       ("rust-quote" ,rust-quote-0.6)
+                       ("rust-syn" ,rust-syn-0.15))))
+    (home-page "https://github.com/daveroundy/auto-args")
+    (synopsis
+     "Internal library used by rust-auto-args")
+    (description
+     "This package provides an internal library used by rust-auto-args.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-auto-enums-0.8
   (package
     (name "rust-auto-enums")
