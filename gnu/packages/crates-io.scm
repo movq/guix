@@ -14688,8 +14688,33 @@ based on color-backtrace.")
     (description "Global override of color control")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-colored-3
+  (package
+    (name "rust-colored")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "colored" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0plizddhxc4vgkzdbzky5zggyaqfrmyim2d0n6sb7py9j3nf1q7x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                                   ("rust-insta" ,rust-insta-1)
+                                   ("rust-rspec" ,rust-rspec-1))))
+    (home-page "https://github.com/mackwic/colored")
+    (synopsis "Add colors in your terminal")
+    (description
+     "The most simple way to add colors in your terminal.")
+    (license license:mpl2.0)))
+
 (define-public rust-colored-2
   (package
+    (inherit rust-colored-3)
     (name "rust-colored")
     (version "2.1.0")
     (source
@@ -14708,12 +14733,7 @@ based on color-backtrace.")
         ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-rspec" ,rust-rspec-1.0.0-beta.3))))
-    (home-page "https://github.com/mackwic/colored")
-    (synopsis "Add colors in your terminal")
-    (description
-     "The most simple way to add colors in your terminal.")
-    (license license:mpl2.0)))
+        ("rust-rspec" ,rust-rspec-1.0.0-beta.3))))))
 
 (define-public rust-colored-1
   (package
