@@ -58843,6 +58843,26 @@ memory maps from processes.")
      "This package provides a procedural macro implementation of quote!.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-proc-status-0.1
+  (package
+    (name "rust-proc-status")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-status" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04lp8kdj75m8s1hwxslyzz3fdgbs6zy4zfjhg2s7cysyj6nc1q7h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Canop/proc-status")
+    (synopsis "Simple access to proc/status info on unix")
+    (description
+     "This package provides simple access to proc/status info on unix.")
+    (license license:expat)))
+
 (define-public rust-process-control-5
   (package
     (name "rust-process-control")
