@@ -48777,8 +48777,40 @@ notification library.")
        (("rust-tempfile" ,rust-tempfile-3))))
     (license license:cc0)))
 
+(define-public rust-notify-debouncer-full-0.5
+  (package
+    (name "rust-notify-debouncer-full")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notify-debouncer-full" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ldqk50zzfayq7l4adzv2c2mj6lkgkgki0r5r18l619qfld8pn6j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-file-id" ,rust-file-id-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-notify" ,rust-notify-8)
+                       ("rust-notify-types" ,rust-notify-types-2)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-deser-hjson" ,rust-deser-hjson-2)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rstest" ,rust-rstest-0.24)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/notify-rs/notify")
+    (synopsis "Notify event debouncer optimized for ease of use")
+    (description
+     "This package provides a notify event debouncer optimized for ease of use.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-notify-debouncer-full-0.3
   (package
+    (inherit rust-notify-debouncer-full-0.5)
     (name "rust-notify-debouncer-full")
     (version "0.3.1")
     (source
@@ -48802,12 +48834,7 @@ notification library.")
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rstest" ,rust-rstest-0.17)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/notify-rs/notify")
-    (synopsis "Notify event debouncer optimized for ease of use")
-    (description
-     "This package provides a notify event debouncer optimized for ease of use.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-notify-debouncer-mini-0.4
   (package
