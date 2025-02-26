@@ -84802,14 +84802,14 @@ calling an SSH agent.")
 (define-public rust-time-0.3
   (package
     (name "rust-time")
-    (version "0.3.36")
+    (version "0.3.37")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11g8hdpahgrf1wwl2rpsg5nxq3aj7ri6xr672v4qcij6cgjqizax"))))
+        (base32 "08bvydyc14plkwhchzia5bcdbmm0mk5fzilsdpjx06w6hf48drrm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included
@@ -84831,8 +84831,8 @@ calling an SSH agent.")
         ("rust-num-conv" ,rust-num-conv-0.1)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rstest" ,rust-rstest-0.18)
-        ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+        ("rust-rstest" ,rust-rstest-0.23)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.7)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-test" ,rust-serde-test-1)
