@@ -1135,14 +1135,10 @@ used to override the build phases."
    "0.20.0"))
 
 (define-public tree-sitter-haskell
-  ;; There are a lot of additions, the last tag was placed more than 4 years ago
-  (let ((commit "3bdba07c7a8eec23f87fa59ce9eb2ea4823348b3")
-        (revision "0"))
-    (tree-sitter-grammar
-     "haskell" "Haskell"
-     "1hg19af1n510bndf5k5iri7dzb48xb527vispv1aapki4mvr98gx"
-     (git-version "0.14.0" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "haskell" "Haskell"
+   "0gpdv2w82w6qikp19ma2v916jg5ksh9i26q0lnd3bgbqnllif23f"
+   "0.23.1"))
 
 (define-public tree-sitter-hcl
   (tree-sitter-grammar
