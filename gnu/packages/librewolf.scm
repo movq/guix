@@ -455,9 +455,9 @@
                              (display "mk_add_options MOZ_CRASHREPORTER=0\n")
                              (display "mk_add_options MOZ_DATA_REPORTING=0\n")
                              (display
-                              "mk_add_options MOZ_SERVICES_HEALTHREPORT=0")
+                              "mk_add_options MOZ_SERVICES_HEALTHREPORT=0\n")
                              (display
-                              "mk_add_options MOZ_TELEMETRY_REPORTING=0")))
+                              "mk_add_options MOZ_TELEMETRY_REPORTING=0\n")))
                          (setenv "MOZCONFIG" mozconfig))
                        (invoke "./mach" "configure")))
                    (add-before 'build 'fix-addons-placeholder
