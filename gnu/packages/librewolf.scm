@@ -236,6 +236,7 @@
                               "--with-system-ffi"
                               "--enable-system-pixman"
                               "--enable-jemalloc"
+                              "--disable-jxl"
 
                               ;; see https://bugs.gnu.org/32833
                               "--with-system-nspr"
@@ -271,7 +272,8 @@
                               "--enable-optimize"
                               "--enable-strip"
                               "--enable-hardening"
-                              "--disable-elf-hack"))
+                              "--disable-elf-hack"
+                              "--disable-bootstrap"))
       #:imported-modules %cargo-utils-modules
       #:modules `((ice-9 regex)
                   (ice-9 string-fun)
@@ -424,6 +426,8 @@
                                (getcwd))
 
                        (let* ((mozconfig (string-append (getcwd) "/mozconfig"))
+                              (orig-mozconfig-content (call-with-input-file
+                                                        mozconfig get-string-all))
                               (out (assoc-ref outputs "out"))
                               (flags (cons (string-append "--prefix=" out)
                                            configure-flags)))
@@ -439,6 +443,7 @@
                              (display "\n")))
                          (with-output-to-file mozconfig
                            (lambda ()
+                             (display orig-mozconfig-content)
                              (apply write-flags flags)
                              ;; The following option unsets Telemetry
                              ;; Reporting. With the Addons Fiasco,
