@@ -313,7 +313,7 @@
                      (libavcodec (string-append ffmpeg
                                                 "/lib/libavcodec.so")))
                 ;; Arrange to load libavcodec.so by its absolute file name.
-                (substitute* 
+                (substitute*
                     "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                   (("libavcodec\\.so")
                    libavcodec)))))
@@ -406,7 +406,7 @@
                    (string-append all ", icu-uc >= 76.1")))
                 (if (string=? old-content
                               (pk (call-with-input-file file get-string-all)))
-                    (error 
+                    (error
                      "substitute did nothing, phase requires an update")))))
           (replace 'configure
             (lambda* (#:key inputs outputs configure-flags
@@ -472,14 +472,16 @@
                     (display "mk_add_options MOZ_CRASHREPORTER=0\n")
                     (display "mk_add_options MOZ_DATA_REPORTING=0\n")
                     (display
-                     "mk_add_options MOZ_SERVICES_HEALTHREPORT=0")
+                     "mk_add_options MOZ_SERVICES_HEALTHREPORT=0\n")
                     (display
-                     "mk_add_options MOZ_TELEMETRY_REPORTING=0")))
+                     "mk_add_options MOZ_TELEMETRY_REPORTING=0\n")
+                    (display
+                      "export MOZ_REQUIRE_SIGNING=\n")))
                 (setenv "MOZCONFIG" mozconfig))
               (invoke "./mach" "configure")))
           (add-before 'build 'fix-addons-placeholder
             (lambda _
-              (substitute* 
+              (substitute*
                   "toolkit/locales/en-US/toolkit/about/aboutAddons.ftl"
                 (("addons.mozilla.org")
                  "gnuzilla.gnu.org"))))
