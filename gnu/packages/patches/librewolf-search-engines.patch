@@ -1,0 +1,24 @@
+diff --git a/distribution/policies.json b/distribution/policies.json
+index 6cf0788..85aca7c 100644
+--- a/settings/distribution/policies.json
++++ b/settings/distribution/policies.json
+@@ -23,11 +23,7 @@
+             ]
+         },
+         "Extensions": {
+-            "Install": [
+-                "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
+-            ],
+             "Uninstall": [
+-                "google@search.mozilla.org",
+                 "bing@search.mozilla.org",
+                 "amazondotcom@search.mozilla.org",
+                 "ebay@search.mozilla.org",
+@@ -37,7 +33,6 @@
+         "SearchEngines": {
+             "PreventInstalls": false,
+             "Remove": [
+-                "Google",
+                 "Bing",
+                 "Amazon.com",
+                 "eBay",

@@ -111,7 +111,8 @@
           (commit version)
           (recursive? #t)))
     (file-name (git-file-name "librewolf-source" version))
-    (patches (search-patches "librewolf-neuter-locale-download.patch"))
+    (patches (search-patches "librewolf-neuter-locale-download.patch"
+                             "librewolf-search-engines.patch"))
     (sha256 (base32 hash))))
 
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
