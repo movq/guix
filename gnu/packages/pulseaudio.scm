@@ -61,7 +61,9 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages web)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
@@ -560,3 +562,56 @@ streams; dsnoop plugin allow multiple applications to capture from a single
 microphone; and plug plugin transparently converts audio between various
 sample formats, sample rates and channel numbers.")
     (license l:expat)))
+
+(define-public ncpamixer
+  ;; ncpamixer uses an external git repository of CMake modules to
+  ;; define functions for building man pages.
+  (let ((rnpgp-cmake-modules
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/rnpgp/cmake-modules")
+                 (commit "d5d76b2318f029f19b03ffb20bdd0b2d077d14bf")))
+           (file-name (git-file-name "rnpgp-cmake-modules" "d5d76b2318f029f19b03ffb20bdd0b2d077d14bf"))
+           (sha256
+            (base32
+              "0ss6fbiy8f9jbpc2vyn21d6iyindf474fig2b8x6w6qxg3kmgvn3")))))
+    (package
+      (name "ncpamixer")
+      (version "1.3.9")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fulhax/ncpamixer.git")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ra49mz0vsn45b87mzhif9w8q1kcwvhwakv46v6xx7zdll0y79xr"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+         #:tests? #f
+         #:phases #~(modify-phases %standard-phases
+                      (add-after 'unpack 'replace-network-fetc
+                        (lambda _
+                          (with-output-to-file
+                            "src/cmake.deps/FetchPandocMan.cmake"
+                            (lambda _
+                              (display
+                                (string-append "list(APPEND CMAKE_MODULE_PATH \""
+                                               #$rnpgp-cmake-modules
+                                               "\")"))))))
+                      (add-before 'configure 'change-dir
+                        (lambda _
+                          (chdir "src"))))))
+      (native-inputs
+        (list pandoc rnpgp-cmake-modules))
+      (inputs
+        (list ncurses pulseaudio))
+      (home-page "https://github.com/fulhax/ncpamixer")
+      (synopsis "Terminal-based PulseAudio volume mixer")
+      (description "This is an ncurses-based PulseAudio mixer inspired by
+  pavucontrol. It allows volume control, device selection, and visualisation
+  of sound levels from the terminal.")
+      (license l:expat))))
