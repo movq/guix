@@ -222,10 +222,8 @@
     (arguments
      (list
       #:configure-flags #~(let ((clang #$(this-package-native-input "clang")))
-                            `("--enable-application=browser"
-
                               ;; Configuration
-                              "--without-wasm-sandboxed-libraries"
+                            `("--without-wasm-sandboxed-libraries"
                               "--with-system-jpeg"
                               "--with-system-zlib"
                               "--with-system-png"
@@ -249,29 +247,17 @@
 
                               ;; Distribution
                               "--with-distribution-id=org.guix"
-                              "--with-app-name=librewolf"
                               "--with-app-basename=LibreWolf"
-                              "--with-branding=browser/branding/librewolf"
 
                               ;; Features
-                              "--disable-tests"
-                              "--disable-updater"
                               "--enable-pulseaudio"
-                              "--disable-crashreporter"
-                              "--allow-addon-sideload"
-                              "--with-unsigned-addon-scopes=app,system"
 
                               ;; switch only available on x86, whereas EME
                               ;; is not supported on other targets
                               ,@(if #$(target-x86?) '("--disable-eme") '())
 
                               ;; Build details
-                              "--disable-debug"
-                              "--enable-rust-simd"
-                              "--enable-release"
-                              "--enable-optimize"
                               "--enable-strip"
-                              "--enable-hardening"
                               "--disable-elf-hack"
                               "--disable-bootstrap"))
       #:imported-modules %cargo-utils-modules
@@ -456,13 +442,7 @@
                              ;; As a result of this, use the following
                              ;; command to permanently disable
                              ;; telemetry reporting.
-                             (display "unset MOZ_TELEMETRY_REPORTING\n")
-                             (display "mk_add_options MOZ_CRASHREPORTER=0\n")
-                             (display "mk_add_options MOZ_DATA_REPORTING=0\n")
-                             (display
-                              "mk_add_options MOZ_SERVICES_HEALTHREPORT=0\n")
-                             (display
-                              "mk_add_options MOZ_TELEMETRY_REPORTING=0\n")))
+                             (display "unset MOZ_TELEMETRY_REPORTING\n")))
                          (setenv "MOZCONFIG" mozconfig))
                        (invoke "./mach" "configure")))
                    (add-before 'build 'fix-addons-placeholder
