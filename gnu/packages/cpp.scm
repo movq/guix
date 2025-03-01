@@ -4194,3 +4194,23 @@ written in C99.")
     (properties `((tunable? . #t)))
     (home-page "https://github.com/aklomp/base64")
     (license license:bsd-2)))
+
+(define-public toml11
+  (package
+    (name "toml11")
+    (version "4.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ToruNiina/toml11.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d15b50cf9jgvh3w99xh6crh03bn2dmv9bdyvzq6knsk2diql1dj"))))
+    (build-system cmake-build-system)
+    (synopsis "TOML library for modern C++")
+    (description "This package provides a TOML parsing and serialization library for
+C++11 and later.")
+    (home-page "https://github.com/ToruNiina/toml11")
+    (license license:expat)))
