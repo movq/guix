@@ -119,6 +119,22 @@ C or C++ programs, though that is not its primary goal.")
 
    (properties '((hidden? . #t)))))
 
+(define-public libgc-next
+  (package
+    (inherit libgc)
+    (name "libgc")
+    (version "8.2.8")
+    (source (origin
+            (method url-fetch)
+            (uri (list (string-append "https://github.com/ivmai/bdwgc/releases"
+                                      "/download/v" version
+                                      "/gc-" version ".tar.gz")
+                       (string-append "https://www.hboehm.info/gc/gc_source"
+                                      "/gc-" version ".tar.gz")))
+            (sha256
+             (base32
+              "0q5imdfzpngpz81banf2wn6b8byrj0jp9j5m3xg349nb44304jbn"))))))
+
 (define-public libgc-7
   (package
    (inherit libgc)
