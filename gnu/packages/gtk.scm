@@ -769,6 +769,14 @@ highlighting and other features typical of a source code editor.")
                            "-Dothers=enabled")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-thumbnailer
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out")))
+               (substitute* "thumbnailer/gdk-pixbuf-thumbnailer.thumbnailer.in"
+                 (("@bindir@") (string-append "env GDK_PIXBUF_MODULE_FILE="
+                                              out
+                                              "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache "
+                                              "@bindir@"))))))
          (add-before 'configure 'disable-failing-tests
            (lambda _
              ;; The test for the fix for issue 205 causes failures.
@@ -782,7 +790,18 @@ highlighting and other features typical of a source code editor.")
                    (lambda* (#:key tests? #:allow-other-keys)
                      (when tests?
                        (invoke "meson" "test" "--timeout-multiplier" "5")))))
-               '()))))
+               '())
+         (add-after 'install 'generate-loader-cache
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out")))
+               (setenv "GDK_PIXBUF_MODULEDIR"
+                       (string-append out
+                                      "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))
+               (setenv "GDK_PIXBUF_MODULE_FILE"
+                       (string-append out
+                                      "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"))
+               (invoke (string-append out "/bin/gdk-pixbuf-query-loaders")
+                                      "--update-cache")))))))
     (propagated-inputs
      (list glib                         ;in Requires of gdk-pixbuf-2.0.pc
 
