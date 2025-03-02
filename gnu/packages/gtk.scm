@@ -3076,8 +3076,25 @@ Unix desktop environment under X11 as well as Wayland.")
      (list
       #:configure-flags
       #~(list (string-append "-Dgdk_pixbuf_moduledir="
-                             #$output "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))))
-    (inputs (list gdk-pixbuf glib gtk+ libwebp))
+                             #$output "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'generate-loader-cache
+            (lambda _
+              (setenv "GDK_PIXBUF_MODULEDIR"
+                      (string-append #$output
+                                     "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))
+              (setenv "GDK_PIXBUF_MODULE_FILE"
+                      (string-append #$output
+                                     "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"))
+              (invoke "gdk-pixbuf-query-loaders" "--update-cache")))
+          (add-after 'unpack 'patch-thumbnailer-file
+            (lambda _
+              (substitute* "webp-pixbuf.thumbnailer.in"
+                (("@bindir@") (string-append #$coreutils "/bin/env "
+                                             "GDK_PIXBUF_MODULE_FILE=" #$output
+                                             "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache " #$gdk-pixbuf "/bin"))))))))
+    (inputs (list coreutils gdk-pixbuf glib gtk+ libwebp))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/aruiz/webp-pixbuf-loader")
     (synopsis "WebP GdkPixbuf loader library")
