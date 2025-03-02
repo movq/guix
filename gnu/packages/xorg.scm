@@ -3235,6 +3235,9 @@ supported, and the RENDER extension is not accelerated by this driver.")
        (sha256
         (base32 "1z9bqfr81w2ahq2vyphgjbl0ffxndrpxb4mqqly76srjcj7d6ap8"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://nouveau.freedesktop.org")
@@ -5293,30 +5296,7 @@ draggable titlebars and borders.")
 (define-public xorg-server-for-tests
   (hidden-package
    (package
-     (inherit xorg-server)
-     (version "21.1.15")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://xorg.freedesktop.org/archive/individual"
-                            "/xserver/xorg-server-" version ".tar.xz"))
-        (sha256
-         (base32
-          "12g0g9ksswzx1kgn23gvrpa570fnpkdkmw1dfqjjg4422a884744"))
-        (patches
-         (list
-          ;; See:
-          ;;   https://lists.fedoraproject.org/archives/list/devel@lists.
-          ;;      fedoraproject.org/message/JU655YB7AM4OOEQ4MOMCRHJTYJ76VFOK/
-          (origin
-            (method url-fetch)
-            (uri (string-append
-                  "http://pkgs.fedoraproject.org/cgit/rpms/xorg-x11-server.git"
-                  "/plain/06_use-intel-only-on-pre-gen4.diff"))
-            (sha256
-             (base32
-              "0mm70y058r8s9y9jiv7q2myv0ycnaw3iqzm7d274410s0ik38w7q"))
-            (file-name "xorg-server-use-intel-only-on-pre-gen4.diff")))))))))
+     (inherit xorg-server))))
 
 (define-public eglexternalplatform
   (package

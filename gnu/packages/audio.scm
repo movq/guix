@@ -53,6 +53,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -459,7 +460,7 @@ Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro
 (define-public libopenmpt
   (package
     (name "libopenmpt")
-    (version "0.5.9")
+    (version "0.7.12")
     (source
      (origin
        (method url-fetch)
@@ -467,7 +468,7 @@ Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro
         (string-append "https://download.openmpt.org/archive/libopenmpt/src/"
                        "libopenmpt-" version "+release.autotools.tar.gz"))
        (sha256
-        (base32 "0h86p8mnpm98vc4v6jbvrmm02fch7dnn332i26fg3a2s1738m04d"))))
+        (base32 "160cbvbzv8wc9jlclfbxycr31h40dh14z56cnljya096czikravr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2792,13 +2793,14 @@ especially for creating reverb effects.  It supports impulse responses with 1,
         (base32 "0i6l25dmfk2ji2lrakqq9icnwjxklgcjzzk65dmsff91z2zva5rm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     `(#:configure-flags
+       '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+       #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-configure
                     (lambda _
                       (substitute* "configure"
                         ;; Install to <out/lib> regardless of platform.
-                        (("libnn=lib64") "libnn=lib"))
-                      #t)))))
+                        (("libnn=lib64") "libnn=lib")))))))
     (inputs
      (list alsa-lib readline))
     ;; uuid.h is included in the JACK type headers
@@ -4642,9 +4644,10 @@ control functionality, or just for playing around with the sound effects.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       ;; The upstream asks to identify the distribution to diagnose SoX
-       ;; bug reports.
-       '("--with-distro=Guix System Distribution")))
+       '("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+         ;; Upstream asks to identify the distribution to diagnose SoX
+         ;; bug reports.
+         "--with-distro=Guix System Distribution")))
     (native-inputs
      (list pkg-config))
     (inputs

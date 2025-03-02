@@ -35,7 +35,7 @@
 (define-public libgc
   (package
    (name "libgc")
-   (version "8.2.4")
+   (version "8.2.8")
    (source (origin
             (method url-fetch)
             (uri (list (string-append "https://github.com/ivmai/bdwgc/releases"
@@ -45,7 +45,7 @@
                                       "/gc-" version ".tar.gz")))
             (sha256
              (base32
-              "1hlgqkg9arc8sqf7wamvzmp3shb3np5z0h5v0qqksh3pw3dkq39x"))))
+              "0q5imdfzpngpz81banf2wn6b8byrj0jp9j5m3xg349nb44304jbn"))))
    (build-system gnu-build-system)
    (arguments
     (append
@@ -145,7 +145,7 @@ C or C++ programs, though that is not its primary goal.")
 (define-public libatomic-ops
   (package
     (name "libatomic-ops")
-    (version "7.6.12")
+    (version "7.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -153,7 +153,7 @@ C or C++ programs, though that is not its primary goal.")
                     version "/libatomic_ops-" version ".tar.gz"))
               (sha256
                (base32
-                "0glzah695wsf6c27hs5wwlw4mnq1vfivdshz1rb8pq7w4mp5dazh"))))
+                "0lcv86ib2ryqh18gsgarpkyf6k5l2bd1kh5lbkxv7wh7w9zj01fk"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (native-inputs (if (target-loongarch64?)

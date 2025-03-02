@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -3200,14 +3200,14 @@ external rate conversion.")
 (define-public iptables
   (package
     (name "iptables")
-    (version "1.8.8")
+    (version "1.8.11")
     (source
      (origin
        (method url-fetch)
        (uri (list (string-append "mirror://netfilter.org/iptables/iptables-"
-                                 version ".tar.bz2")))
+                                 version ".tar.xz")))
        (sha256
-        (base32 "17w5a4znq8rdj5djcldmy6mbnxq1v88ibssk2mipc1kivj4miivi"))))
+        (base32 "1cp7kw0d3fpmfmbl4adh88v02wnj4s5rfgyxsk52pjgqbvah6wyq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config flex bison))
@@ -7470,7 +7470,7 @@ graphically visualizing a @file{perf.data} file.")
            pkg-config))
     (inputs
      (list coreutils
-           cryptsetup
+           cryptsetup-minimal
            findutils
            gawk
            grep
@@ -7703,26 +7703,28 @@ of flash storage.")
 (define-public libseccomp
   (package
     (name "libseccomp")
-    (version "2.5.4")
+    (version "2.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/seccomp/libseccomp/"
-                                  "releases/download/v" version
-                                  "/libseccomp-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/seccomp/libseccomp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nyb3lspc5bsirpsx89vah3n54pmwlgxrwsfaxl01kq50i004afq"))))
+                "189yh66aj3z3jvns739qbj504f3mcl3w44pxxizw877pbj3kal11"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'skip-load-test
-                    (lambda _
-                      ;; This test does a native system call and fails when
-                      ;; run under QEMU user-mode emulation.  Just skip it.
-                      (delete-file "tests/52-basic-load.tests"))))))
+     (list
+      #:configure-flags #~(list "--disable-static")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'skip-load-test
+                     (lambda _
+                       ;; This test does a native system call and fails when
+                       ;; run under QEMU user-mode emulation.  Just skip it.
+                       (delete-file "tests/52-basic-load.tests"))))))
     (native-inputs
-     (list gperf which))
+     (list autoconf automake gperf libtool which))
     (synopsis "Interface to Linux's seccomp syscall filtering mechanism")
     (description "The libseccomp library provides an easy to use, platform
 independent, interface to the Linux Kernel's syscall filtering mechanism.  The
@@ -7775,50 +7777,49 @@ under OpenGL graphics workloads.")
     (license license:gpl3)))
 
 (define-public efivar
-  ;; XXX: 15622b7e5761f3dde3f0e42081380b2b41639a48 fixes compilation on i686.
-  ;; ca48d3964d26f5e3b38d73655f19b1836b16bd2d fixes cross-compilation.
-  (let ((commit "ca48d3964d26f5e3b38d73655f19b1836b16bd2d")
-        (revision "0"))
-    (package
-      (name "efivar")
-      (version (git-version "38" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/rhboot/efivar")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0zsab3hcv1v53cxwkvsk09ifnwhs48a6xa3kxlwvs87yxswspvi8"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        ;; Tests require a UEFI system and is not detected in the chroot.
-        #:tests? #f
-        #:make-flags #~(list (string-append "prefix="
-                                            #$output)
-                             (string-append "libdir="
-                                            #$output "/lib")
-                             (string-append "CC="
-                                            #$(cc-for-target)) "HOSTCC=gcc"
-                             (string-append "LDFLAGS=-Wl,-rpath="
-                                            #$output "/lib"))
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'build-deterministically
-                       (lambda _
-                         (substitute* "src/include/defaults.mk"
-                           ;; Don't use -march=native.
-                           (("-march=native")
-                            ""))))
-                     (delete 'configure))))
-      (native-inputs (list mandoc pkg-config))
-      (inputs (list popt))
-      (home-page "https://github.com/rhboot/efivar")
-      (synopsis "Tool and library to manipulate EFI variables")
-      (description "This package provides a library and a command line
+  (package
+    (name "efivar")
+    (version "39")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rhboot/efivar")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zd9dghg1z2rrsazv3d9rj7nik6kdqz42jiak65pipz7mpjn9zdk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Tests require a UEFI system and is not detected in the chroot.
+      #:tests? #f
+      #:make-flags #~(list (string-append "prefix="
+                                          #$output)
+                           (string-append "libdir="
+                                          #$output "/lib")
+                           (string-append "CC="
+                                          #$(cc-for-target))
+                           "HOSTCC=gcc"
+                           (string-append "LDFLAGS=-Wl,-rpath="
+                                          #$output "/lib")
+                           ;; Strictly only needed for i686-linux/32bit
+                           "CFLAGS=-g -O2 -Wno-error=format")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'build-deterministically
+                     (lambda _
+                       (substitute* "src/include/defaults.mk"
+                         ;; Don't use -march=native.
+                         (("-march=native")
+                          ""))))
+                   (delete 'configure))))
+    (native-inputs (list mandoc pkg-config))
+    (inputs (list popt))
+    (home-page "https://github.com/rhboot/efivar")
+    (synopsis "Tool and library to manipulate EFI variables")
+    (description "This package provides a library and a command line
 interface to the variable facility of UEFI boot firmware.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public efibootmgr
   (package
@@ -8274,14 +8275,14 @@ re-use code and to avoid re-inventing the wheel.")
 (define-public libnftnl
   (package
     (name "libnftnl")
-    (version "1.2.6")
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
                            "libnftnl-" version ".tar.xz"))
        (sha256
-        (base32 "1x3pqxclpxcw8x5qx0vyi7znf9xwlkqsfd9sy4cxlir1v4nfmsnf"))))
+        (base32 "15ddcyp91lxjh2wfi8xicjpffhn9rpiqsa8djbkqvc69npbabzip"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -8302,15 +8303,16 @@ used by nftables.")
 ;; This is used in iptables, which contributes to rust.  We're pinning this
 ;; variant to avoid accidental rebuilds of rust.
 (define-public libnftnl/pinned
-  (package (inherit libnftnl)
-    (version "1.2.3")
+  (package
+    (inherit libnftnl)
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
-                           "libnftnl-" version ".tar.bz2"))
+                           "libnftnl-" version ".tar.xz"))
        (sha256
-        (base32 "0m82bmh8i24hwxmz7rxwxjll4904ghd2b1x1p5h8algrg6dyl5p9"))))
+        (base32 "15ddcyp91lxjh2wfi8xicjpffhn9rpiqsa8djbkqvc69npbabzip"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -9553,7 +9555,7 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
 (define-public xfsprogs
   (package
     (name "xfsprogs")
-    (version "6.0.0")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -9561,7 +9563,7 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
                     "xfsprogs-" version ".tar.gz"))
               (sha256
                (base32
-                "14hc61nfc73nqwhyasc4haj5g7046im1dwz61bx338f86mjj5n5y"))))
+                "1n46n27fxx1137kni3drrhzhp1l8ksxabcsmi8yzxbhpbnl4q293"))))
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments

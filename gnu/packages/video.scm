@@ -12,7 +12,7 @@
 ;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
@@ -315,7 +315,9 @@ user has installed.")
     (arguments
      `(#:configure-flags
        (list
-        "CFLAGS=-O2 -g -fcommon"
+        ,(string-append "CFLAGS=-O2 -g -fcommon"
+                        " -Wno-error=implicit-function-declaration"
+                        " -Wno-error=int-conversion")
         ;; XXX: Broken API.
         ;; Undeclared variables 'sys_nerr' and 'sys_errlist'.
         ;; "--enable-libv4l2"
@@ -436,7 +438,7 @@ the Core 2 Duo.")
 (define-public mediasdk
   (package
     (name "mediasdk")
-    (version "22.4.4")
+    (version "23.2.2")
     (source
      (origin
        (method git-fetch)
@@ -444,9 +446,10 @@ the Core 2 Duo.")
         (git-reference
          (url "https://github.com/Intel-Media-SDK/MediaSDK")
          (commit (string-append "intel-" name "-" version))))
+       (patches (search-patches "mediasdk-gcc-14.patch"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18mrqringyv1drswm4m8ppw7sks6x4jzp6s0ag0h9hrpd15kn5rx"))))
+        (base32 "12if7ylhz1r8mpj2q2n7nw8nnsglm90jg8lqpl3zhajjyrmkfyn2"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -542,6 +545,10 @@ as a joint effort between the BBC and Fluendo.")
        (patches
         (search-patches "libquicktime-ffmpeg.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (native-inputs
      (list gettext-minimal doxygen pkg-config))
     (inputs
@@ -775,6 +782,7 @@ touchscreen devices and the ability to apply filters to their input events.")
      `(#:test-target "test"
        #:make-flags
        (list
+        "CC=gcc -g -O2 -Wno-error=implicit-function-declaration"
         (string-append "A52DIR=" (assoc-ref %build-inputs "liba52"))
         (string-append "DST=" (assoc-ref %outputs "out") "/bin"))
      #:phases
@@ -826,7 +834,11 @@ stream decoding")
     (arguments
      (list
       #:configure-flags
-      #~(list "--disable-static"
+      #~(list #$(string-append
+                 "CFLAGS=-g -O2"
+                 " -Wno-error=implicit-function-declaration"
+                 " -Wno-error=return-mismatch")
+              "--disable-static"
               (string-append "--with-ncurses="
                              #$(this-package-input "ncurses")))
       #:phases
@@ -1960,7 +1972,16 @@ audio/video codec library.")
                   "--enable-libaom"
                   "--enable-librav1e"
                   "--enable-libsrt"
-                  "--enable-libsvtav1")))))
+                  "--enable-libsvtav1")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'configure 'relax-gcc-14-strictness
+              (lambda _
+              (substitute* "ffbuild/config.mak"
+                (("CFLAGS *=" all)
+                 (string-append all
+                                " -Wno-error=incompatible-pointer-types"
+                                " -Wno-error=int-conversion")))))))))
     (inputs (modify-inputs (package-inputs ffmpeg-4)
               (delete "dav1d" "libaom" "rav1e" "srt")))))
 
@@ -2613,7 +2634,15 @@ streaming protocols.")
                 (("#! /bin/sh") (string-append "#!" (which "sh"))))
               (setenv "SHELL" (which "bash"))
               (setenv "CONFIG_SHELL" (which "bash"))
-              (apply invoke "./configure" configure-flags))))))
+              (apply invoke "./configure" configure-flags)
+              ;; Adding CFLAGS to #:configure-flags, or setting it in the
+              ;; enviroment does not work.  Adding CFLAGS to #:make-flags
+              ;; breaks the build.
+              (substitute* "config.mak"
+                (("CFLAGS *=" all)
+                 (string-append all
+                                " -Wno-error=incompatible-pointer-types"
+                                " -Wno-error=int-conversion"))))))))
     ;; FIXME: Add additional inputs once available.
     (native-inputs
      (list pkg-config yasm))
@@ -5701,7 +5730,8 @@ to newbies and professionals alike.")
     (arguments
      '(#:configure-flags '("LIBS=-lm")))
     (native-inputs
-     (list pkg-config doxygen))
+     ;; Avoid gcc-14's: error: SSE register return with SSE disabled
+     (list gcc-13 pkg-config doxygen))
     (home-page "https://gmerlin.sourceforge.net")
     (synopsis "Low level library for multimedia API building")
     (description

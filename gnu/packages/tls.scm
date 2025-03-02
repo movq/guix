@@ -14,7 +14,7 @@
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -92,7 +92,7 @@
 (define-public libtasn1
   (package
     (name "libtasn1")
-    (version "4.19.0")
+    (version "4.20.0")
     (source
      (origin
       (method url-fetch)
@@ -100,7 +100,7 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "0yizlr2y6gfjh86v68qw5wjcfg16arnw1f731kndd17l3jng04qn"))))
+        "0v57hwsv4wijb0fvfp6s9jx35izhhgfjssq3fvpaxm029jyy7q4j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
@@ -573,7 +573,7 @@ OpenSSL for TARGET."
 (define-public openssl-3.0
   (package
     (inherit openssl-1.1)
-    (version "3.0.8")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -586,7 +586,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "0gjb7qjl2jnzs1liz3rrccrddxbk6q3lg8z27jn1xwzx72zx44vc"))))
+                "1gwlfadp09wa9rng96azqw9m67d09ins68dcqafi7s1gzs1dlpg1"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl-1.1)
        ((#:phases phases '%standard-phases)
@@ -598,15 +598,6 @@ OpenSSL for TARGET."
                                            "/bin/perl"))))
             #$@(if (target-hurd?)
                    #~((delete 'patch-configure))
-                   #~())
-            #$@(if (target-hurd64?)
-                   #~((add-after 'unpack 'apply-hurd-patch
-                        (lambda _
-                          (let ((patch-file
-                                 #$(local-file
-                                    (search-patch "openssl-hurd64.patch"))))
-                            (invoke "patch" "--force" "-p1" "-i"
-                                    patch-file)))))
                    #~())))
        ((#:configure-flags flags #~'())
         (if (system-hurd?)              ;must not be used when
@@ -970,7 +961,7 @@ number generator")
 (define-public mbedtls-lts
   (package
     (name "mbedtls")
-    (version "2.28.7")
+    (version "2.28.9")
     (source
      (origin
        (method git-fetch)
@@ -979,11 +970,12 @@ number generator")
              (commit (string-append "mbedtls-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "070i5pxciw04swfqk1rmdprhsafn4cias3dlmkm467pqpjnhb394"))))
+        (base32 "0ldqhvmj9wl0yp3hz675zbnq69lw533s0ahy9bbdxxnj5gjb86gw"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
+           #~(list "-DCMAKE_C_FLAGS=-Wno-error=calloc-transposed-args"
+                   "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
                    "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
            #:phases
            #~(modify-phases %standard-phases

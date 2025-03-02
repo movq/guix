@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
@@ -509,6 +509,10 @@ g_test_add_func \\(\"/layout/gravity-metrics2\", test_gravity_metrics2\\);")
               (base32
                "0ip0ziys6mrqqmz4n71ays0kf5cs1xflj1gfpvs4fgy2nsrr482m"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (inputs
      (list glib pango-1.42))
     (native-inputs
@@ -711,10 +715,15 @@ highlighting and other features typical of a source code editor.")
                (base32
                 "1zbpj283b5ycz767hqz5kdq02wzsga65pp4fykvhg8xj6x50f6v9"))))
     (build-system gnu-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments gtksourceview)
-                 ((#:phases phases)
-                  `(modify-phases ,phases
-                     (delete 'disable-gtk-update-icon-cache)))))))
+    (arguments
+     (append
+      (list
+       #:configure-flags
+       #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"))
+      (substitute-keyword-arguments (package-arguments gtksourceview)
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (delete 'disable-gtk-update-icon-cache))))))))
 
 (define-public gdk-pixbuf
   (package
@@ -972,7 +981,11 @@ is part of the GNOME accessibility project.")
      (list
       #:parallel-tests? #f
       #:configure-flags
-      #~(list "--with-xinput=yes"
+      #~(list #$(string-append
+                 "CFLAGS=-g -O2"
+                 " -Wno-error=implicit-int"
+                 " -Wno-error=incompatible-pointer-types")
+              "--with-xinput=yes"
               (string-append "--with-html-dir=" #$output
                              "/share/gtk-doc/html"))
       #:phases

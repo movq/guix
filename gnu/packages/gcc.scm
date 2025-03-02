@@ -239,6 +239,33 @@ where the OS part is overloaded to denote a specific ABI---into GCC
 
           #:phases
           (modify-phases %standard-phases
+            (add-before 'configure 'relax-gcc-14s-strictness
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((bash (assoc-ref inputs "bash"))
+                      (wrapper (string-append (getcwd) "/gcc.sh"))
+                      (stage-wrapper (string-append (getcwd) "/stage-gcc.sh")))
+                  (with-output-to-file wrapper
+                    (lambda _
+                      (format #t "#! ~a/bin/bash
+exec gcc \"$@\" \
+    -Wno-error=implicit-function-declaration"
+                              bash)))
+                  (chmod wrapper #o555)
+                  (with-output-to-file stage-wrapper
+                    (lambda _
+                      (format #t "#! ~a/bin/bash
+exec \"$@\" \
+    -Wno-error=implicit-function-declaration"
+                              bash)))
+                  (chmod stage-wrapper #o555)
+                  ;; Rather than adding CC to #:configure-flags and
+                  ;; STAGE_CC_WRAPPER to #:make-flags, we add them to the
+                  ;; environment in this easily removable stage.
+                  (cond (,(%current-target-system) ;cross-build?
+                         (setenv "CC_FOR_BUILD" wrapper))
+                        (else
+                         (setenv "CC" wrapper)
+                         (setenv "STAGE_CC_WRAPPER" stage-wrapper))))))
             (add-before 'configure 'pre-configure
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (let ((libdir ,(libdir))
@@ -286,7 +313,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
 \"-L~a/lib %{!static:-rpath=~a/lib %{!static-libgcc:-rpath=~a/lib -lgcc_s}} \" ~a"
                                libc libc libdir suffix))
                       (("#define GNU_USER_TARGET_STARTFILE_SPEC.*$" line)
-                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib\"
+                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib/\"
 #define STANDARD_STARTFILE_PREFIX_2 \"\"
 ~a"
                                libc line)))
@@ -300,7 +327,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
 \"-L~a/lib %{!static:-rpath=~a/lib %{!static-libgcc:-rpath=~a/lib -lgcc_s}} \" ~a"
                                libc libc libdir suffix))
                       (("#define	STARTFILE_LINUX_SPEC.*$" line)
-                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib\"
+                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib/\"
 #define STANDARD_STARTFILE_PREFIX_2 \"\"
 ~a"
                                libc line))))
@@ -743,14 +770,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-11
   (package
    (inherit gcc-8)
-   (version "11.4.0")
+   (version "11.5.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "1ncd7akww0hl5kkmw1dj3qgqp3phdrr5dfnm7jia9s07n0ib4b9z"))
+              "0y1l6q4iy94nr30r3189fbb82ljbdqkq87y0y23wyifmx9l1iqm6"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"
                                      "gcc-10-libsanitizer-no-crypt.patch"
@@ -859,10 +886,7 @@ It also includes runtime support libraries for these languages.")
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
-(define-public gcc
-  (if (host-hurd64?)
-      gcc-14
-      gcc-11))
+(define-public gcc gcc-14)
 
 
 ;;;
@@ -1030,14 +1054,14 @@ using compilers other than GCC."
           (add-before 'configure 'chdir
             (lambda _
               (chdir "libstdc++-v3")))
-          #$@(let ((version (package-version gcc)))
-               (if (target-hurd64?)
-                   #~((add-after 'unpack 'patch-hurd64
-                        (lambda _
-                          (substitute* "libstdc++-v3/src/c++20/tzdb.cc"
-                            (("#if ! defined _GLIBCXX_ZONEINFO_DIR")
-                             "#if __GNU__ || ! defined _GLIBCXX_ZONEINFO_DIR")))))
-                   '())))
+
+          #$@(if (version>=? (package-version gcc) "14")
+                 #~((add-after 'unpack 'patch-tzdb.cc
+                      (lambda _
+                        (substitute* "libstdc++-v3/src/c++20/tzdb.cc"
+                          (("#if ! defined _GLIBCXX_ZONEINFO_DIR")
+                           "#if 1 // ! defined _GLIBCXX_ZONEINFO_DIR")))))
+                 '()))
 
       #:configure-flags '`("--disable-libstdcxx-pch"
                            ,(string-append "--with-gxx-include-dir="
@@ -1257,7 +1281,7 @@ misnomer.")))
 
 ;; This must match the 'gcc' variable, but it must also be 'eq?' to one of the
 ;; libgccjit-* packages above.
-(define-public libgccjit libgccjit-11)
+(define-public libgccjit libgccjit-14)
 
 (define (make-gccgo gcc)
   "Return a gccgo package based on GCC."

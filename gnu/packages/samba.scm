@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -177,7 +178,7 @@ external dependencies.")
   (hidden-package
    (package
      (name "samba")
-     (version "4.17.0")
+     (version "4.18.1")
      (source
       ;; For updaters: the current PGP fingerprint is
       ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
@@ -186,7 +187,7 @@ external dependencies.")
         (uri (string-append "https://download.samba.org/pub/samba/stable/"
                             "samba-" version ".tar.gz"))
         (sha256
-         (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4"))))
+         (base32 "03ncp49pfpzjla205y3xpb9iy61dz4pryyrvyz26422a4hpsmpnf"))))
      (build-system gnu-build-system)
      (arguments
       (list
@@ -296,29 +297,19 @@ Desktops into Active Directory environments using the winbind daemon.")
 (define-public samba
   (package
     (inherit samba/pinned)
-    (version "4.18.1")
-    (source
-     ;; For updaters: the current PGP fingerprint is
-     ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.samba.org/pub/samba/stable/"
-                           "samba-" version ".tar.gz"))
-       (sha256
-        (base32 "03ncp49pfpzjla205y3xpb9iy61dz4pryyrvyz26422a4hpsmpnf"))))
     (properties (alist-delete 'hidden? (package-properties samba/pinned)))))
 
 (define-public talloc
   (package
     (name "talloc")
-    (version "2.3.4")
+    (version "2.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/talloc/talloc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01b5pq39z1l26f86dy8jqb37fsjbvsvx5ji65jmy8rsy4sz9x7qp"))))
+                "19nqn6lygdwpfvc5g8jzany20hz126jfjlhajpwrh3z2cpjgkv45"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -386,14 +377,14 @@ destructors.  It is the core memory allocator used in Samba.")
 (define-public tevent
   (package
     (name "tevent")
-    (version "0.13.0")
+    (version "0.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/tevent/tevent-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "030x6ziapxiqvmi2m23ri2p9rsa202gfqr7b3cv48lx5gy8plhxr"))))
+                "17h293jyya0ad4znral5vhi8qd5qqhcn6wz4dxgr1h9dygh72a9n"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -428,14 +419,14 @@ many event types, including timers, signals, and the classic file descriptor eve
 (define-public ldb
   (package
     (name "ldb")
-    (version "2.6.1")
+    (version "2.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/ldb/ldb-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1j9n2yzhd35xjh0mdfgym58xfbma1d27bcavjv1q4rzqgpvh6x26"))
+                "1h6bsswcbpia86b6xzgf785m4biz06qzhhl67lfbp7f70908hmfi"))
               (modules '((guix build utils)))
               (snippet
                '(begin

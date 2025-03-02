@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023, 2024 dan <i@dan.games>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -242,7 +243,13 @@ behind the scenes.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))))
+                "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments sdl2)
+       ((#:configure-flags flags)
+        #~(cons*
+           "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+           #$flags))))))
 
 (define-public libmikmod
   (package
@@ -317,11 +324,14 @@ other supporting functions for SDL.")
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
-     ;; Explicitly link against shared libraries instead of dlopening them.
-     '(#:configure-flags '("--disable-jpg-shared"
-                           "--disable-png-shared"
-                           "--disable-tif-shared"
-                           "--disable-webp-shared")))
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+              ;; Explicitly link against shared libraries instead of dlopening them.
+              "--disable-jpg-shared"
+              "--disable-png-shared"
+              "--disable-tif-shared"
+              "--disable-webp-shared")))
     (native-inputs (list pkg-config))
     ;; libjpeg, libpng, and libtiff are propagated inputs because the
     ;; SDL_image headers include the headers of these libraries.  SDL is a

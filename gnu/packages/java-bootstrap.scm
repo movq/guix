@@ -112,6 +112,7 @@ and binary format defined in The Java Virtual Machine Specification.")
      `(#:configure-flags
        (list (string-append "JAVAC="
                             (search-input-file %build-inputs "/bin/jikes"))
+             "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
              "--disable-Werror"
              "--disable-gmp"
              "--disable-gtk-peer"
@@ -160,7 +161,11 @@ language.")
                             (assoc-ref %build-inputs "classpath"))
              "--disable-int-caching"
              "--enable-runtime-reloc-checks"
-             "--enable-ffi")
+             "--enable-ffi"
+             ,(string-append
+               "CFLAGS=-g -O2"
+               " -Wno-error=implicit-function-declaration"
+               " -Wno-error=incompatible-pointer-types"))
        #:phases
        ,(if (string-prefix? "aarch64" (or (%current-system)
                                           (%current-target-system)))

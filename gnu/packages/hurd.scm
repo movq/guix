@@ -81,7 +81,7 @@
            (delete 'build))
          #:tests? #f))
       (native-inputs
-       (list autoconf automake texinfo-4))
+       (list autoconf automake-1.16.5 texinfo))
       (supported-systems %hurd-systems)
       (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
       (synopsis "GNU Mach kernel headers")
@@ -270,12 +270,12 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                   (install-file "gnumach.gz" boot))))))))
     (native-inputs
      (list autoconf
-           automake
+           automake-1.16.5
            (if (%current-target-system)
                (cross-mig (%current-target-system))
                mig)
            perl
-           texinfo-4))
+           texinfo))
     (supported-systems `("i686-linux" ,@%hurd-systems))
     (synopsis "Microkernel of the GNU system")
     (description
@@ -499,12 +499,13 @@ exec ${system}/rc \"$@\"
                                      "/bin/bash")
                       (string-append "CC="
                                      ,(cc-for-target))
-                      (string-append "WARNINGS="
-                                     " -Wno-declaration-missing-parameter-type"
-                                     " -Wno-implicit-function-declaration"
-                                     " -Wno-implicit-int"
-                                     " -Wno-int-conversion"
-                                     " -Wno-strict-prototypes")
+                      (string-append
+                       "WARNINGS="
+                       " -Wno-error=declaration-missing-parameter-type"
+                       " -Wno-error=implicit-function-declaration"
+                       " -Wno-error=implicit-int"
+                       " -Wno-error=int-conversion"
+                       " -Wno-error=strict-prototypes")
                       (string-append "ARCH=" arch)))))
          (add-after 'install 'install-goodies
           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
@@ -634,11 +635,11 @@ implementing them.")
                "PKGDIR=libdde_linux26"
                (string-append "CC=" ,(cc-for-target))
                (string-append "WARNINGS="
-                              " -Wno-declaration-missing-parameter-type"
-                              " -Wno-implicit-function-declaration"
-                              " -Wno-implicit-int"
-                              " -Wno-int-conversion"
-                              " -Wno-strict-prototypes")
+                              " -Wno-error=declaration-missing-parameter-type"
+                              " -Wno-error=implicit-function-declaration"
+                              " -Wno-error=implicit-int"
+                              " -Wno-error=int-conversion"
+                              " -Wno-error=strict-prototypes")
                (let ((arch ,(match (or (%current-target-system)
                                        (%current-system))
                               ((? target-x86-32?)

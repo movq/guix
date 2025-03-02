@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Miguel <rosen644835@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2022, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
@@ -55,15 +55,14 @@
 (define-public gettext-minimal
   (package
     (name "gettext-minimal")
-    (version "0.21")
+    (version "0.23.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gettext/gettext-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "04kbg1sx0ncfrsbr85ggjslqkzzb243fcw9nyh3rrv1a22ihszf7"))
-              (patches (search-patches "gettext-libunicode-update.patch"))))
+                "0j8fijicvg8jkrisgsqbpnbmfb2mz3gx2p6pcwip82731yb7i9aj"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                            ;9 MiB of HTML
@@ -89,10 +88,13 @@
                    (substitute* '("gettext-tools/src/project-id"
                                   "gettext-tools/projects/KDE/trigger"
                                   "gettext-tools/projects/GNOME/trigger")
-                     (("/bin/pwd") "pwd"))
-                   #t))
+                     (("/bin/pwd") "pwd"))))
                (add-before 'check 'patch-tests
                  (lambda* (#:key inputs #:allow-other-keys)
+                   ;;libgettextlib-0.23.so => not found
+                   (substitute* "gettext-tools/gnulib-tests/test-execute.sh"
+                     (("^#!.*" all)
+                      (string-append all "exit 77;\n")))
                    (let* ((bash (which "sh")))
                      ;; Some of the files we're patching are
                      ;; ISO-8859-1-encoded, so choose it as the default
@@ -128,9 +130,7 @@
                                      "gettext-tools/gnulib-tests/Makefile.in"
                                    ;; See 'coreutils' for the rationale.
                                    ((" test-tls\\$\\(EXEEXT\\) ") " ")))
-                              '())
-
-                       #t))))
+                              '())))))
           #$@(if (%current-target-system)
                  #~((add-after 'install 'patch-cross-shebangs
                       (lambda _
@@ -157,6 +157,31 @@ translated messages from the catalogs.  Nearly all GNU packages use Gettext.")
     (properties `((upstream-name . "gettext")
                   (cpe-name . "gettext")))
     (license gpl3+)))                             ;some files are under GPLv2+
+
+(define-public gettext-minimal-0.21
+  (package/inherit gettext-minimal
+    (version "0.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gettext/gettext-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "04kbg1sx0ncfrsbr85ggjslqkzzb243fcw9nyh3rrv1a22ihszf7"))
+              (patches (search-patches "gettext-libunicode-update.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gettext-minimal)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'touch-test
+              (lambda _
+                (with-output-to-file "gettext-tools/gnulib-tests/test-execute.sh"
+                  (lambda _ (display "")))))
+            (add-before 'check 'patch-test
+              (lambda _
+                ;; This test fails with ggc-14.
+                (substitute* "gettext-tools/tests/xgettext-javascript-6"
+                  (("^#!.*" all) (string-append all "exit 77;\n")))))))))))
 
 ;; Use that name to avoid clashes with Guile's 'gettext' procedure.
 ;;

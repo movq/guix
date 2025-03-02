@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -157,20 +158,19 @@ as \"x86_64-linux\"."
     (build-system cmake-build-system)
     (native-inputs
      (cond ((version>=? version "19")
-            ;; TODO: Remove this when GCC 14 is the default.
-            ;; libfuzzer fails to build with GCC 13
-            (modify-inputs (package-native-inputs llvm)
-              (prepend gcc-14)))
+            (package-native-inputs llvm))
            ((version>=? version "18")
-            ;; TODO: Remove this when GCC 13 is the default.
-            ;; libfuzzer fails to build with GCC 12
+            ;; clang-18.1.8 doesn't build with gcc-14
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:534:52: error: use of built-in trait ‘__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
+            ;; clang-18.1.8 doesn't build with gcc-12
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__type_traits/is_convertible.h:28:77: error: there are no arguments to ‘__is_convertible’ that depend on a template parameter, so a declaration of ‘__is_convertible’ must be available [-fpermissive]
             (modify-inputs (package-native-inputs llvm)
               (prepend gcc-13)))
-           ((version>=? version "15")
-            ;; TODO: Remove this when GCC 12 is the default.
-            ;; libfuzzer fails to build with GCC 11
+           ((version>=? version "17")
+            ;; clang-17.0.6 doesn't build with gcc-14
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:623:30: error: use of built-in trait '__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
             (modify-inputs (package-native-inputs llvm)
-              (prepend gcc-12)))
+              (prepend gcc-13)))
            (else (package-native-inputs llvm))))
     (inputs
      (append
@@ -848,7 +848,8 @@ Library.")
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "0d681xiixmx9inwvz14vi3xsznrcryk06a8rvk9cljiq5kc80szc"))))
+        "0d681xiixmx9inwvz14vi3xsznrcryk06a8rvk9cljiq5kc80szc"))
+      (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-14)
        ((#:phases phases '%standard-phases)
@@ -915,7 +916,8 @@ Library.")
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
+        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))
+      (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-13)
        ((#:phases phases)

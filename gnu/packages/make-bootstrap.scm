@@ -75,7 +75,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
       (source (origin (inherit (package-source base))
                       (patches (append (search-patches
                                         (match (package-version base)
-                                          ("2.39" "glibc-2.39-bootstrap-system.patch")
+                                          ("2.41" "glibc-2.41-bootstrap-system.patch")
                                           (_ "glibc-bootstrap-system.patch")))
                                    (origin-patches (package-source base))))))
       (arguments
@@ -540,8 +540,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                 (substitute* (cons "gcc/config/rs6000/sysv4.h"
                                    (find-files "gcc/config"
                                                "^gnu-user.*\\.h$"))
-                  ((" -lgcc_s}}") "}}"))
-                #$@(if (target-hurd64?) '() '(#t))))))))
+                  ((" -lgcc_s}}") "}}"))))))))
      (inputs
       `(("zlib:static" ,zlib "static")
         ("isl:static" ,isl "static")

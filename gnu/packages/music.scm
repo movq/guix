@@ -60,6 +60,7 @@
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3172,7 +3173,8 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
      `(#:tests? #f                      ; tests cannot be linked
        #:build-type "Release"           ; needed to have PMALSA set
        #:configure-flags
-       (list "-DPORTMIDI_ENABLE_JAVA=Off"
+       (list "-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
+             "-DPORTMIDI_ENABLE_JAVA=Off"
              "-DPORTMIDI_ENABLE_TEST=Off") ; tests fail linking
        #:phases
        (modify-phases %standard-phases
@@ -3263,6 +3265,13 @@ using a system-independent interface.")
           (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
          (file-name (git-file-name name version))))
       (build-system python-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'relax-gcc-14-strictness
+              (lambda _
+                (setenv "CFLAGS" "-Wno-error=incompatible-pointer-types"))))))
       (inputs (list portmidi-2 alsa-lib))
       (native-inputs (list python-cython))
       (home-page "https://github.com/PortMidi")
@@ -5621,7 +5630,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "6.16.8")
+    (version "7.4.12")
     (source
      (origin
        (method git-fetch)
@@ -5630,7 +5639,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qp78j6gicm4ixkx5ihn2lilw3a2863y05zvw8w5gigyc2zmbqpp"))))
+        (base32 "09vcmx7w4zp76d6nl5xzsfihj8w3z96paji4kvc6y0xiz0fda38q"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases

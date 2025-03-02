@@ -1057,6 +1057,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/binutils-loongson-workaround.patch	\
   %D%/packages/patches/binutils-mingw-w64-timestamp.patch	\
   %D%/packages/patches/binutils-mingw-w64-deterministic.patch	\
+  %D%/packages/patches/binutils-2.41-fix-cross.patch		\
   %D%/packages/patches/bloomberg-bde-cmake-module-path.patch	\
   %D%/packages/patches/bloomberg-bde-tools-fix-install-path.patch	\
   %D%/packages/patches/boolector-find-googletest.patch	\
@@ -1125,6 +1126,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/classpath-miscompilation.patch		\
   %D%/packages/patches/clitest-grep-compat.patch		\
   %D%/packages/patches/clog-fix-shared-build.patch		\
+  %D%/packages/patches/clucene-gcc-14.patch			\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/cmake-curl-certificates-3.24.patch	\
   %D%/packages/patches/coda-use-system-libs.patch		\
@@ -1152,6 +1154,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/csvkit-set-locale-for-tests.patch			\
   %D%/packages/patches/cube-nocheck.patch			\
   %D%/packages/patches/cups-minimal-Address-PPD-injection-issues.patch	\
+  %D%/packages/patches/cura-engine-gcc-14.patch			\
   %D%/packages/patches/curl-CVE-2024-8096.patch			\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/curlftpfs-fix-error-closing-file.patch	\
@@ -1178,6 +1181,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dhclient-script-resolvconf-support.patch \
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
+  %D%/packages/patches/doc++-gcc-14.patch			\
   %D%/packages/patches/docbook-utils-documentation-edits.patch	\
   %D%/packages/patches/docbook-utils-escape-characters.patch	\
   %D%/packages/patches/docbook-utils-remove-jade-sp.patch	\
@@ -1207,7 +1211,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
   %D%/packages/patches/einstein-build.patch			\
   %D%/packages/patches/elfutils-tests-ptrace.patch		\
-  %D%/packages/patches/elfutils-libdwfl-string-overflow.patch	\
   %D%/packages/patches/elixir-path-length.patch			\
   %D%/packages/patches/elm-ghc9.2.patch	\
   %D%/packages/patches/elm-offline-package-registry.patch	\
@@ -1296,7 +1299,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/fifengine-swig-compat.patch		\
   %D%/packages/patches/fifo-map-fix-flags-for-gcc.patch		\
   %D%/packages/patches/fifo-map-remove-catch.hpp.patch		\
-  %D%/packages/patches/file-32bit-time.patch			\
   %D%/packages/patches/findutils-localstatedir.patch		\
   %D%/packages/patches/firebird-riscv64-support-pt1.patch	\
   %D%/packages/patches/firebird-riscv64-support-pt2.patch	\
@@ -1448,6 +1450,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.33-riscv64-miscompilation.patch	\
   %D%/packages/patches/glibc-2.39-git-updates.patch	\
   %D%/packages/patches/glibc-2.39-fmod-libm-a.patch		\
+  %D%/packages/patches/glibc-2.40-dl-cache.patch		\
   %D%/packages/patches/glibc-CVE-2019-7309.patch		\
   %D%/packages/patches/glibc-CVE-2019-9169.patch		\
   %D%/packages/patches/glibc-CVE-2019-19126.patch		\
@@ -1458,7 +1461,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-bootstrap-system-2.2.5.patch 	\
   %D%/packages/patches/glibc-bootstrap-system-2.16.0.patch 	\
   %D%/packages/patches/glibc-bootstrap-system.patch		\
-  %D%/packages/patches/glibc-2.39-bootstrap-system.patch	\
+  %D%/packages/patches/glibc-2.41-bootstrap-system.patch	\
   %D%/packages/patches/glibc-cross-objcopy.patch		\
   %D%/packages/patches/glibc-cross-objdump.patch		\
   %D%/packages/patches/glibc-dl-cache.patch			\
@@ -1466,9 +1469,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-hurd-clock_gettime_monotonic.patch	\
   %D%/packages/patches/glibc-2.31-hurd-clock_gettime_monotonic.patch	\
   %D%/packages/patches/glibc-2.37-hurd-clock_t_centiseconds.patch	\
-  %D%/packages/patches/glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch	\
+  %D%/packages/patches/glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch	\
   %D%/packages/patches/glibc-2.37-versioned-locpath.patch	\
-  %D%/packages/patches/glibc-2.38-ldd-x86_64.patch		\
+  %D%/packages/patches/glibc-2.41-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-hurd-clock_t_centiseconds.patch	\
   %D%/packages/patches/glibc-hurd-getauxval.patch		\
   %D%/packages/patches/glibc-hurd-gettyent.patch		\
@@ -1476,9 +1479,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-hurd-pthread_setcancelstate.patch	\
   %D%/packages/patches/glibc-hurd-signal-sa-siginfo.patch	\
   %D%/packages/patches/glibc-hurd64-gcc-14.2-tls-bug.patch	\
-  %D%/packages/patches/glibc-hurd64-fault.patch			\
   %D%/packages/patches/glibc-hurd64-intr-msg-clobber.patch	\
-  %D%/packages/patches/glibc-hurd64-sgms-context.patch		\
   %D%/packages/patches/glibc-ldd-powerpc.patch			\
   %D%/packages/patches/glibc-ldd-x86_64.patch			\
   %D%/packages/patches/glibc-locales.patch			\
@@ -1552,6 +1553,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fix-invalid-unicode-handling.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-hurd-posix-spawn.patch		\
+  %D%/packages/patches/guile-lzlib-gcc-14.patch			\
   %D%/packages/patches/guile-lzlib-hurd64.patch			\
   %D%/packages/patches/guile-present-coding.patch		\
   %D%/packages/patches/guile-rsvg-pkgconfig.patch		\
@@ -1805,6 +1807,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-9-fix-bitcast-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-lpad-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
+  %D%/packages/patches/llvm-13-gcc-14.patch			\
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
   %D%/packages/patches/lsof-compat-linux-6.9.patch		\
@@ -1840,6 +1843,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lvm2-no-systemd.patch    		\
   %D%/packages/patches/maturin-no-cross-compile.patch		\
   %D%/packages/patches/mecab-variable-param.patch		\
+  %D%/packages/patches/mediasdk-gcc-14.patch			\
   %D%/packages/patches/memtest86+-build-reproducibly.patch	\
   %D%/packages/patches/mercurial-hg-extension-path.patch	\
   %D%/packages/patches/mercurial-openssl-compat.patch		\
@@ -1928,6 +1932,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-imgui.patch	\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
   %D%/packages/patches/openbox-python3.patch			\
+  %D%/packages/patches/openexr-2-gcc-14.patch			\
   %D%/packages/patches/openjdk-currency-time-bomb.patch		\
   %D%/packages/patches/openjdk-currency-time-bomb2.patch	\
   %D%/packages/patches/openjdk-9-pointer-comparison.patch       \
@@ -1964,7 +1969,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/opensles-add-license-file.patch			\
   %D%/packages/patches/openssl-1.1-c-rehash-in.patch		\
   %D%/packages/patches/openssl-3.0-c-rehash-in.patch		\
-  %D%/packages/patches/openssl-hurd64.patch			\
   %D%/packages/patches/opentaxsolver-file-browser-fix.patch     \
   %D%/packages/patches/open-zwave-hidapi.patch			\
   %D%/packages/patches/orangeduck-mpc-fix-pkg-config.patch	\
@@ -1991,6 +1995,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/plasp-fix-normalization.patch \
   %D%/packages/patches/plasp-include-iostream.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
+  %D%/packages/patches/podofo-gcc-14.patch			\
   %D%/packages/patches/pokerth-boost.patch			\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/procps-strtod-test.patch                 \
@@ -2006,6 +2011,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-matplotlib-fix-legend-loc-best-test.patch	\
+  %D%/packages/patches/python-numpy-gcc-14.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-pillow-use-zlib-1.3.patch	\
   %D%/packages/patches/python-pydocstyle-add-support-for-pep701.patch	\
@@ -2165,7 +2171,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ragel-char-signedness.patch		\
   %D%/packages/patches/randomjungle-disable-static-build.patch	\
   %D%/packages/patches/rapidcheck-fix-libs.patch		\
-  %D%/packages/patches/raptor2-heap-overflow.patch		\
   %D%/packages/patches/ratpoison-shell.patch			\
   %D%/packages/patches/retroarch-unbundle-spirv-cross.patch	\
   %D%/packages/patches/rct-add-missing-headers.patch		\
@@ -2248,12 +2253,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/seq24-rename-mutex.patch			\
   %D%/packages/patches/libsequoia-fix-ffi-Makefile.patch	\
   %D%/packages/patches/libsequoia-remove-store.patch		\
-  %D%/packages/patches/serf-python3.patch			\
   %D%/packages/patches/shakespeare-spl-fix-grammar.patch		\
   %D%/packages/patches/shared-mime-info-xdgmime-path.patch	\
   %D%/packages/patches/sharutils-CVE-2018-1000097.patch		\
   %D%/packages/patches/sipwitch-fix-build-with-exosip5.patch	\
   %D%/packages/patches/slim-config.patch			\
+  %D%/packages/patches/slim-gcc-14.patch			\
   %D%/packages/patches/slim-login.patch				\
   %D%/packages/patches/slim-display.patch			\
   %D%/packages/patches/slurm-23-salloc-fallback-shell.patch	\
@@ -2288,6 +2293,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tao-fix-parser-types.patch		\
   %D%/packages/patches/tar-remove-wholesparse-check.patch	\
   %D%/packages/patches/tar-skip-unreliable-tests.patch		\
+  %D%/packages/patches/tbb-gcc-14.patch				\
   %D%/packages/patches/tbb-other-arches.patch			\
   %D%/packages/patches/tclxml-3.2-install.patch			\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
@@ -2459,7 +2465,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/zig-0.13-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.13-fix-runpath.patch		\
   %D%/packages/patches/zsh-egrep-failing-test.patch		\
-  %D%/packages/patches/zuo-bin-sh.patch
+  %D%/packages/patches/zuo-bin-sh.patch			\
+  %D%/packages/patches/zxing-cpp-1.2.0-gcc-14.patch
 
 MISC_DISTRO_FILES =				\
   %D%/packages/ld-wrapper.in

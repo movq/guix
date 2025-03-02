@@ -1852,7 +1852,36 @@ exec " gcc "/bin/" program
 ;; In the future, Gash et al. could handle it directly, but it's not
 ;; ready yet.
 (define bash-mesboot (mesboot-package "bash-mesboot" static-bash))
-(define sed-mesboot (mesboot-package "sed-mesboot" sed))
+
+;; "sed" from Gash-Utils lacks the 'w' command as of 0.2.0.
+(define sed-mesboot
+  (mesboot-package
+   "sed-mesboot"
+   (package
+     (inherit sed)
+     (version "4.8")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://gnu/sed/sed-" version
+                            ".tar.gz"))
+        (sha256
+         (base32
+          "0alqagh0nliymz23kfjg6g9w3cr086k0sfni56gi8fhzqwa3xksk"))
+        (patches (search-patches "coreutils-gnulib-tests.patch"))
+
+        ;; Remove this snippet once upstream releases a fixed version.
+        ;; This snippet changes Makefile.in, even though the upstream
+        ;; patch changes testsuite/local.mk, since we build sed from a
+        ;; release tarball.  See: https://bugs.gnu.org/36150
+        (snippet
+         '(begin
+            (substitute* "Makefile.in"
+              (("^  abs_srcdir='\\$\\(abs_srcdir\\)'.*" previous-line)
+               (string-append
+                previous-line
+                "  CONFIG_HEADER='$(CONFIG_HEADER)'\t\t\\\n")))))
+        (modules '((guix build utils))))))))
 
 ;; "sed" from Gash-Utils lacks the 'w' command as of 0.2.0.
 (define coreutils-mesboot
@@ -2399,13 +2428,7 @@ exec " gcc "/bin/" program
                                    ,(glibc-dynamic-linker
                                      (match (%current-system)
                                        ("x86_64-linux" "i686-linux")
-                                       (_ (%current-system))))))
-                  (if (target-hurd64?)
-                      ;;Convince gmp's configure that gcc works
-                      (list (string-append
-                             "CC_FOR_BUILD=gcc"
-                             " -Wno-implicit-function-declaration"))
-                      '())))))
+                                       (_ (%current-system))))))))))
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'unpack 'unpack-gmp&co
@@ -2429,6 +2452,15 @@ exec " gcc "/bin/" program
                                            char-set:letter)
                                         #$(package-name lib)))
                            (list gmp-6.0 mpfr mpc)))))
+             #$@(if (and (target-linux?) (target-x86?))
+                    #~((add-after 'unpack 'patch-system.h
+                         (lambda _
+                           ;; Avoid: missing binary operator before token "("
+                           (substitute* "gcc/system.h"
+                             (("#ifndef SIZE_MAX" all)
+                              (string-append "#define SIZE_MAX (ULONG_MAX)\n"
+                                             all))))))
+                    #~())
              #$@(if (target-hurd64?)
                     #~((add-after 'unpack 'patch-libcc1-static
                          (lambda _
@@ -2476,7 +2508,10 @@ exec " gcc "/bin/" program
 
               ;; The libstdc++ that libcc1 links against.
               ("libstdc++" ,(match (%current-system)
+                                   ("aarch64-linux" (make-libstdc++-boot0 gcc-5))
+                                   ("powerpc64le-linux" (make-libstdc++-boot0 gcc-5))
                                    ("riscv64-linux" (make-libstdc++-boot0 gcc-7))
+                                   ("i586-gnu" (make-libstdc++-boot0 gcc-5))
                                    ("x86_64-gnu" (make-libstdc++-boot0 gcc-14))
                                    (_ libstdc++-boot0)))
 
@@ -3264,22 +3299,14 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                        "/lib -L" zlib "/lib -Wl,-rpath="
                                        zlib "/lib")
                         flag))
-                  #$(if (target-hurd64?)
-                        `(cons
-                          (string-append
-                           ;;Convince gmp's configure that gcc works
-                           "STAGE_CC_WRAPPER=" (getcwd) "/build/gcc.sh")
-                          ,flags)
-                        flags))))
+                  #$flags)))
         ((#:configure-flags flags)
-         (if (target-hurd64?)
+         ;; XXX FIXME: Does this need to stay separate?
+         (if (or (target-hurd64?)
+                 (and (target-x86?) (target-linux?)))
              #~(append
                 #$flags
-                (list #$(string-append
-                         ;;Convince gmp's configure that gcc works
-                         "CC=gcc"
-                         " -Wno-implicit-function-declaration")
-                      "--disable-plugin"))
+                (list "--disable-plugin"))
              flags))
         ;; Build again GMP & co. within GCC's build process, because it's hard
         ;; to do outside (because GCC-BOOT0 is a cross-compiler, and thus
@@ -3325,19 +3352,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                                (getenv "CPLUS_INCLUDE_PATH")
                                                #\:))
                                       ":")
-                                     "\nAM_CXXFLAGS = "))))))
-             #$@(if (target-hurd64?)
-                    #~((add-after 'configure 'create-stage-wrapper
-                         (lambda _
-                           (with-output-to-file "gcc.sh"
-                             (lambda _
-                               (format #t "#! ~a/bin/bash
-exec \"$@\" \
-    -Wno-error \
-    -Wno-implicit-function-declaration"
-                                       #$static-bash-for-glibc)))
-                           (chmod "gcc.sh" #o555))))
-                    #~()))))))
+                                     "\nAM_CXXFLAGS = ")))))))))))
 
     ;; This time we want Texinfo, so we get the manual.  Add
     ;; STATIC-BASH-FOR-GLIBC so that it's used in the final shebangs of
@@ -3690,7 +3705,7 @@ is the GNU Compiler Collection.")
   (make-gcc-toolchain gcc-10))
 
 (define-public gcc-toolchain-11
-    (make-gcc-toolchain gcc-11))
+  (make-gcc-toolchain gcc-11))
 
 (define-public gcc-toolchain-12
   (make-gcc-toolchain gcc-12))
@@ -3703,9 +3718,7 @@ is the GNU Compiler Collection.")
 
 ;; The default GCC
 (define-public gcc-toolchain
-  (if (host-hurd64?)
-      gcc-toolchain-14
-      gcc-toolchain-11))
+  gcc-toolchain-14)
 
 (define-public gcc-toolchain-aka-gcc
   ;; It's natural for users to try "guix install gcc".  This package

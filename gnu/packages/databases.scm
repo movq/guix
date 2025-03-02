@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
@@ -306,9 +306,9 @@ ElasticSearch server")
 (define-public firebird
   (package
     (name "firebird")
-    (version "3.0.10")
+    (version "3.0.12")
     (source
-     (let ((revision "33601-0"))
+     (let ((revision "33787-0"))
        (origin
          (method url-fetch)
          (uri (string-append "https://github.com/FirebirdSQL/"
@@ -316,7 +316,7 @@ ElasticSearch server")
                              version "/"
                              "Firebird-" version "." revision ".tar.bz2"))
          (sha256
-          (base32 "0h033xj1kxwgvdv4ncm6kk0mqybvvn203gf88xcv3avys9hbnf4i"))
+          (base32 "07w109k237slwyhgyxma9r5my0dkvksc7ykpw0a4h7gpv06vzcl5"))
          (patches (search-patches "firebird-riscv64-support-pt1.patch"
                                   "firebird-riscv64-support-pt2.patch"))
          (modules '((guix build utils)))
@@ -448,7 +448,7 @@ ElasticSearch server")
     (inputs
      (list boost
            editline
-           icu4c
+           icu4c-71
            libtommath
            ncurses
            zlib))
@@ -956,7 +956,7 @@ Language.")
 (define-public mariadb
   (package
     (name "mariadb")
-    (version "10.10.2")
+    (version "10.11.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.mariadb.com/MariaDB"
@@ -964,7 +964,7 @@ Language.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ciw7y08wms9g3hzhyria49r1b9n5wpbhkndazv95d925c8x1jsp"))
+                "08phlqcwcwl753zi2jv702q7b3h25d489289mflnm8c31djp8smh"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1074,11 +1074,16 @@ Language.")
                       ;; <https://jira.mariadb.org/browse/MDEV-26320>.
                       "main.selectivity_no_engine"
 
-                      ;; FIXME: This test checks various table encodings and
+                      ;; FIXME: These tests check various table encodings and
                       ;; fails because Guix defaults to UTF8 instead of the
                       ;; upstream default latin1_swedish_ci.  It's not easily
                       ;; substitutable because several encodings are tested.
                       "main.system_mysql_db"
+                      "main.mysqldump-header"
+
+                      ;; These test sometimes fail.
+                      "main.log_slow"
+                      "main.mysqld--help-aria"
 
                       ;; XXX: This test occasionally fails on i686-linux:
                       ;; <https://jira.mariadb.org/browse/MDEV-24458>
@@ -2018,14 +2023,14 @@ changes.")
 (define-public tdb
   (package
     (name "tdb")
-    (version "1.4.7")
+    (version "1.4.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/tdb/tdb-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "03n2hz4sv003gpkyp57hk5kiw4xk9f2dkxq75kzk2gskxy6idyx4"))))
+                "0yndhh829ai2p3n4i63h1rhl22dcvzba0rffgqihjbc1k1sb5r3c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases

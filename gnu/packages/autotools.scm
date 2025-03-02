@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
-;;; Copyright © 2020, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
@@ -32,6 +32,7 @@
 (define-module (gnu packages autotools)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages m4)
@@ -142,6 +143,18 @@ know anything about Autoconf or M4.")
                                   (find-files "bin"
                                               (lambda (file stat)
                                                 (executable-file? file)))))))))))))
+
+(define-public autoconf-2.72
+  (package (inherit autoconf-2.71)
+    (version "2.72")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/autoconf/autoconf-"
+                          version ".tar.xz"))
+      (sha256
+       (base32
+        "0niz4852fgyavfh3gr4h4kzalk01nk70v6vfsja6r3ap349mr25s"))))))
 
 (define-public autoconf autoconf-2.69)
 
@@ -317,7 +330,7 @@ output is indexed in many ways to simplify browsing.")
     (home-page "https://josefsson.org/autobuild/")
     (license gpl3+)))
 
-(define-public automake
+(define-public automake-1.16.5
   (package
     (name "automake")
     (version "1.16.5")
@@ -341,6 +354,7 @@ output is indexed in many ways to simplify browsing.")
             (files '("share/aclocal")))))
     (arguments
      (list
+      #:tests? #f ;with gcc-14, 23 compiler "tap" tests fail.
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1)
@@ -359,13 +373,6 @@ output is indexed in many ways to simplify browsing.")
                 ;; that occur during the test suite.
                 (setenv "SHELL" sh)
                 (setenv "CONFIG_SHELL" sh))))
-          (add-before 'check 'skip-test
-            (lambda _
-              ;; This test requires 'etags' and fails if it's missing.
-              ;; Skip it.
-              (substitute* "t/tags-lisp-space.sh"
-                (("^required.*" all)
-                 (string-append "exit 77\n" all "\n")))))
 
           #$@(if (%current-target-system)
                  #~((add-after 'install 'patch-non-shebang-references
@@ -426,6 +433,36 @@ standards-compliant Makefiles.  Build requirements are entered in an
 intuitive format and then Automake works with Autoconf to produce a robust
 Makefile, simplifying the entire process for the developer.")
     (license gpl2+)))                      ; some files are under GPLv3+
+
+(define-public automake
+  (package/inherit automake-1.16.5
+    (name "automake")
+    (version "1.17")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/automake/automake-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "146rkdcwri2dkwn3pjrjs9v0wm4xyav9vvq4yw5vj4qy87yc2849"))
+              (patches
+               (search-patches "automake-skip-amhello-tests.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments automake-1.16.5)
+       ((#:tests? tests?)
+        #t)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'skip-test
+              (lambda _
+                (substitute*
+                    ;; This test requires 'etags' and fails if it's missing.
+                    '("t/tags-lisp-space.sh"
+                      ;; This test fails, probably a timestamp thing:
+                      ;; make: Nothing to be done for 'all'.
+                      "t/remake-aclocal-version-mismatch.sh")
+                  (("^#!.*" all)
+                   (string-append all "exit 77;\n")))))))))))
 
 (define-public libtool
   (package
