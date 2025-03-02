@@ -810,7 +810,7 @@ high-performance computing} clusters.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.16.1")
+    (version "2.26.2")
     (source
      (origin
        (method git-fetch)
@@ -819,45 +819,19 @@ high-performance computing} clusters.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rca8ljd33dmvh9bqk6sy1zxk97aawcr6k1f7hlm4d1cd9mrcw7x"))
-       (patches
-        (search-patches "nix-dont-build-html-doc.diff"))))
-    (build-system gnu-build-system)
+        (base32 "198jpxc38wpzkjmiv6hw2d9p5yljbrqmlwln7wzhsxdjxwyw3s8h"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--sysconfdir=/etc" "--enable-gc")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'install
-            ;; Don't try & fail to create subdirectories in /etc, but keep them
-            ;; in the output as examples.
-            (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
-              (let ((etc (string-append #$output "/etc")))
-                (apply invoke "make" "install"
-                       (string-append "sysconfdir=" etc)
-                       (string-append "profiledir=" etc "/profile.d")
-                       make-flags))))
-          (replace 'check
-            (lambda args
-              ;; A few tests expect the environment variable NIX_STORE to be
-              ;; "/nix/store"
-              (let ((original-NIX_STORE (getenv "NIX_STORE")))
-                (dynamic-wind
-                  (lambda ()
-                    (setenv "NIX_STORE" "/nix/store"))
-                  (lambda ()
-                    (apply (assoc-ref %standard-phases 'check) args))
-                  (lambda ()
-                    (setenv "NIX_STORE" original-NIX_STORE)))))))))
+      #:tests? #f
+      #:configure-flags #~(list "--sysconfdir=/etc")))
     (native-inputs
-     (list autoconf
-           autoconf-archive
-           automake
-           bison
+     (list bison
+           cmake-minimal
            flex
            googletest
-           jq
-           libtool
+           perl
+           perl-dbd-sqlite
            pkg-config
            rapidcheck))
     (inputs
@@ -867,13 +841,15 @@ high-performance computing} clusters.")
                    curl
                    editline
                    libarchive
-                   libgc
-                   libseccomp
+                   libgc-next
+                   libgit2-1.9
+                   libseccomp-next
                    libsodium
                    lowdown
                    nlohmann-json
                    openssl
                    sqlite
+                   toml11
                    xz
                    zlib)
              (if (or (target-x86-64?)
