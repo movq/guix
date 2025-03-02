@@ -2453,7 +2453,7 @@ compository, supporting the following features:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -2462,8 +2462,7 @@ compository, supporting the following features:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bw6d3bf8rm4mgrbcprxxljfxbyabbj2lwabk2z19r8lhfz38myy"))
-       (patches (search-patches "waybar-0.11.0-fix-tray-icons.patch"))))
+        (base32 "0i9an3yxbsbgpkl4zvwmk2g6vaap8shxix5gid6vx8x6z9wgg52n"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "--wrap-mode=nodownload")))
@@ -3532,7 +3531,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3541,7 +3540,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j2fv64yz77rfa003b89q0gfri7pbqvjp27wg8ri7x3hfkxrbxvn"))))
+                "1wbg3r4l7l4x94p8hl4zrjlmiqipg8p6gisi52nq1vgp1sz8zr48"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))

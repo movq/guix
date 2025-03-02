@@ -686,6 +686,34 @@ single values.  It also provides accelerated implementation of common
 mathematical functions operating on batches.")
     (license license:bsd-3)))
 
+(define-public icecream-cpp
+  ;; Last release was in 2020.
+  (let ((commit "95c8b91c2214be76a2847cd4ab37dccd9250ed77")
+        (revision "0"))
+    (package
+      (name "icecream-cpp")
+      (version (git-version "0.3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/renatoGarcia/icecream-cpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zw4aj5xs13grf7qj6f33dq7md9hn5i9mf6kz66b5jsx2fly6xxs"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DBUILD_TESTING=ON")))
+      (native-inputs (list boost catch2))
+      (home-page "https://github.com/renatoGarcia/icecream-cpp")
+      (synopsis "C++ library for @code{printf} debugging")
+      (description
+       "IceCream-Cpp is a C++ library for @code{printf} debugging.  It is
+inspired by the @url{https://github.com/gruns/icecream, Python library} of the
+same name.")
+      (license license:expat))))
+
 (define-public google-highway
   (package
     (name "google-highway")
@@ -1771,6 +1799,44 @@ Google's C++ code base.")
 a zero-dependency C++ header-only parser combinator library for creating
 parsers according to a Parsing Expression Grammar (PEG).")
     (license license:expat)))
+
+(define-public lexy
+  ;; Bug fixes since last release.
+  (let ((commit "34d2adf74a2b25b6bdd760a3bbb931f3fd5e60cd")
+        (revision "0"))
+    (package
+      (name "lexy")
+      (version (git-version "2022.12.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/foonathan/lexy")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ywcy3wdmqjj5z1w64hk0dwf8iv6p62s48m7l6vn881hfzc8hcxz"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DLEXY_BUILD_DOCS=OFF") ; needs Hugo
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-dependencies
+                   (lambda _
+                     (substitute* "tests/CMakeLists.txt"
+                       (("^message\\(STATUS \"Fetching doctest\"\\).*") "")
+                       (("^include\\(FetchContent\\).*") "")
+                       (("^FetchContent_Declare\\(doctest .*") "")
+                       (("^FetchContent_MakeAvailable\\(doctest\\)")
+                        "find_package(doctest REQUIRED)")
+                       (("^(target_link_libraries\\(lexy_test_base .*) doctest\\)"
+                         _ prefix)
+                        (string-append prefix ")"))))))))
+      (native-inputs (list doctest))
+      (home-page "https://lexy.foonathan.net/")
+      (synopsis "C++ parser combinator library")
+      (description "lexy is a parser combinator library for C++17 and later.")
+      (license license:boost1.0))))
 
 (define-public psascan
   (package

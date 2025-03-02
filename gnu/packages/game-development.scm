@@ -22,7 +22,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
-;;; Copyright © 2020-2022, 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2020-2022, 2024-2025 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
@@ -98,12 +98,14 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages music)
@@ -111,6 +113,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -130,6 +133,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
@@ -831,6 +835,95 @@ clone.")
     ;; As noted in 'COPYING', part of it is under GPLv2+, while the rest is
     ;; under BSD-2.
     (license license:gpl2+)))
+
+(define-public trenchbroom
+  (package
+    (name "trenchbroom")
+    (version "2024.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TrenchBroom/TrenchBroom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18cb3w7wxc9y2izh0flkkl77sg897dh0g49zq7rbhpvw35j4xgaj"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DCMAKE_BUILD_TYPE=Release" "-G" "Unix Makefiles"
+                   "-DCMAKE_PREFIX_PATH=cmake/packages"
+                   (string-append "-DFREEIMAGE_INCLUDE_PATH="
+                                  #$freeimage "/include")
+                   (string-append "-DFREEIMAGE_LIBRARY="
+                                  #$freeimage "/lib/libfreeimage.so")
+                   (string-append "-Dfreetype_INCLUDE_DIR="
+                                  #$freetype "/include/freetype2")
+                   (string-append "-Dfreetype_LIBRARY="
+                                  #$freetype "/lib/libfreetype.so"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-build-system
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("set\\(CMAKE_TOOLCHAIN_FILE")
+                      "#set(CMAKE_TOOLCHAIN_FILE"))
+                   (substitute* "app/CMakeLists.txt"
+                     (("/usr") #$output))))
+               (add-before 'build 'set-environment-variables
+                 (lambda _
+                   ;; Set home so fontconfig can write cache.
+                   (setenv "HOME" (getenv "TEMP"))
+                   ;; Set QT platform for offscreen rendering.
+                   (setenv "QT_QPA_PLATFORM" "offscreen")
+                   (setenv "XDG_RUNTIME_DIR" (getenv "TEMP"))))
+               (add-after 'install 'wrap-trenchbroom
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/trenchbroom")
+                     ;; TrenchBroom needs $XDG_DATA_DIRS set to find game
+                     ;; configs.
+                     `("XDG_DATA_DIRS" ":" prefix
+                       (,(string-append #$output "/share")))
+                     ;; TrenchBroom also doesn't work well with Wayland backend.
+                     '("QT_QPA_PLATFORM" = ("xcb")))))
+               (add-after 'install 'install-desktop-file
+                 (lambda _
+                   (make-desktop-entry-file
+                    (string-append #$output "/share/applications/"
+                                   #$(package-name this-package) ".desktop")
+                    #:name "TrenchBroom"
+                    #:comment #$(package-synopsis this-package)
+                    #:exec #$name
+                    #:icon #$name
+                    #:categories '("Development")
+                    #:keywords '("quake" "level" "editor")))))
+           #:tests? #f)) ; No tests.
+    (inputs
+     (list assimp
+           bash-minimal
+           catch2
+           fmt
+           freeglut
+           freeimage
+           freetype
+           glew
+           glm
+           glu
+           libxxf86vm
+           mesa
+           miniz
+           qtbase-5
+           qtsvg-5
+           tinyxml2))
+    (native-inputs (list git pandoc python p7zip))
+    (home-page "https://kristianduske.com/trenchbroom/")
+    (synopsis "Cross-platform level editor for Quake-engine based games")
+    (description "TrenchBroom is a cross-platform level editor for
+Quake-engine based games.  It supports Quake, Quake 2, Hexen 2, as well as
+other games.  TrenchBroom provides many simple and advanced tools to create
+complex and interesting levels.")
+    (license license:gpl3+)))
 
 (define-public tsukundere
   (package
@@ -2602,6 +2695,74 @@ scripted in a Python-like language.")
     (home-page "https://github.com/skypjack/entt")
     (license (list license:expat        ; code
                    license:cc-by4.0)))) ; documentation
+
+(define-public ericw-tools
+  (package
+    (name "ericw-tools")
+    (version "0.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/ericwa/ericw-tools")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11sap7qv0rlhw8q25azvhgjcwiql3zam09q0gim3i04cg6fkh0vp"))
+       (patches
+        (search-patches "ericw-tools-add-check-for-sse2-in-light.cc.patch"
+                        "ericw-tools-gcc-11-pass-const-to-offsetof.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DENABLE_LIGHTPREVIEW=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-copying-embree-files
+                 (lambda _
+                   ;; Tries to copy files from embree, disable it.
+                   (substitute* "light/CMakeLists.txt"
+                     (("install\\\(FILES \\$\\{EMBREE")
+                      "#install(FILES ${EMBREE"))))
+               (add-after 'install 'rename-binaries
+                 (lambda _
+                   ;; Rename binaries to prevent collisions with other
+                   ;; packages.
+                   (rename-file (string-append #$output "/bin/bspinfo")
+                                (string-append #$output "/bin/qbspinfo"))
+                   (rename-file (string-append #$output "/bin/bsputil")
+                                (string-append #$output "/bin/qbsputil"))
+                   (rename-file (string-append #$output "/bin/light")
+                                (string-append #$output "/bin/qlight"))
+                   (rename-file (string-append #$output "/bin/vis")
+                                (string-append #$output "/bin/qvis"))))
+               (add-after 'install-license-files 'clean-up-bin-directory
+                 (lambda _
+                   ;; Install target copies text documents to #$output/bin, move
+                   ;; them to #$output/share/doc.
+                   (delete-file (string-append #$output "/bin/gpl_v3.txt"))
+                   (rename-file
+                    (string-append #$output "/bin/changelog.txt")
+                    (string-append #$output "/share/doc/"
+                                   #$(package-name this-package) "-"
+                                   #$(package-version this-package)
+                                   "/changelog.txt"))
+                   (rename-file
+                    (string-append #$output "/bin/README.md")
+                    (string-append #$output "/share/doc/"
+                                   #$(package-name this-package) "-"
+                                   #$(package-version this-package)
+                                   "/README.md")))))
+           #:tests? #f)) ; No tests
+    (inputs (list embree-2))
+    (home-page "https://ericwa.github.io/ericw-tools/")
+    (synopsis "Map compiling tools for Quake/Hexen 2")
+    (description
+     "This package provides a collection of command line utilities used for
+building Quake maps as well as working with various Quake file formats.  The
+utilities include @command{qbsp} for building the geometry, @command{qvis} for
+calculating visibility, @command{qlight} for lighting, @command{bspinfo} for
+getting information, and @command{bsputil} for basic editing of data in a map
+file.")
+    (license license:gpl2+)))
 
 (define-public eureka
   (package

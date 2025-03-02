@@ -70,6 +70,7 @@
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
 # Copyright © 2024 Runciter <runciter@whispers-vpn.org>
 # Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+# Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 #
 # This file is part of GNU Guix.
 #
@@ -1244,6 +1245,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/epiphany-fix-encoding-test.patch	\
   %D%/packages/patches/ergodox-firmware-fix-json-target.patch	\
   %D%/packages/patches/ergodox-firmware-fix-numpad.patch	\
+  %D%/packages/patches/ericw-tools-add-check-for-sse2-in-light.cc.patch	\
+  %D%/packages/patches/ericw-tools-gcc-11-pass-const-to-offsetof.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/esmini-use-pkgconfig.patch		\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
@@ -2393,7 +2396,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/wacomtablet-add-missing-includes.patch	\
   %D%/packages/patches/wacomtablet-qt5.15.patch			\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
-  %D%/packages/patches/waybar-0.11.0-fix-tray-icons.patch	\
   %D%/packages/patches/wcstools-extend-makefiles.patch	\
   %D%/packages/patches/wdl-link-libs-and-fix-jnetlib.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\

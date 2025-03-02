@@ -162,6 +162,7 @@
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025, Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1158,6 +1159,39 @@ Python dataclasses.")
      "The @code{databind.json} package implements the de-/serialization to or
 from JSON payloads using the @code{databind.core} framework.")
     (license license:expat)))
+
+(define-public python-dlmanager
+  (package
+    (name "python-dlmanager")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/parkouss/dlmanager")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f2j7d396z50yd5r86jx8m5bxyv2i0cw967j68xcwpcg3b216zmr"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (substitute* "setup.py"
+                     (("pytest.main.self.pytest_args.")
+                      "pytest.main(self.pytest_args.split(' '))"))))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest python-mock))
+    (propagated-inputs
+     (list python-requests python-six))
+    (home-page "https://github.com/parkouss/dlmanager")
+    (synopsis "Download manager library")
+    (description
+     "Dlmanager is a download manager library.  It can download files in
+background and in parallel, and cancel downloads.  It stores downloads in
+a given directory, avoiding re-downloading files and limits the size of this
+directory, removing oldest files.")
+    (license license:gpl3+)))
 
 (define-public python-docspec
   (package
@@ -20473,13 +20507,13 @@ document.")
 (define-public python-symengine
   (package
     (name "python-symengine")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "symengine" version))
        (sha256
-        (base32 "0k61j333kpxf23c92hnc0svjywylffx72arcf1wjbwgbjy4a10xb"))))
+        (base32 "1np271qg2bnn32h52p0b102ybamjn9vaxpmsycx345zik327dp6r"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -23303,6 +23337,31 @@ write tooling that generates distribution files from Python projects.")
 resilience.  Lark can parse all context-free languages.  That means it is
 capable of parsing almost any programming language out there, and to
 some degree most natural languages too.")
+    (license license:expat)))
+
+(define-public python-find-libpython
+  (package
+    (name "python-find-libpython")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ktbarrett/find_libpython")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z1r9nix2z75sv41j97pnl6jgj2lk6k8la23vavxjpprsc9ld1dd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel
+                         ;; tests
+                         python-pytest))
+    (home-page "https://github.com/ktbarrett/find_libpython")
+    (synopsis "Find the path to the @code{libpython} dynamic library")
+    (description
+     "@code{find_libpython} helps find the path to the
+@code{libpython} dynamic library for the current Python environment.  It is
+both a script and a Python package.")
     (license license:expat)))
 
 (define-public python-libcst
