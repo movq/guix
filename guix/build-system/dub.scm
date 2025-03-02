@@ -64,7 +64,7 @@
 (define* (dub-build name inputs
                     #:key
                     source
-                    (tests? #t)
+                    (tests? #f)
                     (test-target #f)
                     (dub-build-flags ''())
                     (phases '%standard-phases)

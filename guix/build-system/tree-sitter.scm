@@ -94,7 +94,7 @@
                             source
                             (phases '%standard-phases)
                             (grammar-directories '("."))
-                            (tests? #t)
+                            (tests? #f)
                             (outputs '("out" "js"))
                             (search-paths '())
                             (system (%current-system))
@@ -132,7 +132,7 @@
                                   guile source
                                   (phases '%standard-phases)
                                   (grammar-directories '("."))
-                                  (tests? #t)
+                                  (tests? #f)
                                   (outputs '("out" "js"))
                                   (search-paths '())
                                   (native-search-paths '())

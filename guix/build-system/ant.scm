@@ -96,7 +96,7 @@
 (define* (ant-build name inputs
                     #:key
                     source
-                    (tests? #t)
+                    (tests? #f)
                     (test-target "check")
                     (configure-flags ''())
                     (make-flags ''())

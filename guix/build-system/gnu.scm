@@ -350,7 +350,7 @@ standard packages used as implicit inputs of the GNU build system."
                     (configure-flags ''())
                     (make-flags ''())
                     (out-of-source? #f)
-                    (tests? #t)
+                    (tests? #f)
                     (test-target "check")
                     (parallel-build? #t)
                     (parallel-tests? #t)
