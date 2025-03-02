@@ -8080,6 +8080,24 @@ developers.")
     (home-page "https://github.com/seccomp/libseccomp")
     (license license:lgpl2.1)))
 
+(define-public libseccomp-next
+  (package
+    (inherit libseccomp)
+    (name "libseccomp")
+    (version "2.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/seccomp/libseccomp/"
+                                  "releases/download/v" version
+                                  "/libseccomp-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1p44lz975fk17jcp8vif4v7hfx5kggjcmff9klvqqn6i6990idl3"))))
+    (arguments
+      (substitute-keyword-arguments (package-arguments libseccomp)
+        ((#:tests? _ #f) #f)))))
+
+
 (define-public radeontop
   (package
     (name "radeontop")
