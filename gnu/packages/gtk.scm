@@ -770,10 +770,11 @@ highlighting and other features typical of a source code editor.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-thumbnailer
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (coreutils (assoc-ref inputs "coreutils")))
                (substitute* "thumbnailer/gdk-pixbuf-thumbnailer.thumbnailer.in"
-                 (("@bindir@") (string-append "env GDK_PIXBUF_MODULE_FILE="
+                 (("@bindir@") (string-append coreutils "/bin/env GDK_PIXBUF_MODULE_FILE="
                                               out
                                               "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache "
                                               "@bindir@"))))))
@@ -812,8 +813,8 @@ highlighting and other features typical of a source code editor.")
            shared-mime-info))           ;required at runtime, too
     (inputs
      (if (%current-target-system)
-         (list bash-minimal)            ;for glib-or-gtk-wrap
-         '()))
+         (list coreutils bash-minimal)            ;for glib-or-gtk-wrap
+         (list coreutils)))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;glib-mkenums, etc.
