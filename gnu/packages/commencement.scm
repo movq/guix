@@ -317,9 +317,9 @@ pure Scheme to Tar and decompression in one easy step.")
     (native-inputs `(("bootar" ,bootar)))))
 
 (define (%boot-gash-inputs)
-  `(("bash" , gash-boot)                ; gnu-build-system wants "bash"
-    ("coreutils" , gash-utils-boot)
-    ("bootar" ,bootar)
+  `(("bash" , %bootstrap-coreutils&co)                ; gnu-build-system wants "bash"
+    ("coreutils" , %bootstrap-coreutils&co)
+    ("bootar" ,%bootstrap-coreutils&co)
     ("guile" ,%bootstrap-guile)))
 
 (define stage0-posix
