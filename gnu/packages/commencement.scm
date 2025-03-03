@@ -317,9 +317,9 @@ pure Scheme to Tar and decompression in one easy step.")
     (native-inputs `(("bootar" ,bootar)))))
 
 (define (%boot-gash-inputs)
-  `(("bash" , gash-boot)                ; gnu-build-system wants "bash"
-    ("coreutils" , gash-utils-boot)
-    ("bootar" ,bootar)
+  `(("bash" , %bootstrap-coreutils&co)                ; gnu-build-system wants "bash"
+    ("coreutils" , %bootstrap-coreutils&co)
+    ("bootar" ,%bootstrap-coreutils&co)
     ("guile" ,%bootstrap-guile)))
 
 (define stage0-posix
@@ -437,7 +437,7 @@ MesCC-Tools), and finally M2-Planet.")
                     (dir (with-directory-excursion ".." (getcwd))))
                 (setenv "GUILE_LOAD_PATH" (string-append
                                            dir "/nyacc-1.00.2/module"))
-                (invoke "gash" "configure.sh"
+                (invoke "bash" "configure.sh"
                         (string-append "--prefix=" out)
                         (string-append "--host="
                           #$(cond
@@ -450,7 +450,7 @@ MesCC-Tools), and finally M2-Planet.")
               (substitute* "kaem.run"
                 (("cp bin/mes-m2 bin/mes" all)
                  (string-append "GUILE_LOAD_PATH=/fubar\n" all)))
-              (invoke "gash" "bootstrap.sh")))
+              (invoke "bash" "bootstrap.sh")))
           (delete 'check)
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
@@ -459,7 +459,7 @@ MesCC-Tools), and finally M2-Planet.")
                 (("^( *)((cp|mkdir|tar) [^']*[^\\])\n" all space cmd)
                  (string-append space "echo '" cmd "'\n"
                                 space cmd "\n")))
-              (invoke "gash" "install.sh")
+              (invoke "bash" "install.sh")
               ;; Keep ASCII output, for friendlier comparison and bisection
               (let* ((out #$output)
                      (cache (string-append out "/lib/cache")))
@@ -836,7 +836,7 @@ MesCC-Tools), and finally M2-Planet.")
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
-       #:parallel-build? #f
+       #:parallel-build? #t
        #:tests? #f            ; check is naive, also checks non-built PROGRAMS
        #:strip-binaries? #f   ; no strip yet
        #:configure-flags '("AR=tcc -ar" "CC=tcc" "LD-tcc")
@@ -881,7 +881,7 @@ MesCC-Tools), and finally M2-Planet.")
      (list #:implicit-inputs? #f
            #:guile %bootstrap-guile
            #:tests? #f ; runtest: command not found
-           #:parallel-build? #f
+           #:parallel-build? #f ; hangs
            #:strip-binaries? #f ; no strip yet
            #:configure-flags
            #~(let ((cppflags (string-append
@@ -931,7 +931,7 @@ MesCC-Tools), and finally M2-Planet.")
      (list #:implicit-inputs? #f
            #:guile %bootstrap-guile
            #:tests? #f
-           #:parallel-build? #f
+           #:parallel-build? #f ; hangs
            #:strip-binaries? #f
            #:configure-flags
            #~(let ((out (assoc-ref %outputs "out")))
@@ -1234,7 +1234,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (propagated-inputs '())
     (arguments
      `(#:implicit-inputs? #f
-       #:parallel-build? #f
+       #:parallel-build? #f ; hangs
        #:guile ,%bootstrap-guile
        #:configure-flags '("LIBS=-lc -lnss_files -lnss_dns -lresolv")
        #:phases
@@ -1305,7 +1305,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
            #:modules '((guix build gnu-build-system)
                        (guix build utils)
                        (srfi srfi-1))
-           #:parallel-build? #f             ; for debugging
+           #:parallel-build? #t             ; for debugging
            #:make-flags
            #~(let* ((libc (assoc-ref %build-inputs "libc"))
                     (ldflags (string-append
@@ -1414,7 +1414,8 @@ ac_cv_c_float_format='IEEE (little-endian)'
            (sha256
             (base32
              "1fqqk5zkmdg4vmqzdmip9i42q6b82i3f6yc0n86n9021cr7ms2k9"))))
-       ,@(package-native-inputs gcc-core-mesboot1)))
+       ,@(package-native-inputs gcc-core-mesboot1)
+       ("gash-boot-utils" ,gash-utils-boot)))
     (arguments
      (substitute-keyword-arguments (package-arguments gcc-core-mesboot1)
        ((#:configure-flags configure-flags)
@@ -1469,7 +1470,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
-       #:parallel-build? #f
+       #:parallel-build? #t
        ;; checking for grep that handles long lines and -e...
        ;; configure: error: no acceptable grep could be found
        #:configure-flags '("ac_cv_path_GREP=grep")
@@ -1507,7 +1508,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (propagated-inputs '())
     (arguments
      `(#:implicit-inputs? #f
-       #:parallel-build? #f
+       #:parallel-build? #t
        #:guile ,%bootstrap-guile
        #:configure-flags '("ac_cv_func_connect=no")
        #:make-flags '("gawk")
@@ -1740,7 +1741,8 @@ exec " gcc "/bin/" program
     (source (bootstrap-origin (package-source gcc-4.9)))
     (native-inputs `(("gcc-wrapper" ,gcc-mesboot1-wrapper)
                      ("headers" ,glibc-headers-mesboot)
-                     ,@(%boot-mesboot4-inputs)))
+                     ,@(%boot-mesboot4-inputs)
+                     ("gash-utils" ,gash-utils-boot)))
     (arguments
      `(#:validate-runpath? #f
        ,@(substitute-keyword-arguments (package-arguments gcc-mesboot1)
@@ -1882,17 +1884,21 @@ exec " gcc "/bin/" program
       (inherit pkg)
       (native-inputs
        `(("sed" ,sed-mesboot)
-         ,@(package-native-inputs pkg))))))
+         ,@(package-native-inputs pkg)
+         ("gash-utils-boot" ,gash-utils-boot)))
+      (arguments
+        (substitute-keyword-arguments (package-arguments pkg)
+          ((#:configure-flags flags #~(list))
+           #~(cons "--disable-year2038" #$flags)))))))
 
 (define grep-mesboot
   (let ((pkg (mesboot-package "grep-mesboot" grep)))
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments
-         (strip-keyword-arguments
-           '(#:configure-flags)
-           (package-arguments pkg))))
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:configure-flags flags #~(list))
+           #~(list "--disable-year2038"))))
       (native-inputs
        `(("sed" ,sed-mesboot)
          ,@(package-native-inputs pkg))))))
