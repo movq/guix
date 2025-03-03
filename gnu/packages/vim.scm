@@ -782,7 +782,7 @@ is based on Vim's builtin plugin support.")
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.9.5")
+    (version "0.10.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -791,7 +791,7 @@ is based on Vim's builtin plugin support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j3z7jay0m6g06v04falrzr062g07xr4svbrc3hywlqi2h6rrvk5"))))
+                "007v6aq4kdwcshlp8csnp12cx8c0yq8yh373i916ddqnjdajn3z3"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules
