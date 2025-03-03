@@ -550,18 +550,6 @@ is used by the Requests library to verify HTTPS requests.")
       #:modules '((guix build cargo-build-system)
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-      #:cargo-inputs
-      (list rust-asn1-0.20
-            rust-cc-1
-            rust-cfg-if-1
-            rust-foreign-types-0.3
-            rust-foreign-types-shared-0.1
-            rust-once-cell-1
-            rust-openssl-0.10
-            rust-openssl-sys-0.9
-            rust-pem-3
-            rust-pyo3-0.23
-            rust-self-cell-1)
       #:install-source? #false
       #:phases
       #~(modify-phases %standard-phases
@@ -589,7 +577,8 @@ is used by the Requests library to verify HTTPS requests.")
            python-pytest-xdist
            python-setuptools
            python-wheel))
-    (inputs (list maturin openssl python-wrapper))
+    (inputs
+     (cons* maturin openssl python-wrapper (cargo-inputs 'python-cryptography)))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Cryptographic recipes and primitives for Python")
