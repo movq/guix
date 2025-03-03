@@ -2284,12 +2284,12 @@ in FUSE for rootless containers.")
 (define-public bees
   (package
     (name "bees")
-    (version "0.10")
+    (version (git-version "0.10.0" "1" "47243aef1429dd2b3eab253f9cf99559a1108f35"))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Zygo/bees")
-                    (commit (string-append "v" version))))
+                    (commit "47243aef1429dd2b3eab253f9cf99559a1108f35")))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
@@ -2303,7 +2303,7 @@ in FUSE for rootless containers.")
                      (("#include .crucible/city.h.") "#include <city.h>"))))
               (sha256
                (base32
-                "1j1v9bxijs8gvrb7rg0q1158xjvmfc8dlzwx768fxf3w8w2gfwvz"))))
+                "0qcy9k6fqq55x0mmpqcmg4way4chyf1jizh0vs73q9l7kkaif2qm"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
