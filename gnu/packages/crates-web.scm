@@ -2,7 +2,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
@@ -288,7 +288,8 @@
         ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.18.0-alpha.2)
         ("rust-webpki" ,rust-webpki-0.21))
        #:cargo-development-inputs
-       (("rust-actix-testing" ,rust-actix-testing-1))))))
+       (("rust-actix-testing" ,rust-actix-testing-1)
+        ("rust-bytes" ,rust-bytes-0.5))))))
 
 (define-public rust-actix-connect-0.2
   (package
@@ -561,11 +562,18 @@
        (uri (crate-uri "actix-http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06chrs9asbxmxzgiw5sw7ky97yrin9g88nmd6w407a6y9z668rn1"))))
-    ;; XXX: The crate fails to't build with with the same error as
-    ;; rust-actix-connect.  Skip build for now.
+        (base32 "06chrs9asbxmxzgiw5sw7ky97yrin9g88nmd6w407a6y9z668rn1"))
+       (modules '((guix build utils)))
+       ;; Crate chrono stopped using the Duration struct of crate time.
+       ;; See: https://github.com/actix/actix-web/issues/3135
+       (snippet #~(substitute* '("src/cookie/builder.rs"
+                                 "src/cookie/jar.rs"
+                                 "src/cookie/mod.rs"
+                                 "src/cookie/parse.rs")
+                    (("use chrono::Duration") "use time::Duration")))))
     (arguments
-     `(#:skip-build? #true
+     ;; Cargo fails to compile two different actix-http v1.0.1.
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.2)
         ("rust-actix-connect" ,rust-actix-connect-1)
@@ -609,7 +617,15 @@
         ("rust-slab" ,rust-slab-0.4)
         ("rust-time" ,rust-time-0.1))
        #:cargo-development-inputs
-       (("rust-actix-http-test" ,rust-actix-http-test-1))))))
+       (("rust-actix-connect" ,rust-actix-connect-1)
+        ("rust-actix-http-test" ,rust-actix-http-test-1)
+        ("rust-actix-server" ,rust-actix-server-1)
+        ("rust-actix-tls" ,rust-actix-tls-1)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
 
 (define-public rust-actix-http-0.2
   (package
@@ -1507,7 +1523,8 @@ asynchronous request/response operations.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))
        #:cargo-development-inputs
-       (("rust-actix-testing" ,rust-actix-testing-1))))))
+       (("rust-actix-testing" ,rust-actix-testing-1)
+        ("rust-bytes" ,rust-bytes-0.5))))))
 
 (define-public rust-actix-utils-3
   (package
@@ -1910,7 +1927,8 @@ the Actix ecosystem.")
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-actix-rt" ,rust-actix-rt-1)
-        ("rust-actix-web" ,rust-actix-web-3))))))
+        ("rust-actix-web" ,rust-actix-web-3)
+        ("rust-futures-util" ,rust-futures-util-0.3))))))
 
 (define-public rust-actix-web-codegen-0.1
   (package
@@ -2126,10 +2144,9 @@ built on the Actix ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1idacmq7n3irmdjkbxc5kdwspxk9w1gip94pcmfk7wky3m6isq6p"))))
-    ;; XXX: The crate fails to't build with with the same error as
-    ;; rust-actix-connect.  Skip build for now.
     (arguments
-     `(#:skip-build? #true
+     ;; The actix-web crate used may be too recent.
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.2)
         ("rust-actix-http" ,rust-actix-http-1)
@@ -2149,9 +2166,18 @@ built on the Actix ecosystem.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.6))
        #:cargo-development-inputs
-       (("rust-actix-http-test" ,rust-actix-http-test-1)
+       (("rust-actix-connect" ,rust-actix-connect-1)
+        ("rust-actix-http" ,rust-actix-http-1)
+        ("rust-actix-http-test" ,rust-actix-http-test-1)
+        ("rust-actix-server" ,rust-actix-server-1)
+        ("rust-actix-tls" ,rust-actix-tls-1)
+        ("rust-actix-utils" ,rust-actix-utils-1)
         ("rust-actix-web" ,rust-actix-web-2)
-        ("rust-brotli" ,rust-brotli-3))))))
+        ("rust-brotli" ,rust-brotli-3)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-webpki" ,rust-webpki-0.21))))))
 
 (define-public rust-awc-0.2
   (package
@@ -3142,7 +3168,7 @@ for sync managers.")
        (sha256
         (base32 "0qn457y8xh03p7c7cpk76r22gqpyqxc58g5022j3iya7d0j4rcx5"))))
     (arguments
-     `(#:skip-build? #t ;; TODO missing indirect dependency
+     `(#:skip-build? #t ; Missing development dependencies.
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-bytes" ,rust-bytes-0.4)
@@ -3159,14 +3185,14 @@ for sync managers.")
         ("rust-hex" ,rust-hex-0.2)
         ("rust-quickcheck" ,rust-quickcheck-0.4)
         ("rust-rand" ,rust-rand-0.3)
-        ;;("rust-rustls" ,rust-rustls-0.12) requires 0.5
+        ;; ("rust-rustls" ,rust-rustls-0.12)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tokio" ,rust-tokio-0.1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
+        ;; ("rust-tokio-rustls" ,rust-tokio-rustls-0.5)
         ("rust-walkdir" ,rust-walkdir-1)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
+        ;; ("rust-webpki-roots" ,rust-webpki-roots-0.14)
+        ("rust-webpki" ,rust-webpki-0.18))))))
 
 (define-public rust-h3-0.0.6
   (package
@@ -3850,7 +3876,11 @@ requests and responses.")
        (uri (crate-uri "http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w81s4bcbmcj9bjp7mllm8jlz6b31wzvirz8bgpzbqkpwmbvn730"))))
+        (base32 "1w81s4bcbmcj9bjp7mllm8jlz6b31wzvirz8bgpzbqkpwmbvn730"))
+       (modules '((guix build utils)))
+       ;; Tests pass with indexmap 1.9.3.
+       (snippet #~(substitute* "Cargo.toml"
+                    (("<=1.8") "1.8")))))
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
@@ -3858,7 +3888,7 @@ requests and responses.")
         ("rust-itoa" ,rust-itoa-1))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-indexmap" ,rust-indexmap-1.8)
+        ("rust-indexmap" ,rust-indexmap-1)
         ("rust-quickcheck" ,rust-quickcheck-0.9)
         ("rust-rand" ,rust-rand-0.7)
         ("rust-seahash" ,rust-seahash-3)
@@ -3880,14 +3910,14 @@ requests and responses.")
         (base32
          "1w21xnhd8f48zvbmm5njg2y1nb4p08ppn8r0cs2xi5d8wgnzbk6n"))))
     (arguments
-     `(#:tests? #f          ; doc tests fail
+     `(#:cargo-test-flags '("--lib")
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-itoa" ,rust-itoa-0.4))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-indexmap" ,rust-indexmap-1.8)
+        ("rust-indexmap" ,rust-indexmap-1)
         ("rust-quickcheck" ,rust-quickcheck-0.6)
         ("rust-rand" ,rust-rand-0.4)
         ("rust-seahash" ,rust-seahash-3)
@@ -3969,7 +3999,8 @@ HTTP request or response body.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
-        ("rust-http" ,rust-http-0.2))))))
+        ("rust-http" ,rust-http-0.2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))))))
 
 (define-public rust-http-body-0.3
   (package
@@ -5077,8 +5108,13 @@ that integrates with Rust idioms.")
         ("rust-waker-fn" ,rust-waker-fn-1))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
         ("rust-indicatif" ,rust-indicatif-0.15)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
         ("rust-test-case" ,rust-test-case-1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
 
@@ -5132,6 +5168,47 @@ which speaks Serde.")
     (synopsis "Create and decode JWTs in a strongly typed way")
     (description "Create and decode JWTs in a strongly typed way.")
     (license license:expat)))
+
+(define-public rust-minreq-2
+  (package
+    (name "rust-minreq")
+    (version "2.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "minreq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qd1wxawx4aiqj7g7p2n6xwdsqa3ad9g9j7qc58gpf81xc7l436s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            ;; Tries to access the network.
+                            "--skip=src/lib.rs - (line 112)"
+                            "--skip=src/lib.rs - (line 130)"
+                            "--skip=src/lib.rs - (line 143)"
+                            "--skip=src/lib.rs - (line 160)")
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-punycode" ,rust-punycode-0.4)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-tiny-http" ,rust-tiny-http-0.12))))
+    (home-page "https://github.com/neonmoe/minreq")
+    (synopsis "Simple, minimal-dependency HTTP client")
+    (description
+     "This package provides a simple, minimal-dependency HTTP client.")
+    (license license:isc)))
 
 (define-public rust-mockito-1
   (package
@@ -5432,6 +5509,30 @@ in the Rust programming language.")
     (synopsis "Macros for poem")
     (description "This package provides macros for poem.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-punycode-0.4
+  (package
+    (name "rust-punycode")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "punycode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zm5722qaz1zhxb5nxnisj009crrknjs9xv4vdp9z0yn42rxrqg9"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Clippy was integrated into rust-1.29.
+                 (substitute* "Cargo.toml.orig"
+                   ((".*clippy.*") ""))
+                 (rename-file "Cargo.toml.orig" "Cargo.toml")))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/mcarton/rust-punycode.git")
+    (synopsis "Functions to decode and encode Punycode")
+    (description
+     "This package provides functions to decode and encode Punycode.")
+    (license license:expat)))
 
 (define-public rust-reqwest-0.12
   (package
@@ -6272,12 +6373,12 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
      `(#:cargo-inputs
        (("rust-ascii" ,rust-ascii-1)
         ("rust-chunked-transfer" ,rust-chunked-transfer-1)
-        ("rust-httparse" ,rust-httparse-1)
         ("rust-httpdate" ,rust-httpdate-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-rustls" ,rust-rustls-0.20)
-        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2))
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
+        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-fdlimit" ,rust-fdlimit-0.1)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
@@ -7165,8 +7266,7 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3))))))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-trust-dns-https-0.3
   (package
@@ -7202,7 +7302,8 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-webpki" ,rust-webpki-0.19)
         ("rust-webpki-roots" ,rust-webpki-roots-0.16))
        #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-0.1))))))
+       (("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-tokio" ,rust-tokio-0.1))))))
 
 (define-public rust-trust-dns-native-tls-0.20
   (package
@@ -7646,9 +7747,7 @@ DNS protocol library for all Trust-DNS projects.")
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-tokio" ,rust-tokio-0.2))))))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-trust-dns-proto-0.7
   (package
@@ -7922,8 +8021,7 @@ other queries.")
         ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.18.0-alpha.2)
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3))))))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-trust-dns-resolver-0.11
   (package
@@ -8614,14 +8712,14 @@ Verification.")
 (define-public rust-webpki-root-certs-0.26
   (package
     (name "rust-webpki-root-certs")
-    (version "0.26.7")
+    (version "0.26.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webpki-root-certs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p15xwdlibwqlmkqjb6qqikypyxqb0lwxf70rxa01wzipm4xmmcw"))))
+        (base32 "1i462gigwj2mfxa7fxa2cvjmz19pr2j37aiz9cs1hb4dbqgxdbh9"))))
     (build-system cargo-build-system)
     (arguments
      (list #:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
@@ -8633,7 +8731,7 @@ Verification.")
                  rust-ring-0.17
                  rust-rustls-webpki-0.102
                  rust-tokio-1
-                 rust-x509-parser-0.16)))
+                 rust-x509-parser-0.17)))
     (home-page "https://github.com/rustls/webpki-roots")
     (synopsis "Mozilla trusted certificate authorities in self-signed X.509 format")
     (description
@@ -8644,14 +8742,14 @@ self-signed X.509 format for use with crates other than webpki.")
 (define-public rust-webpki-roots-0.26
   (package
     (name "rust-webpki-roots")
-    (version "0.26.7")
+    (version "0.26.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webpki-roots" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zpykqqk4jnrx55jc8wcysnprhfdcwh35dsiwhm2fybydgqjyr2x"))))
+        (base32 "1jf54brni9lk4ak5pkma2pn18hli22gr7i7wp9zn2lzayy8v4412"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
@@ -8663,7 +8761,7 @@ self-signed X.509 format for use with crates other than webpki.")
                                    ("rust-rustls" ,rust-rustls-0.23)
                                    ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-x509-parser" ,rust-x509-parser-0.16)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.17)
                                    ("rust-yasna" ,rust-yasna-0.5))))
     (native-inputs
      (list pkg-config))

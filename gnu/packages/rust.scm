@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Nikolai Merinov <nikolai.merinov@member.fsf.org>
-;;; Copyright © 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
@@ -1040,6 +1040,51 @@ safety and thread safety guarantees.")
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor"))))))))))
 
+(define-public rust-1.83
+  (let ((base-rust (rust-bootstrapped-package rust-1.82 "1.83.0"
+                    "0vhwhk4cbyppnz0lcazfjyddyz811fgvadfxswldicpashxpfbbj")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/gcc"
+                         "src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2"
+                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
+                         "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
+                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* '("vendor/tempfile-3.10.1/Cargo.toml"
+                            "vendor/tempfile-3.13.0/Cargo.toml")
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\"")))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'configure 'use-system-llvm
+               (lambda _
+                 (substitute* "config.toml"
+                   (("\\[llvm\\]") "[llvm]\ndownload-ci-llvm = false")
+                   (("\\[rust\\]") "[rust]\ndownload-rustc = false"))))))))
+      ;; Need llvm >= 18.0
+      (inputs (modify-inputs (package-inputs base-rust)
+                             (replace "llvm" llvm-19))))))
+
+(define-public rust-1.84
+  (rust-bootstrapped-package rust-1.83 "1.84.1"
+   "0xdk3g1xq33fy4m7q6l38ba9ydxbanccyb0vczvlk998jvababsy"))
+
 
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
@@ -1055,12 +1100,13 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.82))
+  (let ((base-rust rust-1.84))
     (package
       (inherit base-rust)
       (properties (append
                     (alist-delete 'hidden? (package-properties base-rust))
-                    (clang-compiler-cpu-architectures "17")))
+                    ;; Keep in sync with the llvm used to build rust.
+                    (clang-compiler-cpu-architectures "19")))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (source
        (origin
@@ -1068,7 +1114,9 @@ safety and thread safety guarantees.")
          (snippet
           '(begin
              (for-each delete-file-recursively
-                       '("src/llvm-project"
+                       '("src/gcc"
+                         "src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2/jemalloc"
                          "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
                          "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
                          "vendor/openssl-src-111.17.0+1.1.1m/openssl"
@@ -1078,10 +1126,10 @@ safety and thread safety guarantees.")
                          ;; so we unbundle them.
                          "vendor/curl-sys-0.4.52+curl-7.81.0/curl"
                          "vendor/curl-sys-0.4.74+curl-8.9.0/curl"
+                         "vendor/curl-sys-0.4.77+curl-8.10.1/curl"
                          "vendor/libffi-sys-2.3.0/libffi"
                          "vendor/libz-sys-1.1.3/src/zlib"
-                         "vendor/libz-sys-1.1.18/src/zlib"
-                         "vendor/libz-sys-1.1.19/src/zlib"))
+                         "vendor/libz-sys-1.1.20/src/zlib"))
              ;; Use the packaged nghttp2
              (for-each
               (lambda (ver)
@@ -1110,9 +1158,8 @@ safety and thread safety guarantees.")
                      (string-append all ", \"use-libc\"")))))
               '("3.3.0"
                 "3.4.0"
-                "3.7.1"
                 "3.10.1"
-                "3.12.0"))))))
+                "3.13.0"))))))
       (arguments
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
@@ -1137,7 +1184,8 @@ safety and thread safety guarantees.")
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/git.rs"
                    ,@(make-ignore-test-list
-                      '("fn fetch_downloads_with_git2_first_")))
+                      '("fn fetch_downloads_with_git2_first_"
+                        "fn corrupted_checkout_with_cli")))
                  (substitute* "src/tools/cargo/tests/testsuite/build.rs"
                    ,@(make-ignore-test-list
                       '("fn build_with_symlink_to_path_dependency_with_build_script_in_git")))
@@ -1195,40 +1243,62 @@ safety and thread safety guarantees.")
                              ,@(make-ignore-test-list
                                  '("fn multiple_shared"
                                    "fn multiple_download"
-                                   "fn download_then_mutate")))
+                                   "fn download_then_mutate"
+                                   "fn mutate_err_is_atomic")))
                            (substitute* "global_cache_tracker.rs"
                              ,@(make-ignore-test-list
-                                 '("fn package_cache_lock_during_build")))))))
+                                 '("fn package_cache_lock_during_build"))))
+                         (with-directory-excursion "src/tools/clippy/tests"
+                           ;; `"vectorcall"` is not a supported ABI for the current target
+                           (delete-file "ui/missing_const_for_fn/could_be_const.rs")
+                           (substitute* "missing-test-files.rs"
+                             ,@(make-ignore-test-list
+                                '("fn test_missing_tests")))))))
                    `())
-             (add-after 'unpack 'disable-tests-broken-on-aarch64
-               (lambda _
-                 (with-directory-excursion "src/tools/cargo/tests/testsuite/"
-                   (substitute* "build_script_extra_link_arg.rs"
-                     ,@(make-ignore-test-list
-                        '("fn build_script_extra_link_arg_bin_single")))
-                   (substitute* "build_script.rs"
-                     ,@(make-ignore-test-list
-                        '("fn env_test")))
-                   (substitute* "collisions.rs"
-                     ,@(make-ignore-test-list
-                        '("fn collision_doc_profile_split")))
-                   (substitute* "concurrent.rs"
-                     ,@(make-ignore-test-list
-                        '("fn no_deadlock_with_git_dependencies")))
-                   (substitute* "features2.rs"
-                     ,@(make-ignore-test-list
-                        '("fn dep_with_optional_host_deps_activated"))))))
+             ,@(if (target-aarch64?)
+                   ;; Keep this phase separate so it can be adjusted without needing
+                   ;; to adjust the skipped tests on other architectures.
+                   `((add-after 'unpack 'disable-tests-broken-on-aarch64
+                       (lambda _
+                         (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                           (substitute* "build_script_extra_link_arg.rs"
+                             ,@(make-ignore-test-list
+                                '("fn build_script_extra_link_arg_bin_single")))
+                           (substitute* "build_script.rs"
+                             ,@(make-ignore-test-list
+                                '("fn env_test")))
+                           (substitute* "cache_lock.rs"
+                             ,@(make-ignore-test-list
+                                '("fn download_then_mutate")))
+                           (substitute* "collisions.rs"
+                             ,@(make-ignore-test-list
+                                '("fn collision_doc_profile_split")))
+                           (substitute* "concurrent.rs"
+                             ,@(make-ignore-test-list
+                                '("fn no_deadlock_with_git_dependencies")))
+                           (substitute* "features2.rs"
+                             ,@(make-ignore-test-list
+                                '("fn dep_with_optional_host_deps_activated"))))
+                         (with-directory-excursion "src/tools/clippy/tests"
+                           ;; `"vectorcall"` is not a supported ABI for the current target
+                           (delete-file "ui/missing_const_for_fn/could_be_const.rs")
+                           (substitute* "missing-test-files.rs"
+                             ,@(make-ignore-test-list
+                                '("fn test_missing_tests")))))))
+                   `())
              (add-after 'unpack 'disable-tests-requiring-crates.io
                (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/install.rs"
-                   ,@(make-ignore-test-list
-                      '("fn install_global_cargo_config")))
-                 (substitute* "src/tools/cargo/tests/testsuite/cargo_info/within_ws_with_alternative_registry/mod.rs"
-                   ,@(make-ignore-test-list
-                      '("fn case")))
-                 (substitute* "src/tools/cargo/tests/testsuite/package.rs"
-                   ,@(make-ignore-test-list
-                      '("fn workspace_with_local_deps_index_mismatch")))))
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                   (substitute* "install.rs"
+                     ,@(make-ignore-test-list
+                        '("fn install_global_cargo_config")))
+                   (substitute* '("cargo_add/add_workspace_non_fuzzy/mod.rs"
+                                  "cargo_info/within_ws_with_alternative_registry/mod.rs")
+                     ,@(make-ignore-test-list
+                        '("fn case")))
+                   (substitute* "package.rs"
+                     ,@(make-ignore-test-list
+                        '("fn workspace_with_local_deps_index_mismatch"))))))
              (add-after 'unpack 'disable-miscellaneous-broken-tests
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/check_cfg.rs"
@@ -1297,7 +1367,7 @@ safety and thread safety guarantees.")
                ;; different outputs while reusing the shared libraries.
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((out (assoc-ref outputs "out")))
-                   (substitute* "src/bootstrap/src/core/builder.rs"
+                   (substitute* "src/bootstrap/src/core/builder/cargo.rs"
                      ((" = rpath.*" all)
                       (string-append all
                                      "                "
@@ -1336,7 +1406,9 @@ safety and thread safety guarantees.")
                            "src/tools/cargo"
                            "src/tools/clippy"
                            "src/tools/rust-analyzer"
-                           "src/tools/rustfmt"))))
+                           "src/tools/rustfmt"
+                           ;; Needed by rust-analyzer and editor plugins
+                           "src/tools/rust-analyzer/crates/proc-macro-srv-cli"))))
              (replace 'check
                ;; Phase overridden to also test more tools.
                (lambda* (#:key tests? parallel-build? #:allow-other-keys)
@@ -1355,6 +1427,15 @@ safety and thread safety guarantees.")
                ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
+                 ;; This one doesn't have an install target so
+                 ;; we need to install manually.
+                 (install-file (string-append
+                                 "build/"
+                                 ,(platform-rust-target
+                                    (lookup-platform-by-system
+                                      (%current-system)))
+                                 "/stage1-tools-bin/rust-analyzer-proc-macro-srv")
+                               (string-append (assoc-ref outputs "out") "/libexec"))
                  (substitute* "config.toml"
                    ;; Adjust the prefix to the 'cargo' output.
                    (("prefix = \"[^\"]*\"")
@@ -1374,12 +1455,12 @@ safety and thread safety guarantees.")
                    (mkdir-p (string-append out dest))
                    (copy-recursively "library" (string-append out dest "/library"))
                    (copy-recursively "src" (string-append out dest "/src")))))
-             (add-after 'install 'remove-uninstall-script
-               (lambda* (#:key outputs #:allow-other-keys)
-                 ;; This script has no use on Guix
-                 ;; and it retains a reference to the host's bash.
-                 (delete-file (string-append (assoc-ref outputs "out")
-                                             "/lib/rustlib/uninstall.sh"))))
+             (add-before 'install 'remove-uninstall-script
+               (lambda _
+                 ;; Don't install the uninstall script.  It has no use
+                 ;; on Guix and it retains a reference to the host's bash.
+                 (substitute* "src/tools/rust-installer/install-template.sh"
+                   (("install_uninstaller \"") "# install_uninstaller \""))))
              (add-after 'install-rust-src 'wrap-rust-analyzer
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((bin (string-append (assoc-ref outputs "tools") "/bin")))
@@ -1400,7 +1481,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                       (prepend curl libffi `(,nghttp2 "lib") zlib)))
       (native-inputs (cons*
                       ;; Keep in sync with the llvm used to build rust.
-                      `("clang-source" ,(package-source clang-runtime-17))
+                      `("clang-source" ,(package-source clang-runtime-19))
                       ;; Add test inputs.
                       `("gdb" ,gdb/pinned)
                       `("procps" ,procps)

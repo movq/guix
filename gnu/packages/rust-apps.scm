@@ -1179,14 +1179,14 @@ defaults for 80% of the use cases.")
 (define-public gitoxide
   (package
     (name "gitoxide")
-    (version "0.37.0")
+    (version "0.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gitoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lhnra6xsp1bk67ixzjdxwpbs40ylc71vnyigikx867lbs96sd2l"))))
+        (base32 "0lqjbd55074qkh8il2m28fpgac0dmd0vcdrhiqrdp87c6hxkjadm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("gix-features/zlib-stock")
@@ -1194,19 +1194,18 @@ defaults for 80% of the use cases.")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-clap" ,rust-clap-4)
                        ("rust-clap-complete" ,rust-clap-complete-4)
-                       ("rust-crosstermion" ,rust-crosstermion-0.13)
+                       ("rust-crosstermion" ,rust-crosstermion-0.14)
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-futures-lite" ,rust-futures-lite-2)
                        ("rust-gitoxide-core" ,gitoxide-core)
-                       ("rust-gix" ,rust-gix-0.64)
-                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix" ,rust-gix-0.67)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
                        ("rust-is-terminal" ,rust-is-terminal-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-prodash" ,rust-prodash-28)
+                       ("rust-prodash" ,rust-prodash-29)
                        ("rust-serde-derive" ,rust-serde-derive-1)
                        ("rust-terminal-size" ,rust-terminal-size-0.3)
-                       ("rust-time" ,rust-time-0.3)
                        ("rust-tracing" ,rust-tracing-0.1)
                        ("rust-tracing-forest" ,rust-tracing-forest-0.1)
                        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
@@ -1277,14 +1276,14 @@ repositories.")
 (define-public gitoxide-core
   (package
     (name "gitoxide-core")
-    (version "0.39.1")
+    (version "0.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gitoxide-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "005lbpwifm3450952p22q21rycclqp33xwnyfgbb0mnbs8s68rp9"))))
+        (base32 "190ry6gc9zmjw1qbh8w5k7pf0150cpwj5x3dvl46c7nicxv3mjnd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -1298,22 +1297,22 @@ repositories.")
                        ("rust-fs-err" ,rust-fs-err-2)
                        ("rust-futures-io" ,rust-futures-io-0.3)
                        ("rust-futures-lite" ,rust-futures-lite-2)
-                       ("rust-gix" ,rust-gix-0.64)
-                       ("rust-gix-archive" ,rust-gix-archive-0.13)
-                       ("rust-gix-fsck" ,rust-gix-fsck-0.4)
-                       ("rust-gix-pack" ,rust-gix-pack-0.51)
-                       ("rust-gix-status" ,rust-gix-status-0.11)
-                       ("rust-gix-transport" ,rust-gix-transport-0.42)
-                       ("rust-gix-url" ,rust-gix-url-0.27)
+                       ("rust-gix" ,rust-gix-0.67)
+                       ("rust-gix-archive" ,rust-gix-archive-0.16)
+                       ("rust-gix-fsck" ,rust-gix-fsck-0.7)
+                       ("rust-gix-pack" ,rust-gix-pack-0.54)
+                       ("rust-gix-status" ,rust-gix-status-0.14)
+                       ("rust-gix-transport" ,rust-gix-transport-0.43)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
                        ("rust-jwalk" ,rust-jwalk-0.8)
                        ("rust-layout-rs" ,rust-layout-rs-0.1)
                        ("rust-open" ,rust-open-5)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
-                       ("rust-rusqlite" ,rust-rusqlite-0.31)
+                       ("rust-rusqlite" ,rust-rusqlite-0.32)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
                        ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-sysinfo" ,rust-sysinfo-0.30)
+                       ("rust-sysinfo" ,rust-sysinfo-0.31)
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-tracing" ,rust-tracing-0.1)
@@ -2902,14 +2901,14 @@ representations.")
 (define-public procs
   (package
     (name "procs")
-    (version "0.14.8")
+    (version "0.14.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "procs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06q9ply29745g0yxpvmxmqzr74r7qix6i0m16sj1cn7cg1gmc7h3"))))
+        (base32 "0k56fky129r4wn3ifnhlyw42rk1ma3ipg6dc38lf757jx81x4g0y"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -2922,7 +2921,7 @@ representations.")
                        ("rust-clap" ,rust-clap-4)
                        ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-console" ,rust-console-0.15)
-                       ("rust-directories" ,rust-directories-5)
+                       ("rust-directories" ,rust-directories-6)
                        ("rust-dockworker" ,rust-dockworker-0.5)
                        ("rust-errno" ,rust-errno-0.3)
                        ("rust-getch" ,rust-getch-0.3)
@@ -2941,7 +2940,7 @@ representations.")
                        ("rust-toml" ,rust-toml-0.8)
                        ("rust-unicode-width" ,rust-unicode-width-0.2)
                        ("rust-uzers" ,rust-uzers-0.12)
-                       ("rust-which" ,rust-which-6)
+                       ("rust-which" ,rust-which-7)
                        ("rust-windows-sys" ,rust-windows-sys-0.59))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-manual-page
@@ -3000,17 +2999,17 @@ with colored output, multi-column keyword search, additional information, pager
 support, watch support (like @command{top}) and a tree view.")
     (license license:expat)))
 
-(define-public rust-cbindgen-0.27
+(define-public rust-cbindgen-0.28
   (package
     (name "rust-cbindgen")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cbindgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sqm3axr678d72yihgmpr9d17mj99ccibxfqhw53mgzwzkbqvkiz"))))
+        (base32 "1zyiaifg6mcd4wwhhbxk8adzhph6qz4wxzgagvg3ijp95j58dpga"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
@@ -3028,11 +3027,39 @@ support, watch support (like @command{top}) and a tree view.")
        (("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-serial-test" ,rust-serial-test-2))))
     (native-inputs (list python-cython))
-    (home-page "https://github.com/eqrion/cbindgen")
+    (home-page "https://github.com/mozilla/cbindgen")
     (synopsis "Tool for generating C bindings to Rust code")
     (description
      "This package provides a tool for generating C/C++ bindings to Rust code.")
     (license license:mpl2.0)))
+
+(define-public rust-cbindgen-0.27
+  (package
+    (inherit rust-cbindgen-0.28)
+    (name "rust-cbindgen")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cbindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sqm3axr678d72yihgmpr9d17mj99ccibxfqhw53mgzwzkbqvkiz"))))
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serial-test" ,rust-serial-test-2))))))
 
 (define-public rust-cbindgen-0.26
   (package
@@ -3103,7 +3130,6 @@ support, watch support (like @command{top}) and a tree view.")
     (arguments
      `(#:install-source? #f
        #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.71)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -3595,7 +3621,7 @@ runs a command whenever it detects modifications.")
 (define-public rbw
   (package
     (name "rbw")
-    (version "1.13.1")
+    (version "1.13.2")
     (outputs '("out" "scripts"))
     (source
      (origin
@@ -3603,7 +3629,7 @@ runs a command whenever it detects modifications.")
        (uri (crate-uri "rbw" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1viadih6ijwxlinjshkzfyhxvk00jbm643v6gpwp463ylsjpvvyd"))
+        (base32 "1plwv71iwdcdprknsn32x7wzlg1hnikq3wqbym4yiwpk5kf6anmm"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -3615,6 +3641,7 @@ runs a command whenever it detects modifications.")
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
         ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-arboard" ,rust-arboard-3)
         ("rust-argon2" ,rust-argon2-0.5)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-axum" ,rust-axum-0.7)
@@ -3624,7 +3651,6 @@ runs a command whenever it detects modifications.")
         ("rust-cbc" ,rust-cbc-0.1)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-cli-clipboard" ,rust-cli-clipboard-0.4)
         ("rust-daemonize" ,rust-daemonize-0.5)
         ("rust-directories" ,rust-directories-5)
         ("rust-env-logger" ,rust-env-logger-0.11)
@@ -3732,14 +3758,14 @@ background agent taking care of maintaining the necessary state.")
 (define-public rust-cargo
   (package
     (name "rust-cargo")
-    (version "0.83.0")
+    (version "0.85.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yvb3vh87ngrfsgvl6r2drjrq5h1yw07yhq6c6kc39wmigc1z4l2"))
+        (base32 "05n42kxzxhkfj4s2jg2qcw759h2b3piai6p1fm90kx17jhlg9vxv"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -3754,6 +3780,7 @@ background agent taking care of maintaining the necessary state.")
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-base64" ,rust-base64-0.22)
+        ("rust-blake3" ,rust-blake3-1)
         ("rust-bytesize" ,rust-bytesize-1)
         ("rust-cargo-credential" ,rust-cargo-credential-0.4)
         ("rust-cargo-credential-libsecret" ,rust-cargo-credential-libsecret-0.4)
@@ -3761,8 +3788,9 @@ background agent taking care of maintaining the necessary state.")
         ("rust-cargo-credential-wincred" ,rust-cargo-credential-wincred-0.4)
         ("rust-cargo-platform" ,rust-cargo-platform-0.1)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
-        ("rust-cargo-util-schemas" ,rust-cargo-util-schemas-0.6)
+        ("rust-cargo-util-schemas" ,rust-cargo-util-schemas-0.7)
         ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
         ("rust-color-print" ,rust-color-print-0.3)
         ("rust-crates-io" ,rust-crates-io-0.40)
         ("rust-curl" ,rust-curl-0.4)
@@ -3771,7 +3799,7 @@ background agent taking care of maintaining the necessary state.")
         ("rust-flate2" ,rust-flate2-1)
         ("rust-git2" ,rust-git2-0.19)
         ("rust-git2-curl" ,rust-git2-curl-0.20)
-        ("rust-gix" ,rust-gix-0.64)
+        ("rust-gix" ,rust-gix-0.67)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-hmac" ,rust-hmac-0.12)
@@ -3790,12 +3818,13 @@ background agent taking care of maintaining the necessary state.")
         ("rust-opener" ,rust-opener-0.7)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-os-info" ,rust-os-info-3)
-        ("rust-pasetors" ,rust-pasetors-0.6)
+        ("rust-pasetors" ,rust-pasetors-0.7)
         ("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-regex" ,rust-regex-1)
         ("rust-rusqlite" ,rust-rusqlite-0.32)
-        ("rust-rustfix" ,rust-rustfix-0.8)
+        ("rust-rustc-hash" ,rust-rustc-hash-2)
+        ("rust-rustfix" ,rust-rustfix-0.9)
         ("rust-same-file" ,rust-same-file-1)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
@@ -3808,6 +3837,7 @@ background agent taking care of maintaining the necessary state.")
         ("rust-supports-unicode" ,rust-supports-unicode-3)
         ("rust-tar" ,rust-tar-0.4)
         ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-thiserror" ,rust-thiserror-1)
         ("rust-time" ,rust-time-0.3)
         ("rust-toml" ,rust-toml-0.8)
         ("rust-toml-edit" ,rust-toml-edit-0.22)
@@ -3815,14 +3845,14 @@ background agent taking care of maintaining the necessary state.")
         ("rust-tracing-chrome" ,rust-tracing-chrome-0.7)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-unicase" ,rust-unicase-2)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.2)
         ("rust-url" ,rust-url-2)
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs
        (("rust-annotate-snippets" ,rust-annotate-snippets-0.11)
-        ("rust-cargo-test-support" ,rust-cargo-test-support-0.4)
-        ("rust-gix" ,rust-gix-0.64)
+        ("rust-cargo-test-support" ,rust-cargo-test-support-0.6)
+        ("rust-gix" ,rust-gix-0.67)
         ("rust-same-file" ,rust-same-file-1)
         ("rust-snapbox" ,rust-snapbox-0.6))))
     (native-inputs
@@ -3838,26 +3868,26 @@ the library crate of Cargo.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.10.5+cargo-0.83.0")
+    (version "0.10.9+cargo-0.85.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "02ppkpwngksz22vk66sn8xm0lviihp0zpnki1sa4sf0672lrpyjv"))))
+         (base32 "1cxawccpssmpvv6a0sn8lkms5nd3gyh46g407bk2i8xyzyh87pvq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cargo" ,rust-cargo)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
-        ("rust-cbindgen" ,rust-cbindgen-0.27)
+        ("rust-cbindgen" ,rust-cbindgen-0.28)
         ("rust-cc" ,rust-cc-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-implib" ,rust-implib-0.3)
-        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-itertools" ,rust-itertools-0.14)
         ("rust-log" ,rust-log-0.4)
         ("rust-object" ,rust-object-0.36)
         ("rust-regex" ,rust-regex-1)
@@ -3960,7 +3990,7 @@ common-sense defaults.")
 (define-public skim
   (package
     (name "skim")
-    (version "0.15.7")
+    (version "0.16.0")
     (source
      (origin
        ;; crates.io doesn't have everything needed.
@@ -3970,7 +4000,7 @@ common-sense defaults.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05j775mgx5a00k2p6nwlgxsdizjlw2380ai5rr5d86n2pg58fhmx"))))
+        (base32 "1rwq635iin1vp0ad64qnlgg2pk8chk5p58vwv78f2qp1p3nc5sg9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -3982,12 +4012,12 @@ common-sense defaults.")
                        ("rust-clap-complete-fig" ,rust-clap-complete-fig-4)
                        ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-4)
                        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-crossbeam" ,rust-crossbeam-0.8)
                        ("rust-defer-drop" ,rust-defer-drop-1)
                        ("rust-derive-builder" ,rust-derive-builder-0.20)
                        ("rust-env-logger" ,rust-env-logger-0.11)
                        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
                        ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-nix" ,rust-nix-0.29)
                        ("rust-rand" ,rust-rand-0.8)
@@ -4000,7 +4030,7 @@ common-sense defaults.")
                        ("rust-timer" ,rust-timer-0.2)
                        ("rust-tuikit" ,rust-tuikit-0.5)
                        ("rust-unicode-width" ,rust-unicode-width-0.2)
-                       ("rust-vte" ,rust-vte-0.13)
+                       ("rust-vte" ,rust-vte-0.14)
                        ("rust-which" ,rust-which-7))
        #:phases (modify-phases %standard-phases
                   (replace 'install
@@ -4688,7 +4718,7 @@ minimum contrast levels, and more.")
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.4")
+    (version "0.10.5")
     (source
      (origin
        (method url-fetch)
@@ -4696,7 +4726,7 @@ minimum contrast levels, and more.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "13fhh1p51dd7bvmgsjpvsrvvhv4wgpmm8rsv6j07z2nfn8z9s1ia"))))
+         "1763bypr971qyy7lm0q0mg1alqzyzqgsq8ffkp8zfvhwsqipnfn7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -4748,8 +4778,8 @@ minimum contrast levels, and more.")
                  (string-append share "/elvish/lib/xremap")
                  (lambda _ (invoke xremap "--completions" "elvish")))))))))
     (home-page "https://github.com/k0kubun/xremap")
-    (synopsis "Dynamic key remapp for X and Wayland")
-    (description "This package provides dynamic key remapp for X and Wayland.")
+    (synopsis "Dynamic key remapper for X and Wayland")
+    (description "This package provides dynamic key remapper for X and Wayland.")
     (license license:expat)))
 
 (define-public xremap-gnome
@@ -4835,14 +4865,14 @@ minimum contrast levels, and more.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.9.6")
+    (version "0.9.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r8rhz01s3ar5i2pkmplp36rhspsk65jyp4sq7vav1dr4vx9fs4a"))))
+        (base32 "0xwbc9zjglgzzxk23qyg2924gkyaclc844jcg1apx0190r4qlc3z"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
@@ -4857,15 +4887,15 @@ minimum contrast levels, and more.")
              ("rust-dunce" ,rust-dunce-1)
              ("rust-fastrand" ,rust-fastrand-2)
              ("rust-glob" ,rust-glob-0.3)
-             ("rust-nix" ,rust-nix-0.27)
+             ("rust-nix" ,rust-nix-0.29)
              ("rust-ouroboros" ,rust-ouroboros-0.18)
              ("rust-rinja" ,rust-rinja-0.3)
              ("rust-serde" ,rust-serde-1)
              ("rust-which" ,rust-which-6))
            #:cargo-development-inputs
            `(("rust-assert-cmd" ,rust-assert-cmd-2)
-             ("rust-rstest" ,rust-rstest-0.18)
-             ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+             ("rust-rstest" ,rust-rstest-0.23)
+             ("rust-rstest-reuse" ,rust-rstest-reuse-0.7)
              ("rust-tempfile" ,rust-tempfile-3))
            #:phases
            #~(modify-phases %standard-phases
