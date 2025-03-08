@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
@@ -183,29 +183,20 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
 
-(define (qemu-patch commit file-name sha256-bv)
-  "Return an origin for COMMIT."
-  (origin
-    (method url-fetch)
-    (uri (string-append
-          "http://git.qemu.org/?p=qemu.git;a=commitdiff_plain;h="
-          commit))
-    (hash (content-hash sha256-bv sha256))
-    (file-name file-name)))
-
 (define-public qemu
   (package
     (name "qemu")
-    (version "8.2.2")
+    (version "9.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1wy45fbf4816l4ylsz8b8cbypva9apcdnvlgqfr586icp30lcww4"))
+        (base32 "12dc3fpv6c6qvw89amjjbb6dgc2f1c1alfgn2nab7a8kxnh7f2j8"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-bios-tables-test.patch"
+                                "qemu-disable-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -248,10 +239,10 @@
               (seabios (search-input-file %build-inputs
                                           "share/qemu/bios.bin"))
               (ipxe
-                #$@(if (this-package-input "ipxe-qemu")
-                       #~((search-input-file %build-inputs
-                                             "share/qemu/pxe-virtio.rom"))
-                       #~((string-append #$output "/share/qemu"))))
+               #$@(if (this-package-input "ipxe-qemu")
+                      #~((search-input-file %build-inputs
+                                            "share/qemu/pxe-virtio.rom"))
+                      #~((string-append #$output "/share/qemu"))))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
@@ -285,10 +276,10 @@
                                         inputs "share/qemu/bios.bin")))
                      (seabios-firmwares (find-files seabios "\\.bin$"))
                      (ipxe
-                       #$@(if (this-package-input "ipxe-qemu")
-                              #~((dirname (search-input-file
-                                            inputs "share/qemu/pxe-virtio.rom")))
-                              #~((string-append #$output "/share/qemu"))))
+                      #$@(if (this-package-input "ipxe-qemu")
+                             #~((dirname (search-input-file
+                                          inputs "share/qemu/pxe-virtio.rom")))
+                             #~((string-append #$output "/share/qemu"))))
                      (ipxe-firmwares (find-files ipxe "\\.rom$"))
                      (openbios (search-input-file
                                 inputs "share/qemu/openbios-ppc"))
@@ -368,28 +359,28 @@
               ;; from a race condition.
               (delete-file "tests/qemu-iotests/tests/copy-before-write")))
           #$@(cond
-               ((target-riscv64?)
-                #~((add-after 'unpack 'disable-some-tests
-                     (lambda _
-                       ;; qemu.qmp.QMPConnectError:
-                       ;; Unexpected empty reply from server
-                       (delete-file "tests/qemu-iotests/040")
-                       (delete-file "tests/qemu-iotests/041")
-                       (delete-file "tests/qemu-iotests/256")
+              ((target-riscv64?)
+               #~((add-after 'unpack 'disable-some-tests
+                    (lambda _
+                      ;; qemu.qmp.QMPConnectError:
+                      ;; Unexpected empty reply from server
+                      (delete-file "tests/qemu-iotests/040")
+                      (delete-file "tests/qemu-iotests/041")
+                      (delete-file "tests/qemu-iotests/256")
 
-                       ;; No 'PCI' bus found for device 'virtio-scsi-pci'
-                       (delete-file "tests/qemu-iotests/127")
-                       (delete-file "tests/qemu-iotests/267")
+                      ;; No 'PCI' bus found for device 'virtio-scsi-pci'
+                      (delete-file "tests/qemu-iotests/127")
+                      (delete-file "tests/qemu-iotests/267")
 
-                       ;; This test takes too long.
-                       (delete-file "tests/qemu-iotests/tests/iothreads-stream")))))
-               ((target-arm32?)
-                #~((add-after 'unpack 'disable-some-tests
-                     (lambda _
-                       ;; failed to allocate memory for stack: Cannot allocate memory
-                       (substitute* "tests/qtest/meson.build"
-                         ((".*qtests_aspeed :.*") ""))))))
-               (else '()))
+                      ;; This test takes too long.
+                      (delete-file "tests/qemu-iotests/tests/iothreads-stream")))))
+              ((target-arm32?)
+               #~((add-after 'unpack 'disable-some-tests
+                    (lambda _
+                      ;; failed to allocate memory for stack: Cannot allocate memory
+                      (substitute* "tests/qtest/meson.build"
+                        ((".*qtests_aspeed :.*") ""))))))
+              (else '()))
           (add-after 'patch-source-shebangs 'patch-embedded-shebangs
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               ;; Ensure the executables created by these source files reference
@@ -437,8 +428,7 @@
           ;; Configure, build and install QEMU user-emulation static binaries.
           (add-after 'configure 'configure-user-static
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((static (assoc-ref outputs "static"))
-                     (gcc (search-input-file inputs "/bin/gcc"))
+              (let* ((gcc (search-input-file inputs "/bin/gcc"))
                      ;; This is the common set of configure flags; it is
                      ;; duplicated here to isolate this phase from manipulations
                      ;; to the #:configure-flags build argument, as done in
@@ -446,31 +436,35 @@
                      (configure-flags (list (string-append "--cc=" gcc)
                                             (string-append "--host-cc=" gcc)
                                             "--sysconfdir=/etc"
-                                            "--disable-debug-info")))
-              (mkdir-p "../user-static")
-              (with-directory-excursion "../user-static"
-                (apply invoke "../../configure"
-                       "--static"
-                       "--disable-docs" ;already built
-                       "--disable-system"
-                       "--enable-linux-user"
-                       (string-append "--prefix=" static)
-                       configure-flags)))))
+                                            "--disable-debug-info"))
+                     (static (assoc-ref outputs "static")))
+                (mkdir-p "../user-static")
+                (with-directory-excursion "../user-static"
+                  (apply invoke "../../configure"
+                         "--static"
+                         "--disable-docs" ;already built
+                         "--disable-system"
+                         "--enable-linux-user"
+                         (string-append "--prefix=" static)
+                         configure-flags)))))
           (add-after 'build 'build-user-static
             (lambda args
               (with-directory-excursion "../user-static"
                 (apply (assoc-ref %standard-phases 'build) args))))
           (add-after 'install 'install-user-static
             (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((static (assoc-ref outputs "static"))
-                     (bin (string-append static "/bin")))
+              (let ((static-bin (string-append
+                                 (assoc-ref outputs "static") ;see bug#70611
+                                 "/bin")))
                 (with-directory-excursion "../user-static"
-                  (for-each (cut install-file <> bin)
-                            (append-map (cut find-files <> "^qemu-" #:stat stat)
-                                        (scandir "."
-                                                 (cut string-suffix?
-                                                      "-linux-user" <>))))))))
-
+                  (for-each
+                   (cut install-file <> static-bin)
+                   (find-files "."
+                               (lambda (name stat)
+                                 ;; Select 'qemu-' prefixed executables.
+                                 (and (string-prefix? "./qemu-" name)
+                                      (eq? 'regular (stat:type stat))
+                                      (logtest #o100 (stat:perms stat))))))))))
           (add-before 'check 'set-SOCK_DIR
             (lambda _
               ;; The default value for SOCK_DIR is TMPDIR, which can be long
@@ -506,7 +500,7 @@ exec smbd $@")))
           (add-after 'install 'move-html-doc
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((out #$output)
-                     (doc #$output:doc)
+                     (doc (assoc-ref outputs "doc")) ;see bug#70611
                      (qemu-doc (string-append doc "/share/doc/qemu-"
                                               #$(package-version this-package))))
                 (mkdir-p qemu-doc)
@@ -514,43 +508,41 @@ exec smbd $@")))
                              (string-append qemu-doc "/html"))))))))
     (inputs
      (append
-       (if (supported-package? ipxe-qemu)
-           (list ipxe-qemu)
-           '())
-       (list alsa-lib
-             bash-minimal
-             dtc
-             glib
-             gtk+
-             libaio
-             libcacard                  ;smartcard support
-             attr libcap-ng             ;VirtFS support
-             libdrm
-             libepoxy
-             libjpeg-turbo
-             libpng
-             libseccomp
-             libslirp
-             liburing
-             libusb                     ;USB pass-through support
-             mesa
-             ncurses
-             openbios-qemu-ppc
-             opensbi-qemu
-             ;; pciutils
-             pixman
-             pulseaudio
-             sdl2
-             seabios-qemu
-             spice
-             usbredir
-             util-linux
-             vde2
-             virglrenderer
-
-             ;; Formats to support for .qcow2 (and possibly other) compression.
-             zlib
-             `(,zstd "lib"))))
+      (if (supported-package? ipxe-qemu)
+          (list ipxe-qemu)
+          '())
+      (list alsa-lib
+            bash-minimal
+            dtc
+            glib
+            gnutls                      ;for qcow2 disk encryption
+            gtk+
+            libaio
+            libcacard                   ;smartcard support
+            attr libcap-ng              ;VirtFS support
+            libdrm
+            libepoxy
+            libjpeg-turbo
+            libpng
+            libseccomp
+            libslirp
+            liburing
+            libusb                      ;USB pass-through support
+            mesa
+            ncurses
+            openbios-qemu-ppc
+            opensbi-qemu
+            pixman
+            pulseaudio
+            sdl2
+            seabios-qemu
+            spice
+            usbredir
+            util-linux
+            vde2
+            virglrenderer
+            zlib
+            `(,zstd "lib"))))
     (native-inputs
      ;; Note: acpica is here only to pretty-print firmware differences with IASL
      ;; (see the replace-firmwares phase above).
@@ -566,6 +558,7 @@ exec smbd $@")))
            python-wrapper
            python-sphinx
            python-sphinx-rtd-theme
+           python-tomli
            texinfo
            ;; The following static libraries are required to build
            ;; the static output of QEMU.
@@ -593,29 +586,6 @@ server and embedded PowerPC, and S390 guests.")
     ;; Several tests fail on MIPS; see <http://hydra.gnu.org/build/117914>.
     (supported-systems (fold delete %supported-systems
                              '("mips64el-linux" "i586-gnu" "x86_64-gnu")))))
-
-;; QEMU >= 8.1.0's riscv64 binfmt service is unreliable.
-(define-public qemu-7.2.4
-  (package
-    (inherit qemu)
-    (name "qemu")
-    (version "7.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.qemu.org/qemu-"
-                           version ".tar.xz"))
-       (sha256
-        (base32 "0795l8xsy67fnh4mbdz40jm880iisd7q6d7ly6nfzpac3gjr8zyf"))
-       (patches (search-patches "qemu-7.2.4-build-info-manual.patch"
-                                "qemu-disable-aarch64-migration-test.patch"
-                                "qemu-fix-agent-paths.patch"))
-       (modules (origin-modules (package-source qemu)))
-       (snippet (origin-snippet (package-source qemu)))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments qemu)
-       ((#:tests? tests #f) ;migration tests still fail
-        #f)))))
 
 (define-public qemu-minimal
   ;; QEMU without GUI support, only supporting the host's architecture
@@ -1258,7 +1228,7 @@ Debian or a derivative using @command{debootstrap}.")
 (define-public rvvm
   (package
     (name "rvvm")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1267,7 +1237,7 @@ Debian or a derivative using @command{debootstrap}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ldabcrmpa044bahpqa6ymwbhhwy69slh77f0m3421sq6j50l06p"))))
+                "1mbb1c9r33am2z27a17xkjw5gpzvz41wywx1g021s0w34lmsax76"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1565,18 +1535,21 @@ pretty simple, REST API.")
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "8.6.0")
+    (version "10.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1qisvbshbcd5305mrb4vni559k52id7c8iw4dwdydbf97b24f658"))
+        (base32 "15jpfrn3d2zyhbm5ip7bmpjb6ch2bfxm1h6yfgh0l3bw3g9ppgg1"))
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (ice-9 format))
       #:configure-flags
       #~(list "-Ddriver_qemu=enabled"
               "-Dqemu_user=nobody"
@@ -1603,12 +1576,31 @@ pretty simple, REST API.")
               (substitute* "scripts/meson-install-dirs.py"
                 (("destdir = .*")
                  "destdir = '/tmp'"))))
-          (add-after 'unpack 'use-absolute-dnsmasq
+          (add-after 'unpack 'patch-commands
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((dnsmasq (search-input-file inputs "sbin/dnsmasq")))
-                (substitute* "src/util/virdnsmasq.c"
-                  (("#define DNSMASQ \"dnsmasq\"")
-                   (string-append "#define DNSMASQ \"" dnsmasq "\""))))))
+              (let-syntax
+                  ((patch-command-define
+                    ;; Patch lines of the form: #define COMMAND "command"
+                    (lambda (x)
+                      (syntax-case x ()
+                        ((_ file command)
+                         (with-syntax ((pattern (datum->syntax x 'pattern)))
+                           #'(let ((pattern
+                                    (format #f "(#define ~:@(~a~) )\"~a\""
+                                            command command)))
+                               (substitute* file
+                                 ((pattern dummy head)
+                                  (format
+                                   #f "~a~s" head
+                                   (search-input-file
+                                    inputs (string-append "sbin/"
+                                                          command))))))))))))
+                (with-directory-excursion "src/util"
+                  (patch-command-define "virdnsmasq.c" "dnsmasq")
+                  (patch-command-define "virfirewall.h" "ebtables")
+                  (patch-command-define "virfirewall.h" "iptables")
+                  (patch-command-define "virfirewall.h" "ip6tables")
+                  (patch-command-define "virfirewall.h" "nft")))))
           (add-before 'configure 'disable-broken-tests
             (lambda _
               (let ((tests (list "commandtest"         ; hangs idly
@@ -1617,34 +1609,39 @@ pretty simple, REST API.")
                                  "virnetsockettest"))) ; tries to network
                 (substitute* "tests/meson.build"
                   (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
-                   ""))))))))
+                   "")))))
+          (add-before 'configure 'fix-test-data
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "tests/qemuvhostuserdata/usr/libexec")
+                (("^cat") (search-input-file inputs "bin/cat"))))))))
     (inputs
      (list acl
            attr
-           fuse-2
-           libxml2
-           eudev
-           libpciaccess
-           gnutls
-           dbus
-           libpcap
-           libnl
-           libssh2                      ;optional
-           libtirpc                     ;for <rpc/rpc.h>
-           `(,util-linux "lib")
-           lvm2                         ;for libdevmapper
-           curl
-           openssl
-           readline
-           cyrus-sasl
-           yajl
            audit
+           curl
+           cyrus-sasl
+           dbus
            dmidecode
            dnsmasq
-           ebtables
-           parted
+           eudev
+           fuse-2
+           gnutls
            iproute
-           iptables))
+           iptables
+           json-c
+           libnl
+           libpcap
+           libpciaccess
+           libssh2                      ;optional
+           libtirpc                     ;for <rpc/rpc.h>
+           libxml2
+           lvm2                         ;for libdevmapper
+           nftables
+           openssl
+           parted
+           `(,util-linux "lib")
+           readline
+           yajl))
     (native-inputs
      (list bash-completion
            gettext-minimal
@@ -1666,14 +1663,14 @@ to integrate other virtualization mechanisms if needed.")
 (define-public libvirt-glib
   (package
     (name "libvirt-glib")
-    (version "4.0.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://libvirt.org/libvirt/glib/"
                                   "libvirt-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "1gdcvqz88qkp402zra9csc6391f2xki1270x683n6ixakl3gf8w4"))))
+                "12rv5wxa92iigqlb3ncza6m6995j8739nac7bmbs65i4713c7zlv"))))
     (build-system meson-build-system)
     (inputs
      (list openssl cyrus-sasl lvm2 ; for libdevmapper
@@ -1701,14 +1698,14 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "10.6.0")
+    (version "11.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1r3rvkgnc6j813mcdr7fdfnxx58imzl16azjkg54yy2gfayrq9g4"))))
+        (base32 "1y26104zgylz0v9d6xc0bm6m13is94shn9dlhjycaf347jjjbs6f"))))
     (build-system pyproject-build-system)
     (inputs
      (list libvirt))
@@ -1727,74 +1724,79 @@ virtualization library.")
 (define-public virt-manager
   (package
     (name "virt-manager")
-    (version "4.1.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://virt-manager.org/download/sources"
-                                  "/virt-manager/virt-manager-"
-                                  version ".tar.gz"))
+              (uri (string-append "https://releases.pagure.org/" name
+                                  "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))
-              (patches (search-patches "virt-manager-fix-gtk-cursor-theme-backtace.patch"))))
-    (build-system python-build-system)
+                "0jpqhc02ya55rr8bin734znasslwlff42ann9rsvv5y9w13ax2dw"))))
+    (build-system meson-build-system)
     (arguments
-     (list #:use-setuptools? #f      ; uses custom distutils 'install' command
-           #:tests? #f               ; TODO: The tests currently fail
-                                     ; RuntimeError: Loop condition wasn't met
-           #:imported-modules
-           `((guix build glib-or-gtk-build-system)
-             ,@%python-build-system-modules)
-           #:modules
-           '((ice-9 match)
-             (srfi srfi-26)
-             (guix build python-build-system)
-             ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-             (guix build utils))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-setup
-                 (lambda _
-                   (substitute* "virtinst/buildconfig.py"
-                     (("/usr") #$output))))
-               (add-after 'unpack 'fix-default-uri
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Xen is not available for now - so only patch qemu.
-                   (substitute* "virtManager/createconn.py"
-                     (("/usr(/bin/qemu-system-\\*)" _ suffix)
-                      (string-append #$(this-package-input "qemu") suffix)))))
-               (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let* ((bin       (string-append #$output "/bin"))
-                          (bin-files (find-files bin ".*"))
-                          (paths     (map (match-lambda
-                                            ((output . directory)
-                                             (let* ((girepodir (string-append
-                                                                directory
-                                                                "/lib/girepository-1.0")))
-                                               (if (file-exists? girepodir)
-                                                   girepodir #f))))
-                                          inputs)))
-                     (for-each (lambda (file)
-                                 (format #t "wrapping ~a\n" file)
-                                 (wrap-program file
-                                   `("GI_TYPELIB_PATH" ":" prefix
-                                     ,(filter identity paths))))
-                               bin-files))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" "/tmp")
-                     (setenv "XDG_CACHE_HOME" "/tmp")
-                     (system "Xvfb :1 &")
-                     (setenv "DISPLAY" ":1")
-                     ;; Dogtail requires that Assistive Technology support be enabled
-                     (setenv "GTK_MODULES" "gail:atk-bridge")
-                     (invoke "dbus-run-session" "--" "pytest" "--uitests"))))
-               (add-after 'install 'glib-or-gtk-compile-schemas
-                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-               (add-after 'wrap 'glib-or-gtk-wrap
-                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+     (list
+      #:modules
+      '((ice-9 match)
+        (srfi srfi-1)
+        (srfi srfi-26)
+        (guix build meson-build-system)
+        (guix build utils))
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-SOURCE_DIR
+            (lambda _
+              (setenv "SOURCE_DIR" (getcwd))))
+          (add-after 'unpack 'fix-default-uri
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "virtManager/createconn.py"
+                (("/usr(/bin/qemu-system-\\*)" _ suffix)
+                 (string-append #$(this-package-input "qemu") suffix)))))
+          (add-before 'glib-or-gtk-wrap 'wrap-more
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((paths (filter-map
+                             (match-lambda
+                               ((output . directory)
+                                (let* ((girepodir (string-append
+                                                   directory
+                                                   "/lib/girepository-1.0")))
+                                  (and (file-exists? girepodir)
+                                       girepodir))))
+                             inputs)))
+                (for-each (lambda (file)
+                            (format #t "wrapping ~a~%" file)
+                            (wrap-program file
+                              `("GI_TYPELIB_PATH" prefix ,paths)
+                              `("GUIX_PYTHONPATH" prefix
+                                ;; FIXME: This wraps too much (see: bug#25235).
+                                (,(getenv "GUIX_PYTHONPATH")))))
+                          (find-files (string-append #$output "/bin"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion (getenv "SOURCE_DIR")
+                (invoke "pytest" "-vvv"
+                        "-k" (string-append
+                              ;; The cdrom_url and CLI0062 tests cause
+                              ;; some crash, also outside the build container.
+                              "not install_cdrom_url and "
+                              "not testCLI0062virt_install and "
+                              ;; These tests fail only inside the
+                              ;; build container, perhaps due to
+                              ;; missing /dev nodes.
+                              "not install_s390x_cdrom and "
+                              "not install_many_devices and "
+                              "not test_disk and "
+                              "not virt_clone"))))))))
+    (native-inputs
+     (list cdrtools
+           cpio
+           gettext-minimal
+           `(,glib "bin")               ;glib-compile-schemas
+           gobject-introspection
+           `(,gtk+ "bin")               ;gtk-update-icon-cache
+           pkg-config
+           python-docutils              ;rst2ma
+           python-pytest))
     (inputs
      (list bash-minimal
            dconf
@@ -1804,29 +1806,15 @@ virtualization library.")
            libosinfo
            libvirt
            libvirt-glib
-           python-libvirt
+           python-minimal
            python-libxml2
+           python-libvirt
            python-pycairo
            python-pygobject
            python-requests
            qemu
            spice-gtk
-           vte))
-    (native-inputs
-     (list `(,glib "bin")               ; glib-compile-schemas
-           gobject-introspection
-           `(,gtk+ "bin")               ; gtk-update-icon-cache
-           intltool
-           perl                         ; pod2man
-           python-docutils              ; rst2man
-           ;; The following are required for running the tests
-           ;; at-spi2-core
-           ;; dbus
-           ;; gsettings-desktop-schemas
-           ;; python-dogtail
-           ;; python-pytest
-           ;; xorg-server-for-tests        ; xvfb
-           ))
+           vte/gtk+-3))
     (home-page "https://virt-manager.org/")
     (synopsis "Manage virtual machines")
     (description
@@ -2906,7 +2894,7 @@ about events that change the virtualized hardware, such as hotplugging.")
 (define-public osinfo-db-tools
   (package
     (name "osinfo-db-tools")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-tools-"
@@ -2914,7 +2902,7 @@ about events that change the virtualized hardware, such as hotplugging.")
 
               (sha256
                (base32
-                "0s6ah44wbay7kb3l1ydr0r4ip335zgf6s12ghjjnww0nni9xsb40"))))
+                "1wz7fqvrqpw1bvp3f37n03xhxj4g1fr09vd8vqjhyxqqbmkmycgk"))))
     (build-system meson-build-system)
     (inputs
      (list libsoup-minimal-2 libxml2 libxslt json-glib libarchive))
@@ -2936,14 +2924,14 @@ administrators and developers in managing the database.")
 (define-public osinfo-db
   (package
     (name "osinfo-db")
-    (version "20230719")
+    (version "20240701")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0nl4wh8i9skcg1wx84p31x7rl1xv1267g5ycbn9kfwfnqxzwkl8k"))))
+        (base32 "0pchyq749nh6ivvd3d9bgd7zqdqa07x94jpsprrz8i8c5ykq2wqx"))))
     (build-system trivial-build-system)
     (arguments
      (list

@@ -2953,14 +2953,13 @@ characters can be replaced as well, as can UTF-8 characters.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.1.1")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://mama.indstate.edu/users/ice/tree/src/tree-"
-                    version ".tgz"))
+              (uri (string-append "https://oldmanprogrammer.net/tar/tree/"
+                                  "tree-" version ".tgz"))
               (sha256
-               (base32 "1mchmdkq77d4c2mx7xmarccbk46a3sm2aqslarjwgxrs81gxbhyk"))))
+               (base32 "1v5j8igc5yjzs7w63010p8il5rw5qb1zy032l2ni3hy0g3f4bb38"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2976,7 +2975,7 @@ characters can be replaced as well, as can UTF-8 characters.")
      "Tree is a recursive directory listing command that produces a depth
 indented listing of files, which is colorized ala dircolors if the LS_COLORS
 environment variable is set and output is to tty.")
-    (home-page "https://mama.indstate.edu/users/ice/tree/")
+    (home-page "https://oldmanprogrammer.net/source.php?dir=projects/tree")
     (license license:gpl2+)))
 
 (define-public lr
@@ -3614,6 +3613,45 @@ for CPU usage.  It listens to network traffic on a named interface and
 displays a table of current bandwidth usage by pairs of hosts.")
     (home-page "http://www.ex-parrot.com/~pdw/iftop/")
     (license license:gpl2+)))
+
+(define-public nettop
+  (let ((revision "0")
+        (commit "689d6557196e9fcc92cffba82e00fac0386419e5"))
+    (package
+      (name "nettop")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Emanem/nettop")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0f6qkj4p4c0gap16ncnhkm802vi6dr7z9rjfz7gzvzhm7jg08aj8"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+             (substitute* "Makefile"
+               (("-lcurses" _) "-lncurses"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no make check
+        #:make-flags #~(list "release")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure script
+            (replace 'install           ; no install target
+              (lambda _
+                (let ((out (string-append #$output "/bin")))
+                  (install-file "nettop" out)))))))
+      (inputs (list libpcap ncurses))
+      (synopsis "Monitor network usage by process and host")
+      (description "nettop is a traffic visualizer for the terminal that
+summarizes network bandwidth by process and remote host.")
+      (home-page "https://github.com/Emanem/nettop")
+      (license license:gpl3+))))
 
 (define-public munge
   (package

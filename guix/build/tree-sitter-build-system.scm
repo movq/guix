@@ -51,6 +51,8 @@ and replace development dependencies with tree-sitter grammar node modules."
     (map (match-lambda
            (("dependencies" @ . _)
             '("dependencies" @))
+           (("peerDependencies" @ . _)
+            '("peerDependencies" @))
            (("devDependencies" @ . _)
             `("devDependencies" @
               ,@(filter-map (match-lambda
@@ -87,6 +89,7 @@ and replace development dependencies with tree-sitter grammar node modules."
 
 (define* (check #:key grammar-directories tests? #:allow-other-keys)
   (when tests?
+    (setenv "CC" "gcc")
     (for-each (lambda (dir)
                 (with-directory-excursion dir
                   (invoke "tree-sitter" "test")))
@@ -123,7 +126,8 @@ and replace development dependencies with tree-sitter grammar node modules."
                       ((source-file "src/scanner.cc")
                        => (lambda (file) (list file)))
                       (else '()))
-                   "-xc" "src/parser.c")))))
+                   "-xc" "src/parser.c"
+                   "-Isrc")))))
     (for-each compile-language grammar-directories)))
 
 (define* (install-js #:key native-inputs inputs outputs #:allow-other-keys)

@@ -125,8 +125,44 @@
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))))
 
+(define-public rust-asn1-rs-0.7
+  (package
+    (name "rust-asn1-rs")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w3r3nwbamnpxzdkm0plkqsp9rwrgyi6cqbspbxpic8kf7n9ax30"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs-derive" ,rust-asn1-rs-derive-0.6)
+                       ("rust-asn1-rs-impl" ,rust-asn1-rs-impl-0.2)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-colored" ,rust-colored-3)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-colored" ,rust-colored-3)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-pem" ,rust-pem-3)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Parser/encoder for ASN.1 BER/DER data")
+    (description
+     "This package provides a parser/encoder for ASN.1 BER/DER data.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-0.6
   (package
+    (inherit rust-asn1-rs-0.7)
     (name "rust-asn1-rs")
     (version "0.6.2")
     (source
@@ -153,12 +189,7 @@
        #:cargo-development-inputs (("rust-colored" ,rust-colored-2)
                                    ("rust-hex-literal" ,rust-hex-literal-0.4)
                                    ("rust-pem" ,rust-pem-3)
-                                   ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/rusticata/asn1-rs")
-    (synopsis "Parser/encoder for ASN.1 BER/DER data")
-    (description
-     "This package provides a parser/encoder for ASN.1 BER/DER data.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-asn1-rs-0.5
   (package
@@ -222,8 +253,32 @@
                                    ("rust-pem" ,rust-pem-1)
                                    ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-asn1-rs-derive-0.6
+  (package
+    (name "rust-asn1-rs-derive")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b7fpyjs2kyb2i922br5mbg8rml46rihr8qmcpdyj2a93sdy829i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-synstructure" ,rust-synstructure-0.13))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Derive macros for the `asn1-rs` crate")
+    (description
+     "This package provides derive macros for the @code{asn1-rs} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-derive-0.5
   (package
+    (inherit rust-asn1-rs-derive-0.6)
     (name "rust-asn1-rs-derive")
     (version "0.5.1")
     (source
@@ -238,12 +293,7 @@
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2)
-                       ("rust-synstructure" ,rust-synstructure-0.13))))
-    (home-page "https://github.com/rusticata/asn1-rs")
-    (synopsis "Derive macros for the `asn1-rs` crate")
-    (description
-     "This package provides derive macros for the @code{asn1-rs} crate.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-synstructure" ,rust-synstructure-0.13))))))
 
 (define-public rust-asn1-rs-derive-0.4
   (package
@@ -387,8 +437,51 @@
     (license (list license:expat license:asl2.0))))
 
 ;; TODO: Unbundle aws-lc-fips.
+(define-public rust-aws-lc-fips-sys-0.13
+  (package
+    (name "rust-aws-lc-fips-sys")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-fips-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet
+         #~(begin
+             ; Relax constraint of 'regex' so we can use any 1.x version.
+             (substitute* "Cargo.toml"
+               (("~1\\.9\\.6") "1.9.6"))))
+       (sha256
+        (base32 "088by4wi3rxwyd9mkwr5n2l43a2jlinp5ywv2g0nb51b3dl3l019"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-regex" ,rust-regex-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-home-directory
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (native-inputs (list cmake-minimal go perl))
+    (home-page "https://github.com/aws/aws-lc-rs")
+    (synopsis
+     "AWS-LC is a general-purpose cryptographic library (FIPS version)")
+    (description
+     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
+Cryptography team for AWS and their customers.  This is the FIPS validated
+version of AWS-LC.")
+    (license (list license:isc license:openssl license:asl2.0))))
+
 (define-public rust-aws-lc-fips-sys-0.12
   (package
+    (inherit rust-aws-lc-fips-sys-0.13)
     (name "rust-aws-lc-fips-sys")
     (version "0.12.15")
     (source
@@ -412,27 +505,19 @@
          (add-after 'unpack 'set-home-directory
            (lambda _
              (setenv "HOME" "/tmp"))))))
-    (native-inputs (list cmake-minimal go perl))
-    (home-page "https://github.com/aws/aws-lc-rs")
-    (synopsis
-     "AWS-LC is a general-purpose cryptographic library (FIPS version)")
-    (description
-     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
-Cryptography team for AWS and their customers.  This is the FIPS validated
-version of AWS-LC.")
-    (license (list license:isc license:openssl license:asl2.0))))
+    (native-inputs (list cmake-minimal go perl))))
 
 (define-public rust-aws-lc-rs-1
   (package
     (name "rust-aws-lc-rs")
-    (version "1.11.1")
+    (version "1.12.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18z5wvb8ay1183vw3cbp8wpqil3pl2p8bxfcxrkx4sdn2v6bhyzl"))
+        (base32 "1l7vj2n2505vd7bc32qww7pampp3kcc4m50xwdqzcz3hz6nmbmsc"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -441,8 +526,8 @@ version of AWS-LC.")
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
-       #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.12)
-                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.23)
+       #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.13)
+                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.26)
                        ("rust-paste" ,rust-paste-1)
                        ("rust-untrusted" ,rust-untrusted-0.7)
                        ("rust-zeroize" ,rust-zeroize-1))
@@ -464,8 +549,36 @@ cryptographic operations.  This library strives to be API-compatible with the
 popular Rust library named ring.")
     (license (list license:isc license:openssl license:asl2.0))))
 
+(define-public rust-aws-lc-sys-0.26
+  (package
+    (name "rust-aws-lc-sys")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hxahsrxrnd6mk6dd93642gjbvyjcc8l7snn5n1a43787vhd578g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-paste" ,rust-paste-1))))
+    (home-page "https://github.com/aws/aws-lc-rs")
+    (synopsis "AWS-LC is a general-purpose cryptographic library")
+    (description
+     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
+Cryptography team for AWS and their customers.  It is based on code from the
+Google @code{BoringSSL} project and the @code{OpenSSL} project.")
+    (license (list license:isc license:openssl license:asl2.0))))
+
 (define-public rust-aws-lc-sys-0.23
   (package
+    (inherit rust-aws-lc-sys-0.26)
     (name "rust-aws-lc-sys")
     (version "0.23.1")
     (source
@@ -484,14 +597,7 @@ popular Rust library named ring.")
                        ("rust-fs-extra" ,rust-fs-extra-1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-paste" ,rust-paste-1))))
-    (native-inputs (list cmake-minimal))
-    (home-page "https://github.com/aws/aws-lc-rs")
-    (synopsis "AWS-LC is a general-purpose cryptographic library")
-    (description
-     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
-Cryptography team for AWS and their customers.  It is based on code from the
-Google @code{BoringSSL} project and the @code{OpenSSL} project.")
-    (license (list license:isc license:openssl license:asl2.0))))
+    (native-inputs (list cmake-minimal))))
 
 (define-public rust-der-0.7
   (package
@@ -702,8 +808,40 @@ targets")
      "This crate provides a macro to encode DER oids at compile time.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-der-parser-10
+  (package
+    (name "rust-der-parser")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "der-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19n13gjidjcbj23ps6fww322zx8mz4kfs4cvsd6kqnjx84b51nh7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.7)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-test-case" ,rust-test-case-3))))
+    (home-page "https://github.com/rusticata/der-parser")
+    (synopsis "Parser/encoder for ASN.1 BER/DER data")
+    (description "This crate provides a parser for Basic Encoding Rules (BER
+[X.690]) and Distinguished Encoding Rules(DER [X.690]), implemented with the
+@code{nom} parser combinator framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-der-parser-9
   (package
+    (inherit rust-der-parser-10)
     (name "rust-der-parser")
     (version "9.0.0")
     (source
@@ -725,13 +863,7 @@ targets")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-test-case" ,rust-test-case-3))))
-    (home-page "https://github.com/rusticata/der-parser")
-    (synopsis "Parser/encoder for ASN.1 BER/DER data")
-    (description "This crate provides a parser for Basic Encoding Rules (BER
-[X.690]) and Distinguished Encoding Rules(DER [X.690]), implemented with the
-@code{nom} parser combinator framework.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-test-case" ,rust-test-case-3))))))
 
 (define-public rust-der-parser-8
   (package
@@ -873,8 +1005,30 @@ implementation.")
 formatting Object Identifiers (OIDs).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-oid-registry-0.8
+  (package
+    (name "rust-oid-registry")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oid-registry" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dxm6qkkkk4dq3ln1v83d80k8bvicm6mspsxrj3n06yy7pzhrx0j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.7))))
+    (home-page "https://github.com/rusticata/oid-registry")
+    (synopsis "Object Identifier (OID) database")
+    (description "This crate is a helper crate, containing a database of
+OID objects.  These objects are intended for use when manipulating ASN.1
+grammars and BER/DER encodings, for example.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-oid-registry-0.7
   (package
+    (inherit rust-oid-registry-0.8)
     (name "rust-oid-registry")
     (version "0.7.1")
     (source
@@ -886,13 +1040,7 @@ formatting Object Identifiers (OIDs).")
         (base32 "1navxdy0gx7f92ymwr6n02x35fypp2izdfcf49wszkc9ji6h7n58"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.6))))
-    (home-page "https://github.com/rusticata/oid-registry")
-    (synopsis "Object Identifier (OID) database")
-    (description "This crate is a helper crate, containing a database of
-OID objects.  These objects are intended for use when manipulating ASN.1
-grammars and BER/DER encodings, for example.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.6))))))
 
 (define-public rust-oid-registry-0.6
   (package
@@ -1255,14 +1403,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-0.23
   (package
     (name "rust-rustls")
-    (version "0.23.19")
+    (version "0.23.23")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lgqjf1vh09kghyj34a4svn1max18pmhka6bwbxb61mv61240jwk"))))
+        (base32 "15gk2bmry78cps3ya38a7cn4jxc36xv1r7gndr0fbz40qjc6qya7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
@@ -1282,15 +1430,17 @@ grammars and BER/DER encodings, for example.")
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.22)
         ("rust-bencher" ,rust-bencher-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-log" ,rust-log-0.4)
+        ("rust-macro-rules-attribute" ,rust-macro-rules-attribute-0.2)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-rcgen" ,rust-rcgen-0.13)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-time" ,rust-time-0.3)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26)
+        ("rust-x509-parser" ,rust-x509-parser-0.17))))
     (home-page "https://github.com/rustls/rustls")
     (synopsis "Modern TLS library written in Rust")
     (description
@@ -1746,14 +1896,14 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-pki-types-1
   (package
     (name "rust-rustls-pki-types")
-    (version "1.10.1")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pki-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dqb3d0cbld1yrp084wyzgw6yk3qzzic8l5pbs1b6bcjzzk4ggyj"))
+        (base32 "0755isc0x5iymm3wsn59s0ad1pm9zidw7p34qfqlsjsac9jf4z4i"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "Cargo.toml"
@@ -2103,8 +2253,39 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
 Public Key Infrastructure Certificate format as described in RFC 5280.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-x509-parser-0.17
+  (package
+    (name "rust-x509-parser")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q1lymkm13n6sibgzwgfhzi11lysz2ff7abm99nk80n4q0wz6sa5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests not included in release tarball
+       #:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.7)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-der-parser" ,rust-der-parser-10)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-oid-registry" ,rust-oid-registry-0.8)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/rusticata/x509-parser")
+    (synopsis "Parser for the X.509 v3 format (RFC 5280 certificates)")
+    (description "This crate provides a parser for the X.509 v3 format (RFC
+5280 certificates).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x509-parser-0.16
   (package
+    (inherit rust-x509-parser-0.17)
     (name "rust-x509-parser")
     (version "0.16.0")
     (source
@@ -2126,12 +2307,7 @@ Public Key Infrastructure Certificate format as described in RFC 5280.")
                        ("rust-ring" ,rust-ring-0.17)
                        ("rust-rusticata-macros" ,rust-rusticata-macros-4)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-time" ,rust-time-0.3))))
-    (home-page "https://github.com/rusticata/x509-parser")
-    (synopsis "Parser for the X.509 v3 format (RFC 5280 certificates)")
-    (description "This crate provides a parser for the X.509 v3 format (RFC
-5280 certificates).")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-time" ,rust-time-0.3))))))
 
 (define-public rust-x509-parser-0.15
   (package

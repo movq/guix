@@ -184,7 +184,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
                       (for-each make-file-writable
                                 (find-files "po" ".")) #t)))))
     (native-inputs (list autoconf-2.71 automake gettext-minimal pkg-config))
-    (inputs (list libconfuse vte))
+    (inputs (list libconfuse vte/gtk+-3))
     (synopsis "GTK+-based drop-down terminal")
     (description
      "Tilda is a terminal emulator similar to normal terminals like
@@ -947,7 +947,7 @@ a server/client mode.")
      (list gettext-minimal perl ; for pod2man
            pkg-config))
     (inputs
-     (list libxft vte))
+     (list libxft vte/gtk+-3))
     (home-page "https://launchpad.net/sakura")
     (synopsis "Simple but powerful libvte-based terminal emulator")
     (description "@code{Sakura} is a terminal emulator based on GTK+ and VTE.
@@ -979,7 +979,7 @@ desktop installed to have a decent terminal emulator.")
                                                  #$output))
              #:phases #~(modify-phases %standard-phases
                           (delete 'configure))))
-      (inputs (list gtk+ glib vte))
+      (inputs (list gtk+ glib vte/gtk+-3))
       (native-inputs (list pkg-config))
       (synopsis "Minimalist terminal emulator based on GTK+")
       (description
@@ -1460,7 +1460,7 @@ while also supporting native scrolling and @command{tmux} control mode
                   gtk+
                   libsecret
                   libunwind
-                  vte))
+                  vte/gtk+-3))
     (native-inputs (list appstream
                          desktop-file-utils
                          `(,glib "bin")
@@ -1514,7 +1514,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        ;; XXX: The crate at "crates.io" contains only the alacritty subproject
@@ -1526,7 +1526,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nh5w037rwf00z9b21803184j561s44js9ilfq9pcqbgbg95y308"))))
+        (base32 "1nsmz4vkzandhi1qc863hr9gqlbikb9n6yrdspdv6562swq128gz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f

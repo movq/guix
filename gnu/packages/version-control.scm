@@ -1404,6 +1404,36 @@ write native speed custom Git applications in any language with bindings.")
                                arg))
                          #$flags))))))
 
+(define-public libgit2-1.9
+  (package
+    (inherit libgit2-1.8)
+    (version "1.9.0")
+    (source (origin
+              (inherit (package-source libgit2-1.8))
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (modules '((guix build utils)))
+              (sha256
+               (base32
+                "06ajn5i5l1209z7x7jxcpw68ph0a6g3q67bmx0jm381rr8cb4zdz"))
+              (patches
+               (search-patches "libgit2-uninitialized-proxy-settings.patch"))
+              ;; We need to use the bundled xdiff until an option is given
+              ;; to use the one from git.
+              (snippet
+               '(begin
+                  (for-each delete-file-recursively
+                            '("deps/chromium-zlib"
+                              "deps/llhttp"
+                              "deps/ntlmclient"
+                              "deps/pcre"
+                              "deps/winhttp"
+                              "deps/zlib"))))))
+    (inputs
+     (list libssh2 http-parser))))
+
 (define-public libgit2-1.6
   (package
     (inherit libgit2)

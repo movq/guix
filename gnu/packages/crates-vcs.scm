@@ -337,8 +337,43 @@ dirty state into your program.")
      "This is an internal macro crate for git-version.")
     (license license:bsd-2)))
 
+(define-public rust-git2-0.20
+  (package
+    (name "rust-git2")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zwav0r76njd9chqxh7wj4r4zfn08nzsisrg05liyd6cjf4piniz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=cred::test::credential_helper5")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libgit2-sys" ,rust-libgit2-sys-0.18)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Rust bindings to libgit2")
+    (description
+     "This package provides bindings to libgit2 for interoperating with git
+repositories.  This library is both threadsafe and memory safe and allows both
+reading and writing git repositories.")
+    (license (list license:expat license:asl2.0))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.9 libssh2 openssl zlib))))
+
 (define-public rust-git2-0.19
   (package
+    (inherit rust-git2-0.20)
     (name "rust-git2")
     (version "0.19.0")
     (source
@@ -363,14 +398,7 @@ dirty state into your program.")
                                    ("rust-tempfile" ,rust-tempfile-3)
                                    ("rust-time" ,rust-time-0.1))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.8 libssh2 openssl zlib))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Rust bindings to libgit2")
-    (description
-     "This package provides bindings to libgit2 for interoperating with git
-repositories.  This library is both threadsafe and memory safe and allows both
-reading and writing git repositories.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.8 libssh2 openssl zlib))))
 
 (define-public rust-git2-0.18
   (package
@@ -495,6 +523,36 @@ reading and writing git repositories.")
        ("git" ,git-minimal/pinned)))              ;for a single test
     (inputs
      (list libgit2 libssh2 openssl zlib))))
+
+(define-public rust-git2-0.14
+  (package
+    (inherit rust-git2-0.15)
+    (name "rust-git2")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "074kqlmh7q39pqcj9rmrnmx4v5njh2j09dfxc1hsh45pm835a5fh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libgit2-sys" ,rust-libgit2-sys-0.13)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
+                                   ("rust-structopt" ,rust-structopt-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.1))))
+    (native-inputs
+     (list git-minimal pkg-config))
+    (inputs
+     (list libgit2-1.4 libssh2 openssl zlib))))
 
 (define-public rust-git2-0.13
   (package
@@ -626,8 +684,93 @@ libcurl, which is intended to be used with the @code{git2} crate.")
     (description "This crate adds git hooks support based on git2-rs.")
     (license license:expat)))
 
+(define-public rust-gix-0.67
+  (package
+    (name "rust-gix")
+    (version "0.67.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zziyg31w7knv6cdizhm3fgxi8xg5ay64a5wpzix6s63va6ygly7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.33)
+                       ("rust-gix-archive" ,rust-gix-archive-0.16)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.23)
+                       ("rust-gix-command" ,rust-gix-command-0.3)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-config" ,rust-gix-config-0.41)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-diff" ,rust-gix-diff-0.47)
+                       ("rust-gix-dir" ,rust-gix-dir-0.9)
+                       ("rust-gix-discover" ,rust-gix-discover-0.36)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-filter" ,rust-gix-filter-0.14)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.12)
+                       ("rust-gix-index" ,rust-gix-index-0.36)
+                       ("rust-gix-lock" ,rust-gix-lock-15)
+                       ("rust-gix-mailmap" ,rust-gix-mailmap-0.25)
+                       ("rust-gix-merge" ,rust-gix-merge-0.0.0)
+                       ("rust-gix-negotiate" ,rust-gix-negotiate-0.16)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-odb" ,rust-gix-odb-0.64)
+                       ("rust-gix-pack" ,rust-gix-pack-0.54)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.8)
+                       ("rust-gix-prompt" ,rust-gix-prompt-0.8)
+                       ("rust-gix-protocol" ,rust-gix-protocol-0.46)
+                       ("rust-gix-ref" ,rust-gix-ref-0.48)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.26)
+                       ("rust-gix-revision" ,rust-gix-revision-0.30)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.16)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-gix-status" ,rust-gix-status-0.14)
+                       ("rust-gix-submodule" ,rust-gix-submodule-0.15)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-transport" ,rust-gix-transport-0.43)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.42)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.37)
+                       ("rust-gix-worktree-state" ,rust-gix-worktree-state-0.14)
+                       ("rust-gix-worktree-stream" ,rust-gix-worktree-stream-0.16)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-prodash" ,rust-prodash-29)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-async-std" ,rust-async-std-1)
+                                   ("rust-insta" ,rust-insta-1)
+                                   ("rust-is-ci" ,rust-is-ci-1)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-termtree" ,rust-termtree-0.5)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Interact with Git repositories using a pure Rust implementation")
+    (description "Gitoxide is a pure Rust implementation of Git that aims to be lean
+and correct.  Interact with Git repositories just like Git would.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
+    (inherit rust-gix-0.67)
     (name "rust-gix")
     (version "0.66.0")
     (source
@@ -637,7 +780,6 @@ libcurl, which is intended to be used with the @code{git2} crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1swmi6l1ph9rqyzqd4v04apxima9zi8c9r9prd2z0111mv8vhj4h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -700,12 +842,7 @@ libcurl, which is intended to be used with the @code{git2} crate.")
                                    ("rust-is-ci" ,rust-is-ci-1)
                                    ("rust-pretty-assertions" ,rust-pretty-assertions-1)
                                    ("rust-serial-test" ,rust-serial-test-3)
-                                   ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "Interact with Git repositories using a pure Rust implementation")
-    (description "Gitoxide is a pure Rust implementation of Git that aims to be lean
-and correct.  Interact with Git repositories just like Git would.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-gix-0.64
   (package
@@ -1170,8 +1307,39 @@ and correct.  Interact with Git repositories just like Git would.")
                                    ("rust-serial-test" ,rust-serial-test-2)
                                    ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-gix-actor-0.33
+  (package
+    (name "rust-gix-actor")
+    (version "0.33.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-actor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cp47vxcd7f7nf225spdhncqqsrcjcf5qc68zkqnbq1jccd8l090"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Part of Gitoxide, a way to identify Git actors")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package provides a way to identify Git actors.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-actor-0.32
   (package
+    (inherit rust-gix-actor-0.33)
     (name "rust-gix-actor")
     (version "0.32.0")
     (source
@@ -1181,7 +1349,6 @@ and correct.  Interact with Git repositories just like Git would.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0rc662dyhxipvz3c181h7rif3y627lb0ky83s1nadi25rl9f66gw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs
@@ -1194,12 +1361,7 @@ and correct.  Interact with Git repositories just like Git would.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-winnow" ,rust-winnow-0.6))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, a way to identify Git actors")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package provides a way to identify Git actors.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-actor-0.31
   (package
@@ -1333,8 +1495,39 @@ package provides a way to identify Git actors.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-archive-0.16
+  (package
+    (name "rust-gix-archive")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-archive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09iihl24zz3ibxp3z5jzg5gipjv6mmhnbn1b0jbzbj33mj412xy4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree-stream" ,rust-gix-worktree-stream-0.16)
+                       ("rust-jiff" ,rust-jiff-0.1)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-zip" ,rust-zip-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Archive generation from of a worktree stream")
+    (description
+     "This package provides archive generation from of a worktree stream.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-archive-0.15
   (package
+    (inherit rust-gix-archive-0.16)
     (name "rust-gix-archive")
     (version "0.15.0")
     (source
@@ -1344,7 +1537,6 @@ package provides a way to identify Git actors.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "02m6n14jpvz61rwf1rg5lbjgz47n7zbcvqiramsqnff1an5c0iwi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -1357,12 +1549,7 @@ package provides a way to identify Git actors.")
         ("rust-jiff" ,rust-jiff-0.1)
         ("rust-tar" ,rust-tar-0.4)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-zip" ,rust-zip-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Archive generation from of a worktree stream")
-    (description
-     "This package provides archive generation from of a worktree stream.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-zip" ,rust-zip-2))))))
 
 (define-public rust-gix-archive-0.13
   (package
@@ -1498,8 +1685,40 @@ package provides a way to identify Git actors.")
                        ("rust-time" ,rust-time-0.3)
                        ("rust-zip" ,rust-zip-0.6))))))
 
+(define-public rust-gix-attributes-0.23
+  (package
+    (name "rust-gix-attributes")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-attributes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p6a6ai3pk8c7xn48vbw7gvjh7rc5m13cbcsd7zfvh4l462vzyfx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-kstring" ,rust-kstring-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Part of Gitoxide, this crate deals with .gitattributes")
+    (description
+     "This package provides a crate from the Gitoxide project dealing with
+@code{.gitattributes} files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-attributes-0.22
   (package
+    (inherit rust-gix-attributes-0.23)
     (name "rust-gix-attributes")
     (version "0.22.5")
     (source
@@ -1509,7 +1728,6 @@ package provides a way to identify Git actors.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "048k2c9kgh6bv7d1d2iyca8cmvb9mw090jjnab9kv5sam8jvzk7b"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -1522,13 +1740,7 @@ package provides a way to identify Git actors.")
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unicode-bom" ,rust-unicode-bom-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this crate deals with .gitattributes")
-    (description
-     "This package provides a crate from the Gitoxide project dealing with
-@code{.gitattributes} files.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
 (define-public rust-gix-attributes-0.21
   (package
@@ -1689,8 +1901,37 @@ command execution.")
      `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1))))))
 
+(define-public rust-gix-commitgraph-0.25
+  (package
+    (name "rust-gix-commitgraph")
+    (version "0.25.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-commitgraph" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11cdlkbkv80imbdkiy8k09gb1c48k6qadpmxvavb53w6ly8nbnm8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-chunk" ,rust-gix-chunk-0.4)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Read only access to the Git commitgraph file format")
+    (description
+     "Part of the Gitoxide project, a pure Rust implementation of Git.  This
+package provides read only access to Git's commitgraph file format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-commitgraph-0.24
   (package
+    (inherit rust-gix-commitgraph-0.25)
     (name "rust-gix-commitgraph")
     (version "0.24.3")
     (source
@@ -1700,7 +1941,6 @@ command execution.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0y7wc0y0xb0kh3c22pj3ns04zdqglqb22gj71kn3cn2ngzv0cfqk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -1710,13 +1950,7 @@ command execution.")
         ("rust-gix-hash" ,rust-gix-hash-0.14)
         ("rust-memmap2" ,rust-memmap2-0.9)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Read only access to the Git commitgraph file format")
-    (description
-     "Part of the Gitoxide project, a pure Rust implementation of Git.  This
-package provides read only access to Git's commitgraph file format.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-commitgraph-0.23
   (package
@@ -1807,8 +2041,45 @@ package provides read only access to Git's commitgraph file format.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-config-0.41
+  (package
+    (name "rust-gix-config")
+    (version "0.41.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pj4mijnx46s2lq1sw78w82nq0brvvhfh1vjspllp6bv3jzx3v8b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.48)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Git-config file parser and editor from the Gitoxide project")
+    (description
+     "This package provides a git-config file parser and editor from the
+Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-config-0.40
   (package
+    (inherit rust-gix-config-0.41)
     (name "rust-gix-config")
     (version "0.40.0")
     (source
@@ -1818,7 +2089,6 @@ package provides read only access to Git's commitgraph file format.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1c1bnijxf1j4qfqriw9kzf1g40i2yys324fyj4j5b8vcgr49grvq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -1835,13 +2105,7 @@ package provides read only access to Git's commitgraph file format.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-unicode-bom" ,rust-unicode-bom-2)
                        ("rust-winnow" ,rust-winnow-0.6))
-       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "Git-config file parser and editor from the Gitoxide project")
-    (description
-     "This package provides a git-config file parser and editor from the
-Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))))
 
 (define-public rust-gix-config-0.38
   (package
@@ -2052,8 +2316,41 @@ Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
 Gitoxide a Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-credentials-0.25
+  (package
+    (name "rust-gix-credentials")
+    (version "0.25.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-credentials" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wdfnq6y3za7h1xqj32af84zdzwg0r2irxrf0gkydiszd2w7ps1b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.3)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-prompt" ,rust-gix-prompt-0.8)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Git credentials handlers for Gitoxide")
+    (description
+     "Gitoxide is a Rust implementation of Git.  This package provides helpers
+to interact with Git credentials helpers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-credentials-0.24
   (package
+    (inherit rust-gix-credentials-0.25)
     (name "rust-gix-credentials")
     (version "0.24.5")
     (source
@@ -2063,7 +2360,6 @@ Gitoxide a Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0y6f5g8ny3rh80vw12qxzzvisw6588yll71hmvqq51wn0p9r3qwc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -2075,14 +2371,7 @@ Gitoxide a Rust implementation of Git.")
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-gix-url" ,rust-gix-url-0.27)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Git credentials handlers for Gitoxide")
-    (description
-     "Gitoxide is a Rust implementation of Git.  This package provides helpers
-to interact with Git credentials helpers.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-credentials-0.23
   (package
@@ -2257,8 +2546,45 @@ to interact with Git credentials helpers.")
        #:cargo-development-inputs
        (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-gix-diff-0.47
+  (package
+    (name "rust-gix-diff")
+    (version "0.47.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03i6v91k0bwyzzyjl2jp9rsx780v149hs4wydzdi7wasq780z1f9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.3)
+                       ("rust-gix-filter" ,rust-gix-filter-0.14)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.42)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.37)
+                       ("rust-imara-diff" ,rust-imara-diff-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Calculate differences between various Git objects")
+    (description
+      "Calculate differences between various Git objects.  This package is a
+part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-diff-0.46
   (package
+    (inherit rust-gix-diff-0.47)
     (name "rust-gix-diff")
     (version "0.46.0")
     (source
@@ -2268,7 +2594,6 @@ to interact with Git credentials helpers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0v1k7ld1b4xinq3dhvia4g9dck7b5x22h68wifrzh07z1zcazjcj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -2285,13 +2610,7 @@ to interact with Git credentials helpers.")
         ("rust-gix-worktree" ,rust-gix-worktree-0.36)
         ("rust-imara-diff" ,rust-imara-diff-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Calculate differences between various Git objects")
-    (description
-      "Calculate differences between various Git objects.  This
-package is a part of Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-diff-0.44
   (package
@@ -2422,8 +2741,44 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-dir-0.9
+  (package
+    (name "rust-gix-dir")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-dir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18rlpbjy14ljv1sq839skfn2x8f121gaspwjsjb3kbvvy6dw5xmv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;looking for undeclared gix-testtools
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-discover" ,rust-gix-discover-0.36)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.12)
+                       ("rust-gix-index" ,rust-gix-index-0.36)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.8)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.37)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Gitoxide project crate that deals with directory walks")
+    (description
+     "This package is part of the Gitoxide project.  This crate deals with
+directory walking.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-dir-0.8
   (package
+    (inherit rust-gix-dir-0.9)
     (name "rust-gix-dir")
     (version "0.8.0")
     (source
@@ -2433,7 +2788,6 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "166xgf5i4z5bi1jazh5kp2bdvqpbqgb2mh97b8f9ldb1cq3sklqf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;looking for undeclared gix-testtools
        #:cargo-inputs
@@ -2450,13 +2804,7 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-gix-worktree" ,rust-gix-worktree-0.36)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "Gitoxide project crate that deals with directory walks")
-    (description
-     "This package is part of the Gitoxide project.  This crate deals with
-directory walking.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-dir-0.6
   (package
@@ -2516,8 +2864,42 @@ directory walking.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-discover-0.36
+  (package
+    (name "rust-gix-discover")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-discover" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xkijvasm2c9a1pwjjc05xq8ydy5fc4f255hvw4syl4g8lgy68n5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.48)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-defer" ,rust-defer-0.2)
+                                   ("rust-is-ci" ,rust-is-ci-1)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Discover Git repositories and check if a directory is a Git repository")
+    (description
+     "Discover Git repositories and check if a directory is a repository.
+This package is part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-discover-0.35
   (package
+    (inherit rust-gix-discover-0.36)
     (name "rust-gix-discover")
     (version "0.35.0")
     (source
@@ -2527,7 +2909,6 @@ directory walking.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ljnv5c2q1xpwpw45qhli0hydl7ba52dfpw1dv16ndv7jmmkcxq5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -2542,14 +2923,7 @@ directory walking.")
        (("rust-defer" ,rust-defer-0.2)
         ("rust-is-ci" ,rust-is-ci-1)
         ("rust-serial-test" ,rust-serial-test-3)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis
-     "Discover Git repositories and check if a directory is a Git repository")
-    (description
-     "Discover Git repositories and check if a directory is a repository.
-This package is part of Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-discover-0.33
   (package
@@ -2705,8 +3079,49 @@ This package is part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serial-test" ,rust-serial-test-2)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-features-0.39
+  (package
+    (name "rust-gix-features")
+    (version "0.39.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-features" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07yqby9y0icx2l7kwbvxfg6z8b7gfznknwd4vd0a68p0y9rxd1bx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-jwalk" ,rust-jwalk-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-prodash" ,rust-prodash-29)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha1-smol" ,rust-sha1-smol-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-bstr" ,rust-bstr-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Crate to integrate various capabilities using compile-time feature flags")
+    (description
+     "This package provides a crate to integrate various capabilities using
+compile-time feature flags.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-features-0.38
   (package
+    (inherit rust-gix-features-0.39)
     (name "rust-gix-features")
     (version "0.38.2")
     (source
@@ -2716,7 +3131,6 @@ This package is part of Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0sfw6zs3qgmlqjkj4cvyfz6q6dgdlw1d16c7yckwgyg5kyn4aw5c"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-bytesize" ,rust-bytesize-1)
@@ -2736,14 +3150,7 @@ This package is part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-sha1-smol" ,rust-sha1-smol-1)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-walkdir" ,rust-walkdir-2))
-       #:cargo-development-inputs (("rust-bstr" ,rust-bstr-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Crate to integrate various capabilities using compile-time feature flags")
-    (description
-     "This package provides a crate to integrate various capabilities using
-compile-time feature flags.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-bstr" ,rust-bstr-1))))))
 
 (define-public rust-gix-features-0.37
   (package
@@ -2874,8 +3281,44 @@ compile-time feature flags.")
        #:cargo-development-inputs
        (("rust-bstr" ,rust-bstr-1))))))
 
+(define-public rust-gix-filter-0.14
+  (package
+    (name "rust-gix-filter")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-filter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sk50qqkhvbql3slagm6y9sgc6zdbiqsx4w9xmq5fj54b4izhdvb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-gix-attributes" ,rust-gix-attributes-0.23)
+        ("rust-gix-command" ,rust-gix-command-0.3)
+        ("rust-gix-hash" ,rust-gix-hash-0.15)
+        ("rust-gix-object" ,rust-gix-object-0.45)
+        ("rust-gix-packetline-blocking" ,rust-gix-packetline-blocking-0.18)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-quote" ,rust-gix-quote-0.4)
+        ("rust-gix-trace" ,rust-gix-trace-0.1)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Part of Gitoxide, this package implements Git filters")
+    (description
+     "This package provides a crate from the Gitoxide project implementing
+Git filters in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-filter-0.13
   (package
+    (inherit rust-gix-filter-0.14)
     (name "rust-gix-filter")
     (version "0.13.0")
     (source
@@ -2885,7 +3328,6 @@ compile-time feature flags.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "17hi8c47n1mmccpbwfcjs4w829wnfhpcgv1vjmdnw1j0w457j8a1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -2901,13 +3343,7 @@ compile-time feature flags.")
         ("rust-gix-utils" ,rust-gix-utils-0.1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this package implements Git filters")
-    (description
-     "This package provides a crate from the Gitoxide project implementing
-Git filters in Rust.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-3))))))
 
 (define-public rust-gix-filter-0.11
   (package
@@ -3050,8 +3486,36 @@ Git filters in Rust.")
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-gix-fs-0.12
+  (package
+    (name "rust-gix-fs")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-fs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f8xifs0wkq7lhy3c8091kq2lx15qkynjb6fwnbiyqjsa2n4yg9v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "File system specific utilities to Gitoxide")
+    (description
+     "Gitoxide is a pure Rust implementation of Git.  This package provides
+file system utilities for Gitoxide.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-fs-0.11
   (package
+    (inherit rust-gix-fs-0.12)
     (name "rust-gix-fs")
     (version "0.11.3")
     (source
@@ -3061,18 +3525,11 @@ Git filters in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0xc5z6w5s9rr0rgf7aab8hqg0dnblhk543crw30d19pykhjfdgzj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
                        ("rust-gix-features" ,rust-gix-features-0.38)
                        ("rust-gix-utils" ,rust-gix-utils-0.1)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "File system specific utilities to Gitoxide`")
-    (description
-     "Gitoxide is a pure Rust implementation of Git.  This package provides
-file system utilities for Gitoxide.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-gix-fs-0.9
   (package
@@ -3125,8 +3582,31 @@ file system utilities for Gitoxide.")
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.35))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-fsck-0.7
+  (package
+    (name "rust-gix-fsck")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-fsck" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "164kp5bn8zmh6s31h5w93dkhgzz8w54xf1ci9kbj7b2hh0m07vvm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Verifies the connectivity and validity of objects in the database")
+    (description "This package verifies the connectivity and validity of objects
+in the database.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-fsck-0.4
   (package
+    (inherit rust-gix-fsck-0.7)
     (name "rust-gix-fsck")
     (version "0.4.1")
     (source
@@ -3136,19 +3616,40 @@ file system utilities for Gitoxide.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0a3ybr321f7p1qv37hvylihcqjxxqlf3jll8wcm0q6nhwpy2i0mv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.14)
                        ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
-                       ("rust-gix-object" ,rust-gix-object-0.42))))
+                       ("rust-gix-object" ,rust-gix-object-0.42))))))
+
+(define-public rust-gix-glob-0.17
+  (package
+    (name "rust-gix-glob")
+    (version "0.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-glob" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d9lrxas6zjia91j3m4z8rnazz1s02j9kgw4fib82d8aximrmxma"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "Verifies the connectivity and validity of objects in the database")
-    (description "This package verifies the connectivity and validity of objects
-in the database.")
+    (synopsis "Gitoxide project crate dealing with pattern matching")
+    (description
+     "This package provides a crate from the Gitoxide project dealing with
+pattern matching.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-gix-glob-0.16
   (package
+    (inherit rust-gix-glob-0.17)
     (name "rust-gix-glob")
     (version "0.16.5")
     (source
@@ -3158,7 +3659,6 @@ in the database.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "04gijbam0k2vdshm2m0d6hg0hvv7ky4dgr9p4y2l02hapi5qp43l"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -3166,13 +3666,7 @@ in the database.")
         ("rust-document-features" ,rust-document-features-0.2)
         ("rust-gix-features" ,rust-gix-features-0.38)
         ("rust-gix-path" ,rust-gix-path-0.10)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Gitoxide project crate dealing with pattern matching")
-    (description
-     "This package provides a crate from the Gitoxide project dealing with pattern
-matching.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-gix-glob-0.15
   (package
@@ -3236,8 +3730,33 @@ matching.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-gix-hash-0.15
+  (package
+    (name "rust-gix-hash")
+    (version "0.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kp4yjlkp8g4qg0r2zs0jmz19r076f2y91cjsikhxvclf70wqphb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Borrowed and owned git hash digests used to identify git objects")
+    (description
+     "Borrowed and owned git hash digests used to identify git objects.  This
+package is part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hash-0.14
   (package
+    (inherit rust-gix-hash-0.15)
     (name "rust-gix-hash")
     (version "0.14.2")
     (source
@@ -3247,19 +3766,11 @@ matching.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0pjdlxbqxd9lbkccryfw2ghifiq3gz9h8ylliw0va8b16vvpsggr"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
                        ("rust-faster-hex" ,rust-faster-hex-0.9)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Borrowed and owned git hash digests used to identify git objects")
-    (description
-     "Borrowed and owned git hash digests used to identify git objects.  This
-package is part of Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-hash-0.13
   (package
@@ -3298,8 +3809,33 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-hashtable-0.6
+  (package
+    (name "rust-gix-hashtable")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hashtable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zhqgncv6jh3x7a7a2w3qbayghmiwv230mdw6gvqw1ricqjmpxhf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Hashtable based data structures optimized to utilize ObjectId keys")
+    (description
+     "This package provides hashtable based data structures optimized to utilize
+@code{ObjectId} keys.  Part of Gitoxide a Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hashtable-0.5
   (package
+    (inherit rust-gix-hashtable-0.6)
     (name "rust-gix-hashtable")
     (version "0.5.2")
     (source
@@ -3309,18 +3845,10 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hp2m2rvbv0vav5lkq7d7bvx74qrb6w3hnj1rq3aq69wdzhq1pvx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.14)
                        ("rust-hashbrown" ,rust-hashbrown-0.14)
-                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Hashtable based data structures optimized to utilize ObjectId keys")
-    (description
-     "Hashtable based data structures optimized to utilize @code{ObjectId}
-keys.  Part of Gitoxide a Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))))
 
 (define-public rust-gix-hashtable-0.4
   (package
@@ -3356,8 +3884,35 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-hashbrown" ,rust-hashbrown-0.14)
                        ("rust-parking-lot" ,rust-parking-lot-0.12))))))
 
+(define-public rust-gix-ignore-0.12
+  (package
+    (name "rust-gix-ignore")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12mv0lgq8aviy6fc4mdxr7r0ra0l1kb729wf8fkhmbx4s8jgpcdn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "This Gitoxide crate handles .gitignore files")
+    (description
+     "This crate is part of Gitoxide, it handles @code{.gitignore} files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ignore-0.11
   (package
+    (inherit rust-gix-ignore-0.12)
     (name "rust-gix-ignore")
     (version "0.11.4")
     (source
@@ -3367,7 +3922,6 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1dzs6zlwj8105ynmbiszf319i7x3a3lpav0gda8gaq44b6bcsiz4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -3375,12 +3929,7 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "This Gitoxide crate handles .gitignore files")
-    (description
-     "This crate is part of Gitoxide, it handles @code{.gitignore} files.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
 (define-public rust-gix-ignore-0.10
   (package
@@ -3442,8 +3991,54 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
+(define-public rust-gix-index-0.36
+  (package
+    (name "rust-gix-index")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0agycrg9hywdn89sj8hxbhx1c2aszbsp64h4hpc3z8qyr84r0q97"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--"
+             "--skip=access::tests::entry_by_path_with_conflicting_file")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-gix-bitmap" ,rust-gix-bitmap-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-lock" ,rust-gix-lock-15)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.42)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Part of Gitoxide, this crate implements the Git index file")
+    (description
+     "Part of Gitoxide, a pure Rust implementation of Rust.  This package's
+crate implements the Git index file.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-index-0.35
   (package
+    (inherit rust-gix-index-0.36)
     (name "rust-gix-index")
     (version "0.35.0")
     (source
@@ -3453,7 +4048,6 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bfjbrwmg8w9hi5bv47db272ks8b3385zrkn45l1fh248hr21m0c"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -3480,14 +4074,7 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
         ("rust-rustix" ,rust-rustix-0.38)
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Part of Gitoxide, this crate implements the Git index file")
-    (description
-     "Part of Gitoxide, a pure Rust implementation of Rust.  This package's
-crate implements the Git index file.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-index-0.33
   (package
@@ -3668,8 +4255,32 @@ crate implements the Git index file.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-lock-15
+  (package
+    (name "rust-gix-lock")
+    (version "15.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h6r088yv5fk0d14zihssfh1zfhdyc8cpnpbygcn7nsjlilaplqw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Git style lock files implementation in Rust")
+    (description "Part of Gitoxide, a pure rust implementation of Git.  This
+package provides git style lock files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-lock-14
   (package
+    (inherit rust-gix-lock-15)
     (name "rust-gix-lock")
     (version "14.0.0")
     (source
@@ -3679,17 +4290,11 @@ crate implements the Git index file.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "17g1sknpvjqaq2s29c693mbmkp8sign0174qfi3n3x7ijzi7zg73"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-14)
                        ("rust-gix-utils" ,rust-gix-utils-0.1)
                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Git style lock files implementation in Rust")
-    (description "Part of Gitoxide, a pure rust implementation of Git.  This
-package provides git style lock files.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-lock-12
   (package
@@ -3768,8 +4373,35 @@ package provides git style lock files.")
 implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-mailmap-0.25
+  (package
+    (name "rust-gix-mailmap")
+    (version "0.25.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-mailmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19mhd58bxxcsrqajlgr3fs7hyc235vrqqvbr67kb3brkc6b9cy81"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.33)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Functions for parsing mailmap files in Gitoxide")
+    (description
+     "This package contains functions for parsing mailmap files.  It's part of
+Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-mailmap-0.24
   (package
+    (inherit rust-gix-mailmap-0.25)
     (name "rust-gix-mailmap")
     (version "0.24.0")
     (source
@@ -3779,7 +4411,6 @@ implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xsj6w3azbcd3qx3pln9f4jabndm7kl59jxlnajy2095xk425mfp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -3787,13 +4418,7 @@ implementation of Git.")
         ("rust-gix-actor" ,rust-gix-actor-0.32)
         ("rust-gix-date" ,rust-gix-date-0.9)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Functions for parsing mailmap files in Gitoxide")
-    (description
-     "This package contains functions for parsing mailmap files.  It's part of
-Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-mailmap-0.23
   (package
@@ -3876,8 +4501,75 @@ Gitoxide, a pure Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-merge-0.0.0
+  (package
+    (name "rust-gix-merge")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-merge" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j00zbka50r268kqmbf7cqiisb48103a7pvkznajv8d5s230rw7y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; undeclared crate `gix_testtools`
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.3)
+                       ("rust-gix-filter" ,rust-gix-filter-0.14)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.37)
+                       ("rust-imara-diff" ,rust-imara-diff-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implementation of git's merge algorithms")
+    (description
+     "Gitoxide is a pure Rust implementation of Git.  This package consists of
+Git's merge algorithms.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-negotiate-0.16
+  (package
+    (name "rust-gix-negotiate")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-negotiate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gfhnzjv0q2gj27xwgdx576q8kw5zx0diiirm6g39hrq30lhcj21"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.16)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implements Git's negotiation algorithms as part of Gixoxide")
+    (description
+     "Gitoxide is a pure Rust implementation of Git.  This package consists of
+Git's negotiation algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-negotiate-0.15
   (package
+    (inherit rust-gix-negotiate-0.16)
     (name "rust-gix-negotiate")
     (version "0.15.0")
     (source
@@ -3887,7 +4579,6 @@ Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ns7p4m1skzfkhb5wzr9h01qqsgnrhbqm53g9giak4d157rkn1ml"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -3897,14 +4588,7 @@ Gitoxide, a pure Rust implementation of Git.")
         ("rust-gix-object" ,rust-gix-object-0.44)
         ("rust-gix-revwalk" ,rust-gix-revwalk-0.15)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Implements Git's negotiation algorithms as part of Gixoxide")
-    (description
-     "Gitoxide is a pure Rust implementation of Git.  This package consists of
-Git's negotiation algorithms.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-negotiate-0.13
   (package
@@ -4018,8 +4702,48 @@ Git's negotiation algorithms.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-object-0.45
+  (package
+    (name "rust-gix-object")
+    (version "0.45.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06pwqvxwr3appcw3k63hj6jfg0a4j921g2xfv59qaa9xfpkvcxra"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.33)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-termtree" ,rust-termtree-0.5))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Immutable and mutable Git objects with decoding and encoding support")
+    (description
+     "Part of Gitoxide, a pure Rust Git implementation.  This package contains
+functions to handle immutable and mutable git objects with decoding and encoding
+support.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-object-0.44
   (package
+    (inherit rust-gix-object-0.45)
     (name "rust-gix-object")
     (version "0.44.0")
     (source
@@ -4029,7 +4753,6 @@ Git's negotiation algorithms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ylfp09gzy42b1m1day41m49b3d8dggw480qfd07dppi6hc80nrg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -4047,15 +4770,7 @@ Git's negotiation algorithms.")
         ("rust-winnow" ,rust-winnow-0.6))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.5)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Immutable and mutable Git objects with decoding and encoding support")
-    (description
-     "Part of Gitoxide, a pure Rust Git implementation.  This package contains
-functions to handle immutable and mutable git objects with decoding and encoding
-support.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-object-0.42
   (package
@@ -4238,8 +4953,44 @@ support.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-odb-0.64
+  (package
+    (name "rust-gix-odb")
+    (version "0.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-odb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q8gwv4mdm8jqmfr73q0z009fvvh151wjkqvc20gkcpiyynnmf0b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-pack" ,rust-gix-pack-0.54)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implements various Git object databases")
+    (description
+     "Implements various Git object databases for Gitoxide.  Gitoxide is a pure
+Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-odb-0.63
   (package
+    (inherit rust-gix-odb-0.64)
     (name "rust-gix-odb")
     (version "0.63.0")
     (source
@@ -4249,7 +5000,6 @@ support.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0iy7grqs5h73nz781zfmiyisr9pm4yjxsamby1ady5qwf1l805d3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arc-swap" ,rust-arc-swap-1)
@@ -4265,13 +5015,7 @@ support.")
         ("rust-parking-lot" ,rust-parking-lot-0.12)
         ("rust-serde" ,rust-serde-1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Implements various Git object databases")
-    (description
-      "Implements various Git object databases for Gitoxide.
-Gitoxide is a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-odb-0.61
   (package
@@ -4409,8 +5153,47 @@ Gitoxide is a pure Rust implementation of Git.")
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-pack-0.54
+  (package
+    (name "rust-gix-pack")
+    (version "0.54.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sq240glmpvp0x1bpsngrlk82iz2d3dkk0a0f8v29fjmm1cnwgin"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; undeclared crate `gix_testtools`
+       #:cargo-inputs (("rust-clru" ,rust-clru-0.6)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-chunk" ,rust-gix-chunk-0.4)
+                       ("rust-gix-diff" ,rust-gix-diff-0.47)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.42)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-uluru" ,rust-uluru-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implements Git packs and related data structures")
+    (description
+     "Git packs and related data structures.  Gitoxide is a pure Rust
+implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-pack-0.53
   (package
+    (inherit rust-gix-pack-0.54)
     (name "rust-gix-pack")
     (version "0.53.0")
     (source
@@ -4420,7 +5203,6 @@ Gitoxide is a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0m6rdxkq21ni71vk8k7qbsjxr7mgkjpdijh3wkhf28gf5qsal8rj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;use of undeclared crate gix_testtools
        #:cargo-inputs
@@ -4440,13 +5222,7 @@ Gitoxide is a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-uluru" ,rust-uluru-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Implements Git packs and related data structures")
-    (description
-     "Git packs and related data structures.  Gitoxide is a pure
-Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-uluru" ,rust-uluru-3))))))
 
 (define-public rust-gix-pack-0.51
   (package
@@ -4608,8 +5384,41 @@ Rust implementation of Git.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-uluru" ,rust-uluru-3))))))
 
+(define-public rust-gix-packetline-0.18
+  (package
+    (name "rust-gix-packetline")
+    (version "0.18.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-packetline" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k9rqirrqsggwz9hz72l13dkvjhkg19zamaayimhl5mcqdmsxrf7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Implementation the pkt-line serialization format for Gitoxide")
+    (description
+     "This package provides an implementing the pkt-line serialization format.
+Gitoxide is a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-packetline-0.17
   (package
+    (inherit rust-gix-packetline-0.18)
     (name "rust-gix-packetline")
     (version "0.17.6")
     (source
@@ -4618,9 +5427,7 @@ Rust implementation of Git.")
        (uri (crate-uri "gix-packetline" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-          "0jay9kgy8fgc809xcipgwhz430a4pyywhcb7c0n25yp2bx6yyhwc"))))
-    (build-system cargo-build-system)
+        (base32 "0jay9kgy8fgc809xcipgwhz430a4pyywhcb7c0n25yp2bx6yyhwc"))))
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -4632,14 +5439,7 @@ Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
-                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Crate of the gitoxide project implementing the pkt-line serialization format")
-    (description
-     "This package provides a crate of the gitoxide project implementing the
-pkt-line serialization format.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
 (define-public rust-gix-packetline-0.16
   (package
@@ -4667,8 +5467,36 @@ pkt-line serialization format.")
        (("rust-async-std" ,rust-async-std-1)
         ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
+(define-public rust-gix-packetline-blocking-0.18
+  (package
+    (name "rust-gix-packetline-blocking")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-packetline-blocking" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z71s469s76g96a222221ww051ydbcmp11pmg5kmmgbagivgijy1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Duplicate of @code{gix-packetline} with @code{blocking-io} selected")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package is a duplicate of @code{gix-packetline} with the @code{blocking-io}
+feature pre-selected.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-packetline-blocking-0.17
   (package
+    (inherit rust-gix-packetline-blocking-0.18)
     (name "rust-gix-packetline-blocking")
     (version "0.17.5")
     (source
@@ -4678,21 +5506,13 @@ pkt-line serialization format.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0h3bansw7mp2p6id78lwlrs4pm8nclmql07qbxpxv657p822705r"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-faster-hex" ,rust-faster-hex-0.9)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Duplicate of @code{gix-packetline} with @code{blocking-io} selected")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package is a duplicate of @code{gix-packetline} with the @code{blocking-io}
-feature pre-selected.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-packetline-blocking-0.16
   (package
@@ -4745,8 +5565,38 @@ feature pre-selected.")
 Git.  This crate deals with paths and their conversions")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-pathspec-0.8
+  (package
+    (name "rust-gix-pathspec")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pathspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07mqfl6232285yzsmym2vr7vndwh3ivx9p7xgv7nzsd4wkxjsisc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.23)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-serial-test" ,rust-serial-test-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Capabilities to handle Git's pathspecs")
+    (description
+     "This package provides capabilities for handling Git's pathspecs.  It is
+part of Gitoxide, a Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-pathspec-0.7
   (package
+    (inherit rust-gix-pathspec-0.8)
     (name "rust-gix-pathspec")
     (version "0.7.7")
     (source
@@ -4756,7 +5606,6 @@ Git.  This crate deals with paths and their conversions")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ssw9k2kq7hcn5xn9nby4gvq2628clxapf331r6l3d1jjlivy8sx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -4767,13 +5616,7 @@ Git.  This crate deals with paths and their conversions")
         ("rust-gix-path" ,rust-gix-path-0.10)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
-                                   ("rust-serial-test" ,rust-serial-test-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Capabilities to handle Git's pathspecs")
-    (description
-     "This package provides capabilities for handling Git's pathspecs.  It is
-part of Gitoxide, a Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-serial-test" ,rust-serial-test-3))))))
 
 (define-public rust-gix-pathspec-0.5
   (package
@@ -4893,8 +5736,47 @@ terminals prompt.")
        #:cargo-development-inputs (("rust-expectrl" ,rust-expectrl-0.7)
                                    ("rust-serial-test" ,rust-serial-test-2))))))
 
+(define-public rust-gix-protocol-0.46
+  (package
+    (name "rust-gix-protocol")
+    (version "0.46.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jmq10azisdp4k1i18hif4cdxchrm4ppwacc8k9k39fyl18pwzks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-transport" ,rust-gix-transport-0.43)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-maybe-async" ,rust-maybe-async-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-gix-packetline" ,rust-gix-packetline-0.18))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implementation of Git protocols that's part of Gitoxide")
+    (description
+     "This package implements Git protocols for Gitoxide.  Gitoxide is a pure
+Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-protocol-0.45
   (package
+    (inherit rust-gix-protocol-0.46)
     (name "rust-gix-protocol")
     (version "0.45.3")
     (source
@@ -4904,7 +5786,6 @@ terminals prompt.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0gjf2s9ssch79jfyv7bpa8pxwgdqks6940x04bpfzd81dw0a2hyc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
@@ -4921,13 +5802,7 @@ terminals prompt.")
         ("rust-maybe-async" ,rust-maybe-async-0.2)
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-winnow" ,rust-winnow-0.6))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Implementation of Git protocols that's part of Gitoxide")
-    (description
-     "This package implements Git protocols for Gitoxide.  Gitoxide is a pure
-Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winnow" ,rust-winnow-0.6))))))
 
 (define-public rust-gix-protocol-0.43
   (package
@@ -5081,8 +5956,45 @@ Rust implementation of Git.")
 quotations used by git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-ref-0.48
+  (package
+    (name "rust-gix-ref")
+    (version "0.48.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18mfzrnp1308g5c454xwa85dz3c0913fyhp66n6dmnd23zkqawx4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; undeclared crate `gix_testtools`
+       #:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.33)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-lock" ,rust-gix-lock-15)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs (("rust-gix-date" ,rust-gix-date-0.9))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Part of Gitoxide, this crate handles Git references")
+    (description "This package provides a crate to handle git references.
+Part of Gitoxide, a project to create a pure Rust Git implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ref-0.47
   (package
+    (inherit rust-gix-ref-0.48)
     (name "rust-gix-ref")
     (version "0.47.0")
     (source
@@ -5092,7 +6004,6 @@ quotations used by git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r8i8fj7xgmp88qk1w7xc2gs7l8sb8y0azx5algskaprxc3883df"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;use of undeclared crate gix_testtools
        #:cargo-inputs
@@ -5110,12 +6021,7 @@ quotations used by git.")
         ("rust-memmap2" ,rust-memmap2-0.9)
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-winnow" ,rust-winnow-0.6))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "Part of Gitoxide, this crate handles Git references")
-    (description "This package provides a crate to handle git references.
-Part of Gitoxide, a project to create a pure Rust Git implementation.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winnow" ,rust-winnow-0.6))))))
 
 (define-public rust-gix-ref-0.45
   (package
@@ -5299,8 +6205,35 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-winnow" ,rust-winnow-0.5))))))
 
+(define-public rust-gix-refspec-0.26
+  (package
+    (name "rust-gix-refspec")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-refspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hn4mbnvcammpwrqcawpysbqv1h2np5yzs1vfyzrl3fq165068h0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-revision" ,rust-gix-revision-0.30)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Parsing and representing refspecs for Gitoxide")
+    (description
+     "This package parses and represents Git refspecs.  It's part of Gitoxide
+a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-refspec-0.25
   (package
+    (inherit rust-gix-refspec-0.26)
     (name "rust-gix-refspec")
     (version "0.25.0")
     (source
@@ -5310,7 +6243,6 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "19lwhs10cg9rg040k20w8i27ay475isggngxbxhngfj14gw0bc7b"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -5318,14 +6250,7 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
         ("rust-gix-revision" ,rust-gix-revision-0.29)
         ("rust-gix-validate" ,rust-gix-validate-0.9)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Parsing and representing refspecs for Gitoxide")
-    (description
-     "This package parses and represents Git refspecs.  It's part of Gitoxide
-a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-refspec-0.23
   (package
@@ -5427,8 +6352,41 @@ a pure Rust implementation of Git.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-revision-0.30
+  (package
+    (name "rust-gix-revision")
+    (version "0.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wam9d627191a4qdfjjj8lryk44z0qg7apaamxi3bkpyi10fps2f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.16)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Find names for revisions and parsing specifications for Gitoxide")
+    (description
+     "This package is part of Gitoxide, a pure Rust implementation of Git.  It
+handles finding names and parsing specifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revision-0.29
   (package
+    (inherit rust-gix-revision-0.30)
     (name "rust-gix-revision")
     (version "0.29.0")
     (source
@@ -5438,7 +6396,6 @@ a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07jyh9vabfbkva99m0mavsk68v3asp1k0c48as9dn35c36r22ims"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -5450,14 +6407,7 @@ a pure Rust implementation of Git.")
         ("rust-gix-revwalk" ,rust-gix-revwalk-0.15)
         ("rust-gix-trace" ,rust-gix-trace-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "This Gitoxide crate finds names for revisions and parsing specifications")
-    (description
-     "This package is part of Gitoxide, a pure Rust implementation of Git.  It
-handles finding names and parsing specifications.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revision-0.27
   (package
@@ -5579,8 +6529,36 @@ handles finding names and parsing specifications.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-revwalk-0.16
+  (package
+    (name "rust-gix-revwalk")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cirkpxgz52mvib9lw1vb0jp9a09pxv8afh637zkd3d9dm4skjg6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Utilities for walking Git's revision graph")
+    (description
+     "Utilities for walking Git's revision graph.  This crate is part of
+Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revwalk-0.15
   (package
+    (inherit rust-gix-revwalk-0.16)
     (name "rust-gix-revwalk")
     (version "0.15.0")
     (source
@@ -5590,7 +6568,6 @@ handles finding names and parsing specifications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "111r3ddls12y1s884x01gai8ykdsn4qmnggghbk4w24k9da747ml"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.24)
@@ -5599,13 +6576,7 @@ handles finding names and parsing specifications.")
          ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
          ("rust-gix-object" ,rust-gix-object-0.44)
          ("rust-smallvec" ,rust-smallvec-1)
-         ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Utilities for walking Git's revision graph")
-    (description
-     "Utilities for walking Git's revision graph.  This crate is part of
-Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+         ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revwalk-0.13
   (package
@@ -5766,8 +6737,46 @@ Gitoxide, a pure Rust implementation of Git.")
      "This package is part of Gitoxide, it implements a shared trust model.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-status-0.14
+  (package
+    (name "rust-gix-status")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-status" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hq574lvvsswn15nhinwgprqgk2vs6radg6qhr61n5jhwy34hhap"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-gix-diff" ,rust-gix-diff-0.47)
+                       ("rust-gix-dir" ,rust-gix-dir-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-filter" ,rust-gix-filter-0.14)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-index" ,rust-gix-index-0.36)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.8)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.37)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Gitoxide project crate that provides @code{git status} functionality")
+    (description
+     "This Gitoxide project crate provides @code{git status} functionality.
+Gitoxide is a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-status-0.13
   (package
+    (inherit rust-gix-status-0.14)
     (name "rust-gix-status")
     (version "0.13.0")
     (source
@@ -5777,7 +6786,6 @@ Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1spznjc0s41cnyzfhvm37yr0fpx0fjiima6cwjk1c34zcfx3a3gp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -5795,14 +6803,7 @@ Gitoxide, a pure Rust implementation of Git.")
         ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
         ("rust-gix-worktree" ,rust-gix-worktree-0.36)
         ("rust-portable-atomic" ,rust-portable-atomic-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis
-     "Gitoxide project crate that provides @code{git status} functionality")
-    (description
-     "This Gitoxide project crate provides @code{git status} functionality.
-Gitoxide is a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-status-0.11
   (package
@@ -5963,8 +6964,36 @@ Gitoxide is a pure Rust implementation of Git.")
                        ("rust-gix-pathspec" ,rust-gix-pathspec-0.3)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-submodule-0.15
+  (package
+    (name "rust-gix-submodule")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-submodule" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yj9y2b7425a3bc2wp2sy7z50zialdv230pwh32kdkbk31i9kl1y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-config" ,rust-gix-config-0.41)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.8)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.26)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Functions for dealing with Git submodules")
+    (description
+     "Functions for dealing with Git submodules.  Part of Gitoxide a pure Rust
+implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-submodule-0.14
   (package
+    (inherit rust-gix-submodule-0.15)
     (name "rust-gix-submodule")
     (version "0.14.0")
     (source
@@ -5974,7 +7003,6 @@ Gitoxide is a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jw7rb181z5ns0njxh9pi4fa4d8n7lgfn5cg46rp5wy2ikvhm7aj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -5983,14 +7011,7 @@ Gitoxide is a pure Rust implementation of Git.")
         ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
         ("rust-gix-refspec" ,rust-gix-refspec-0.25)
         ("rust-gix-url" ,rust-gix-url-0.27)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis
-      "Functions for dealing with Git submodules")
-    (description
-     "Functions for dealing with Git submodules.  Part of Gitoxide a pure Rust
-implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-submodule-0.12
   (package
@@ -6120,8 +7141,38 @@ implementation of Git.")
                        ("rust-gix-url" ,rust-gix-url-0.24)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-tempfile-15
+  (package
+    (name "rust-gix-tempfile")
+    (version "15.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10nvk82g7fhljg5y63dxpd8p7296wrfzxyssk957misc17pqdsrg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dashmap" ,rust-dashmap-6)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Rust tempfile implementation with assured cleanup")
+    (description
+     "Part of Gitoxide a Rust implementation of Git.  This package provides a
+tempfile capability with a global registry to assure clean-up.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-tempfile-14
   (package
+    (inherit rust-gix-tempfile-15)
     (name "rust-gix-tempfile")
     (version "14.0.2")
     (source
@@ -6131,7 +7182,6 @@ implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ah8y51fbx6x9m71ihxk3zhny0c05kka5kd0a2hida4zjqkljsq4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-dashmap" ,rust-dashmap-6)
@@ -6142,14 +7192,7 @@ implementation of Git.")
         ("rust-parking-lot" ,rust-parking-lot-0.12)
         ("rust-signal-hook" ,rust-signal-hook-0.3)
         ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Rust tempfile implementation with assured cleanup")
-    (description
-     "Part of Gitoxide a Rust implementation of Git.  This package provides a
-tempfile capability with a global registry to assure clean-up.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-tempfile-12
   (package
@@ -6223,28 +7266,71 @@ tempfile capability with a global registry to assure clean-up.")
 (define-public rust-gix-trace-0.1
   (package
     (name "rust-gix-trace")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-trace" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lmr5qqdk44xbz695asvwvc60ggaxrd12gjdl8izrw991h9dxg84"))))
+        (base32 "1xv54v5y91vxjx351wl3yk66fwk7ybkna2knbxlnj34j6qh6lfbw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-document-features" ,rust-document-features-0.2)
         ("rust-tracing-core" ,rust-tracing-core-0.1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "Crate to provide minimal `tracing` support")
     (description
      "This package provides a crate to provide minimal `tracing` support that
 can be turned off to zero cost.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-transport-0.43
+  (package
+    (name "rust-gix-transport")
+    (version "0.43.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-transport" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02r0fwai9pq6f2n1nn588pjc71rxh9zi9169w01nq8xpaw9s989r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-base64" ,rust-base64-0.22)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-curl" ,rust-curl-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-command" ,rust-gix-command-0.3)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.25)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-packetline" ,rust-gix-packetline-0.18)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-blocking" ,rust-blocking-1)
+                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implements the Git transport layer for Gitoxide")
+    (description
+     "This package is part of Gitoxide a Rust implementation of Git.  It
+provides an implementation of the Git transport layer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-transport-0.42
   (package
+    (inherit rust-gix-transport-0.43)
     (name "rust-gix-transport")
     (version "0.42.3")
     (source
@@ -6254,7 +7340,6 @@ can be turned off to zero cost.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07s8lsq97r0hgg9znd2f0jaj49prm2bss9mjjxfs2h8vn35cq7a2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-std" ,rust-async-std-1)
@@ -6279,14 +7364,7 @@ can be turned off to zero cost.")
        #:cargo-development-inputs
        (("rust-async-std" ,rust-async-std-1)
         ("rust-blocking" ,rust-blocking-1)
-        ("rust-maybe-async" ,rust-maybe-async-0.2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Implements the Git transport layer for Gitoxide")
-    (description
-     "This package is part of Gitoxide a Rust implementation of Git.  It
-provides an implementation of the Git transport layer.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
 (define-public rust-gix-transport-0.40
   (package
@@ -6441,8 +7519,37 @@ provides an implementation of the Git transport layer.")
         ("rust-blocking" ,rust-blocking-1)
         ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
+(define-public rust-gix-traverse-0.42
+  (package
+    (name "rust-gix-traverse")
+    (version "0.42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-traverse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pqqx02bab9101iqry4f8nsbwd3azg1a0sjfna9bm9jgrh9in3zj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.16)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Ways to traverse Git commit graphs and trees for Gix")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package is used to traverse Git commit graphs and trees.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-traverse-0.41
   (package
+    (inherit rust-gix-traverse-0.42)
     (name "rust-gix-traverse")
     (version "0.41.0")
     (source
@@ -6452,7 +7559,6 @@ provides an implementation of the Git transport layer.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "105prigk1pq7g3i3hvwh4y9rhc35ycl84cg9f9ag6kafz6da6383"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -6463,12 +7569,7 @@ provides an implementation of the Git transport layer.")
         ("rust-gix-object" ,rust-gix-object-0.44)
         ("rust-gix-revwalk" ,rust-gix-revwalk-0.15)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Ways to traverse Git commit graphs and trees for Gix")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package is used to traverse Git commit graphs and trees.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-traverse-0.39
   (package
@@ -6581,8 +7682,38 @@ package is used to traverse Git commit graphs and trees.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-url-0.28
+  (package
+    (name "rust-gix-url")
+    (version "0.28.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ncj6k4lk3qb0i27ida7ngi9z06qpmrbva6v0da3zgd67drzp5nh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Parsing and serialization of gix-url for Gitoxide")
+    (description
+     "This package is part of Gitoxide a Rust implementation of Git.  It
+provides a crate for parsing and serialization of gix-urls.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-url-0.27
   (package
+    (inherit rust-gix-url-0.28)
     (name "rust-gix-url")
     (version "0.27.5")
     (source
@@ -6592,7 +7723,6 @@ package is used to traverse Git commit graphs and trees.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "128c2rp6780qspiqasmyd6a3gdmcmq6kl19axllf28pvhig0qa7x"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -6604,14 +7734,7 @@ package is used to traverse Git commit graphs and trees.")
          ("rust-thiserror" ,rust-thiserror-1)
          ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-assert-matches" ,rust-assert-matches-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "This crate implements parsing and serialization of gix-url for Gitoxide")
-    (description
-     "This package is part of Gitoxide a Rust implementation of Git.  It
-provides a crate for parsing and serialization of gix-url's.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-assert-matches" ,rust-assert-matches-1))))))
 
 (define-public rust-gix-url-0.26
   (package
@@ -6689,21 +7812,21 @@ provides a crate for parsing and serialization of gix-url's.")
 (define-public rust-gix-utils-0.1
   (package
     (name "rust-gix-utils")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0prkj13jwvcrd8gy8f73ci2i3nwkak88xpvdibcqwl4rjlz7whms"))))
+        (base32 "0pykxyp0cm2x8lj4ryj1pflksf9k7iyrshf8g321d2dc0d7g427z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
         ("rust-fastrand" ,rust-fastrand-2)
         ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis
      "Crate with `gitoxide` utilities that don't need feature toggles")
     (description
@@ -6767,8 +7890,43 @@ package contains validation functions for various kinds of names in Git.")
        (("rust-bstr" ,rust-bstr-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-worktree-0.37
+  (package
+    (name "rust-gix-worktree")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "177j311n46ysiyb52x68rwf02lp7gnavy4p9l17zwl1ma9dmwd0d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.23)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.12)
+                       ("rust-gix-index" ,rust-gix-index-0.36)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Gitoxide functions for handling shared Git worktree types and utilities")
+    (description
+     "This package provides functions for handling shared Git worktree related
+types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-worktree-0.36
   (package
+    (inherit rust-gix-worktree-0.37)
     (name "rust-gix-worktree")
     (version "0.36.0")
     (source
@@ -6778,7 +7936,6 @@ package contains validation functions for various kinds of names in Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "16hl0gckhybirv86vv3ds5qhjrh4marmq39nbf38xfpjldvas4n3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -6793,14 +7950,7 @@ package contains validation functions for various kinds of names in Git.")
         ("rust-gix-object" ,rust-gix-object-0.44)
         ("rust-gix-path" ,rust-gix-path-0.10)
         ("rust-gix-validate" ,rust-gix-validate-0.9)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Gitoxide functions for handling shared Git worktree types and utilities")
-    (description
-     "This package provides functions for handling shared Git worktree related
-types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-gix-worktree-0.34
   (package
@@ -6933,8 +8083,42 @@ types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-gix-worktree-state-0.14
+  (package
+    (name "rust-gix-worktree-state")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-state" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nmql110n8f3m9l0p3wcw4mg8j87wyc0mhp9m9y77ggk087b0wjy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-filter" ,rust-gix-filter-0.14)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-index" ,rust-gix-index-0.36)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.37)
+                       ("rust-io-close" ,rust-io-close-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Gitoxide project library to set a Git worktree to a particular state")
+    (description
+     "This crate sets the Git worktree to a particular state.  Part of Gitoxide
+a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-worktree-state-0.13
   (package
+    (inherit rust-gix-worktree-state-0.14)
     (name "rust-gix-worktree-state")
     (version "0.13.0")
     (source
@@ -6944,7 +8128,6 @@ types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hyyhvigwnb8cybxxyiqp5rxlw8nw39qs1nmmh5jqw7s2frw81bv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -6958,14 +8141,7 @@ types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
         ("rust-gix-path" ,rust-gix-path-0.10)
         ("rust-gix-worktree" ,rust-gix-worktree-0.36)
         ("rust-io-close" ,rust-io-close-0.3)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Gitoxide project library to set a Git worktree to a particular state")
-    (description
-     "This crate sets the Git worktree to a particular state.  Part of Gitoxide
-a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-worktree-state-0.11
   (package
@@ -7098,8 +8274,39 @@ a pure Rust implementation of Git.")
                        ("rust-io-close" ,rust-io-close-0.3)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-worktree-stream-0.16
+  (package
+    (name "rust-gix-worktree-stream")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-stream" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0riackffdhz9var52wbdxjrab4cgmmzhknspar6pxfc1ks0m3lw1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-attributes" ,rust-gix-attributes-0.23)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-filter" ,rust-gix-filter-0.14)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.45)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.42)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Gitoxide library to generate a byte-stream from a git-tree")
+    (description
+     "This crate provides the ability to generate a byte-stream from a git-tree.
+It's part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-worktree-stream-0.15
   (package
+    (inherit rust-gix-worktree-stream-0.16)
     (name "rust-gix-worktree-stream")
     (version "0.15.0")
     (source
@@ -7109,7 +8316,6 @@ a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1jnvzmsp3h2yzv575a9d2dvkkfvzqgyxd0mnahmf5v53q63ips38"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gix-attributes" ,rust-gix-attributes-0.22)
@@ -7121,14 +8327,7 @@ a pure Rust implementation of Git.")
         ("rust-gix-path" ,rust-gix-path-0.10)
         ("rust-gix-traverse" ,rust-gix-traverse-0.41)
         ("rust-parking-lot" ,rust-parking-lot-0.12)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-      "Gitoxide library to generate a byte-stream from a git-tree")
-    (description
-      "This crate provides the ability to generate a byte-stream from a git-tree.
-It's part of Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-worktree-stream-0.13
   (package
@@ -7252,8 +8451,40 @@ It's part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-libgit2-sys-0.18
+  (package
+    (name "rust-libgit2-sys")
+    (version "0.18.0+1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (delete-file-recursively "libgit2")))
+       (sha256
+        (base32 "1v7zcw1kky338grxs70y7fwpy70g846bpa5yzvl9f5bybr31g8g1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libssh2-sys" ,rust-libssh2-sys-0.3)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.9 openssl zlib))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Native bindings to the libgit2 library")
+    (description
+     "This package provides native Rust bindings to the @code{libgit2}
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libgit2-sys-0.17
   (package
+    (inherit rust-libgit2-sys-0.18)
     (name "rust-libgit2-sys")
     (version "0.17.0+1.8.1")
     (source
@@ -7275,13 +8506,7 @@ It's part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
                        ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.8 openssl zlib))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Native bindings to the libgit2 library")
-    (description
-     "This package provides native Rust bindings to the @code{libgit2}
-library.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.8 openssl zlib))))
 
 (define-public rust-libgit2-sys-0.16
   (package

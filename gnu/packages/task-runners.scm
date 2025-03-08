@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,17 +20,18 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages task-runners)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
-  #:use-module (guix utils)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages mail)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system go))
+  #:use-module (guix build-system go)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public run
   (package
@@ -63,56 +65,60 @@ using a Runfile.")
 (define-public task-spooler
   (package
     (name "task-spooler")
-    (version "1.0.1")
+    (version "1.0.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "https://vicerveza.homeunix.net/~viric/soft/ts/ts-" version ".tar.gz"))
-        (sha256 (base32 "0y32sm2i2jxs88c307h76449fynk75p9qfw1k11l5ixrn03z67pl"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://viric.name/soft/ts/ts-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0a5l8bjq869lvqys3amsil933vmm9b387axp1jv3bi9xah8k70zs"))))
     (build-system gnu-build-system)
     (arguments
-      `(#:make-flags
-        (let ((c-flags "-g -O2"))
-          (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                ,(string-append "CC=" (cc-for-target))
+     (list
+      #:make-flags
+      #~(let ((c-flags "-g -O2"))
+          (list (string-append "PREFIX=" #$output)
+                (string-append "CC=" #$(cc-for-target))
                 (string-append "CFLAGS=" c-flags)))
-        #:phases
-        (modify-phases %standard-phases
+      #:phases
+      #~(modify-phases %standard-phases
           (delete 'configure) ;; no configuration script
           (add-after 'unpack 'rename-and-patch-paths
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               ;; Rename "ts" to "tsp" to not interfere with "ts" command
               ;; from moreutils package.
               (rename-file "ts.1" "tsp.1");
               (substitute* '("Makefile" "testbench.sh")
                 (("\\bts\\b") "tsp"))
               ;; Patch gzip/sendmail/shell paths.
-              (substitute* "execute.c"
+              (substitute* '("execute.c" "list.c")
                 (("execlp\\(\"gzip\"")
                  (format #f "execlp(\"~a/bin/gzip\""
-                         (assoc-ref %build-inputs "gzip"))))
-              (substitute* "list.c"
-                (("/bin/sh\\b") (which "sh")))
-              (substitute* "env.c"
-                (("execlp\\(\"/bin/sh\"")
+                         #$(this-package-input "gzip")))
+                (("execlp\\(\"sh\"")
                  (format #f "execlp(\"~a/bin/sh\""
-                         (assoc-ref %build-inputs "bash"))))
+                         #$(this-package-input "bash-minimal")))
+                (("/bin/sh\\b")
+                 (format #f "~a/bin/sh"
+                         #$(this-package-input "bash-minimal"))))
               (substitute* "mail.c"
-                (("execl\\(\"/usr/sbin/sendmail\"")
-                 (format #f "execl(\"~a/sbin/sendmail\""
-                         (assoc-ref %build-inputs "sendmail"))))))
+                (("/usr/sbin/sendmail")
+                 (format #f "~a/sbin/sendmail"
+                         #$(this-package-input "sendmail"))))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "PATH" (string-join (list (getenv "PATH") (getcwd)) ":"))
-                (invoke "./testbench.sh")))))))
+              (if tests?
+                  (begin
+                    (setenv "PATH"
+                            (string-append (getenv "PATH") ":" (getcwd)))
+                    (invoke "./testbench.sh"))
+                  (format #t "test suite not run ~%")))))))
     (inputs
-      `(("bash" ,bash-minimal)
-        ("gzip" ,gzip)
-        ("sendmail" ,sendmail)))
+     (list bash-minimal gzip sendmail))
+    (home-page "https://viric.name/soft/ts/")
     (synopsis "UNIX task queue system")
-    (description "Task spooler lets users run shell commands asynchronously
-one after the other in a separate process.")
-    (home-page "https://vicerveza.homeunix.net/~viric/soft/ts/")
+    (description
+     "Task spooler lets users run shell commands asynchronously one after the
+other in a separate process.")
     (license license:gpl2+)))

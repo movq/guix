@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2020, 2022-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -34,7 +34,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (guix discovery)
   #:use-module (guix monads)
-  #:use-module ((guix store) #:select (%store-monad))
+  #:use-module ((guix store) #:select (%store-monad store-parameterize))
   #:use-module ((guix utils)
                 #:select (%current-system %current-target-system))
   #:use-module (srfi srfi-1)
@@ -48,6 +48,7 @@
 
             marionette-service-type
             marionette-operating-system
+            marionette-program
             define-os-with-source
 
             %simple-os
@@ -72,11 +73,15 @@
 ;;;
 ;;; Code:
 
+(define %default-marionette-device
+  ;; Default marionette device in the guest.
+  "/dev/virtio-ports/org.gnu.guix.port.0")
+
 (define-record-type* <marionette-configuration>
   marionette-configuration make-marionette-configuration
   marionette-configuration?
   (device           marionette-configuration-device ;string
-                    (default "/dev/virtio-ports/org.gnu.guix.port.0"))
+                    (default %default-marionette-device))
   (imported-modules marionette-configuration-imported-modules
                     (default '()))
   (extensions       marionette-configuration-extensions
@@ -92,7 +97,10 @@
     (with-extensions extensions
       gexp)))
 
-(define (marionette-program device imported-modules extensions)
+(define* (marionette-program #:optional
+                             (device %default-marionette-device)
+                             (imported-modules '())
+                             (extensions '()))
   "Return the program that runs the marionette REPL on DEVICE.  Ensure
 IMPORTED-MODULES and EXTENSIONS are accessible from the REPL."
   (define code
@@ -289,9 +297,9 @@ the system under test."
 (define-gexp-compiler (compile-system-test (test <system-test>)
                                            system target)
   "Compile TEST to a derivation."
-  (mparameterize %store-monad ((%current-system system)
-                               (%current-target-system target))
-    (system-test-value test)))
+  (store-parameterize ((%current-system system)
+                       (%current-target-system target))
+      (system-test-value test)))
 
 (define (test-modules)
   "Return the list of modules that define system tests."

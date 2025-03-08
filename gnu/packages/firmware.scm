@@ -62,6 +62,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages efi)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages embedded)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -1172,6 +1173,9 @@ interface standards, such as:
 (define-public arm-trusted-firmware-sun50i-a64
   (make-arm-trusted-firmware "sun50i_a64"))
 
+(define-public arm-trusted-firmware-sun50i-h616
+  (make-arm-trusted-firmware "sun50i_h616"))
+
 (define-public arm-trusted-firmware-rk3328
   (make-arm-trusted-firmware "rk3328"))
 
@@ -1411,13 +1415,13 @@ corresponding layout." layout))
 (define-public qmk
   (package
     (name "qmk")
-    (version "1.1.2")
+    (version "1.1.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "qmk" version))
               (sha256
                (base32
-                "1619q9v90740dbg8xpzqlhwcasz42xj737803aiip8qc3a7zhwgq"))))
+                "0l4b5bi6x1i9bh3ik73yisn1pq1bhgiksiddvg3cxy7jmgdnqhyw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1512,6 +1516,7 @@ keyboard definition in KEYBOARD-SOURCE-DIRECTORY."
                          (string-replace-substring keymap "_" "-")))
     ;; Note: When updating this package, make sure to also update the commit
     ;; used for the LUFA submodule in the 'copy-lufa-source' phase below.
+    ;; Note: If you update this you WILL lose support for ergodox.
     (version "0.22.3")
     (source (origin
               (method git-fetch)
@@ -1748,6 +1753,581 @@ or passthrough board.")
     (supported-systems '("armhf-linux")) ; actually cortex-m3
     (home-page "https://github.com/xobs/senoko-chibios-3/")
     (license license:gpl3+)))
+
+(define (make-qmk-newlib-nano-arm-none-eabi)
+  (let ((base (make-newlib-nano-arm-none-eabi)))
+    (package
+      (inherit base)
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "xgcc" (make-gcc-arm-none-eabi-12.3.rel1)))))))
+
+(define* (make-qmk-firmware-keychron keyboard keymap
+                                     #:key (description "")
+                                     keymap-json
+                                     keymap-source-directory
+                                     keyboard-source-directory)
+  (let ((base (make-qmk-firmware keyboard keymap
+                                 #:description description
+                                 #:keymap-json keymap-json
+                                 #:keymap-source-directory keymap-source-directory
+                                 #:keyboard-source-directory keyboard-source-directory)))
+    (package
+      (inherit base)
+      (name (string-append "qmk-firmware-"
+                           (regexp-substitute/global #f "[_/]" keyboard
+                                                     'pre "-" 'post)
+                           "-"
+                           (string-replace-substring keymap "_" "-")))
+      ;; Note: When updating this package, make sure to also update the commit
+      ;; used for the LUFA submodule in the 'copy-lufa-source' phase below.
+      (version "0.28.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/qmk/qmk_firmware")
+                      (commit version)))
+                (file-name (git-file-name "qmk-firmware" version))
+                (sha256
+                 (base32
+                  "1skj7iq6dad48xhy2ljjmwpbhhdv3gk7cmi28lh3xfsnxphm4v8r"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'copy-lufa-source
+                ;; QMK carries a custom fork of LUFA as a git submodule; make sure
+                ;; the same commit is used (see:
+                ;; https://github.com/qmk/qmk_firmware/tree/master/lib).
+                (lambda _
+                  (copy-recursively
+                   #$(let ((commit "549b97320d515bfca2f95c145a67bd13be968faa"))
+                       (origin
+                         (inherit (package-source lufa))
+                         (uri (git-reference
+                               (url "https://github.com/qmk/lufa")
+                               (commit commit)))
+                         (file-name (git-file-name "lufa" commit))
+                         (sha256
+                          (base32
+                           "1rmhm4rxvq8skxqn6vc4n4ly1ak6whj7c386zbsci4pxx548n9h4"))))
+                   "lib/lufa")))
+              (add-after 'unpack 'setenv
+                (lambda _
+                  ;; Because newlib-nano is also compiled without FPU.
+                  (setenv "USE_FPU" "no")))
+              (add-after 'unpack 'copy-chibios-source
+                (lambda _
+                  ;; Newest version.
+                  (copy-recursively
+                   #$(origin
+                       (method git-fetch)
+                       (uri (git-reference
+                             (url "https://github.com/qmk/ChibiOS")
+                             (commit "2365f844292513ea0ee9eea6ab778d56f9ccd3b9")))
+                                        ;(file-name (git-file-name name version))
+                       (sha256
+                        (base32
+                         "1ivkrx4nv0sa4nfryzbq5h40vs7vik8p0dp9czjh2srql520y7yq")))
+                   "lib/chibios")))
+              (add-after 'unpack 'copy-printf-source
+                ;; Newest version.
+                (lambda _
+                  (copy-recursively
+                   #$(origin
+                       (method git-fetch)
+                       (uri (git-reference
+                             (url "https://github.com/qmk/printf.git")
+                             (commit "c2e3b4e10d281e7f0f694d3ecbd9f320977288cc")))
+                                        ;(file-name (git-file-name name version))
+                       (sha256
+                        (base32
+                         "0r501hkk0idwfm6qs09g1wb808ga452gz39dw32x13rmg3a901s6")))
+                   "lib/printf")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (prepend
+          (package
+            (inherit (make-qmk-newlib-nano-arm-none-eabi))
+            (native-search-paths
+             (list (search-path-specification
+                    (variable "CROSS_C_INCLUDE_PATH")
+                    (files '("arm-none-eabi/include")))
+                   (search-path-specification
+                    (variable "CROSS_CPLUS_INCLUDE_PATH")
+                    (files '("arm-none-eabi/include"
+                             "arm-none-eabi/include/c++"
+                             "arm-none-eabi/include/c++/arm-none-eabi")))
+                   (search-path-specification
+                    (variable "CROSS_LIBRARY_PATH")
+                    (files '("arm-none-eabi/lib"))))))
+          (make-gcc-arm-none-eabi-12.3.rel1)
+          (cross-binutils "arm-none-eabi")))))))
+
+(define-public qmk-firmware-keychron-c1-pro-ansi-rgb-default
+  (make-qmk-firmware-keychron "keychron/c1_pro/ansi/rgb" "default"
+   #:description
+   "This package provides the firmware for the Keychron C1 Pro ANSI RGB with default keymap."))
+
+(define-public qmk-firmware-keychron-c1-pro-ansi-white-default
+  (make-qmk-firmware-keychron "keychron/c1_pro/ansi/white" "default"
+   #:description
+   "This package provides the firmware for the Keychron C1 Pro ANSI white with default keymap."))
+
+(define-public qmk-firmware-keychron-c2-pro-ansi-rgb-default
+  (make-qmk-firmware-keychron "keychron/c2_pro/ansi/rgb" "default"
+   #:description
+   "This package provides the firmware for the Keychron C2 Pro ANSI RGB with default keymap."))
+
+(define-public qmk-firmware-keychron-c2-pro-ansi-white-default
+  (make-qmk-firmware-keychron "keychron/c2_pro/ansi/white" "default"
+   #:description
+   "This package provides the firmware for the Keychron C2 Pro ANSI white with default keymap."))
+
+(define-public qmk-firmware-keychron-c3-pro-ansi-red-default
+  (make-qmk-firmware-keychron "keychron/c3_pro/ansi/red" "default"
+   #:description
+   "This package provides the firmware for the Keychron C3 Pro ANSI Red with default keymap."))
+
+(define-public qmk-firmware-keychron-c3-pro-ansi-rgb-default
+  (make-qmk-firmware-keychron "keychron/c3_pro/ansi/rgb" "default"
+   #:description
+   "This package provides the firmware for the Keychron C3 Pro ANSI RGB with default keymap."))
+
+(define-public qmk-firmware-keychron-q0-base-default
+  (make-qmk-firmware-keychron "keychron/q0/base" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q0 Base with default keymap."))
+
+(define-public qmk-firmware-keychron-q0-plus-default
+  (make-qmk-firmware-keychron "keychron/q0/plus" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q0 Plus with default keymap."))
+
+(define-public qmk-firmware-keychron-q10-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q10/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q10 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q10-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q10/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q10 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q11-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q11/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q11 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q11-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q11/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q11 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q12-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q12/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q12 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q12-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q12/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q12 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q1v2-ansi-default
+  (make-qmk-firmware-keychron "keychron/q1v2/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q1v2 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q1v2-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q1v2/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q1v2 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q1v2-iso-default
+  (make-qmk-firmware-keychron "keychron/q1v2/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q1v2 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q1v2-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q1v2/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q1v2 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q1v2-jis-default
+  (make-qmk-firmware-keychron "keychron/q1v2/jis" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q1v2 JIS with default keymap."))
+
+(define-public qmk-firmware-keychron-q1v2-jis-encoder-default
+  (make-qmk-firmware-keychron "keychron/q1v2/jis_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q1v2 JIS with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q2-ansi-default
+  (make-qmk-firmware-keychron "keychron/q2/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q2 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q2-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q2/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q2 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q2-iso-default
+  (make-qmk-firmware-keychron "keychron/q2/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q2 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q2-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q2/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q2 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q2-jis-default
+  (make-qmk-firmware-keychron "keychron/q2/jis" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q2 JIS with default keymap."))
+
+(define-public qmk-firmware-keychron-q2-jis-encoder-default
+  (make-qmk-firmware-keychron "keychron/q2/jis_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q2 JIS with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q3-ansi-default
+  (make-qmk-firmware-keychron "keychron/q3/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q3-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q3/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q3-iso-default
+  (make-qmk-firmware-keychron "keychron/q3/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q3-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q3/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q3-jis-default
+  (make-qmk-firmware-keychron "keychron/q3/jis" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 JIS with default keymap."))
+
+(define-public qmk-firmware-keychron-q3-jis-encoder-default
+  (make-qmk-firmware-keychron "keychron/q3/jis_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 JIS with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q4-ansi-v2-default
+  (make-qmk-firmware-keychron "keychron/q4/ansi/v2" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q4 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q4-iso-default
+  (make-qmk-firmware-keychron "keychron/q4/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q4 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q5-ansi-default
+  (make-qmk-firmware-keychron "keychron/q5/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q5 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q5-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q5/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q5 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q5-iso-default
+  (make-qmk-firmware-keychron "keychron/q5/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q5 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q5-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q5/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q5 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q60-ansi-default
+  (make-qmk-firmware-keychron "keychron/q60/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q60 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q65-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q65/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q65 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q6-ansi-default
+  (make-qmk-firmware-keychron "keychron/q6/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q6 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q6-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q6/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q6 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q6-iso-default
+  (make-qmk-firmware-keychron "keychron/q6/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q6 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q6-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q6/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q6 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q7-ansi-default
+  (make-qmk-firmware-keychron "keychron/q7/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q7 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q7-iso-default
+  (make-qmk-firmware-keychron "keychron/q7/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q7 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q8-ansi-default
+  (make-qmk-firmware-keychron "keychron/q8/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q8 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q8-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q8/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q8 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q8-iso-default
+  (make-qmk-firmware-keychron "keychron/q8/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q8 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q8-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q8/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q8 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q9-ansi-default
+  (make-qmk-firmware-keychron "keychron/q9/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q9 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-q9-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q9/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q9 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q9-iso-default
+  (make-qmk-firmware-keychron "keychron/q9/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q9 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-q9-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q9/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q9 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-q9-plus-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/q9_plus/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q9 Plus ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-s1-ansi-rgb-default
+  (make-qmk-firmware-keychron "keychron/s1/ansi/rgb" "default"
+   #:description
+   "This package provides the firmware for the Keychron S1 ANSI RGB with default keymap."))
+
+(define-public qmk-firmware-keychron-s1-ansi-white-default
+  (make-qmk-firmware-keychron "keychron/s1/ansi/white" "default"
+   #:description
+   "This package provides the firmware for the Keychron S1 ANSI white with default keymap."))
+
+(define-public qmk-firmware-keychron-v10-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v10/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V10 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v10-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v10/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V10 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v1-ansi-default
+  (make-qmk-firmware-keychron "keychron/v1/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V1 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v1-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v1/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V1 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v1-iso-default
+  (make-qmk-firmware-keychron "keychron/v1/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V1 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v1-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v1/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V1 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v1-jis-default
+  (make-qmk-firmware-keychron "keychron/v1/jis" "default"
+   #:description
+   "This package provides the firmware for the Keychron V1 JIS with default keymap."))
+
+(define-public qmk-firmware-keychron-v1-jis-encoder-default
+  (make-qmk-firmware-keychron "keychron/v1/jis_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V1 JIS with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v2-ansi-default
+  (make-qmk-firmware-keychron "keychron/v2/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v2-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v2/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2-ansi-encoder with default keymap."))
+
+(define-public qmk-firmware-keychron-v2-iso-default
+  (make-qmk-firmware-keychron "keychron/v2/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v2-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v2/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v2-jis-default
+  (make-qmk-firmware-keychron "keychron/v2/jis" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2 JIS with default keymap."))
+
+(define-public qmk-firmware-keychron-v2-jis-encoder-default
+  (make-qmk-firmware-keychron "keychron/v2/jis_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2 JIS with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v3-ansi-default
+  (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v3-iso-default
+  (make-qmk-firmware-keychron "keychron/v3/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v3-jis-default
+  (make-qmk-firmware-keychron "keychron/v3/jis" "default"
+                              #:description
+                              "This package provides the firmware for the Keychron V3 JIS with default keymap."))
+
+(define-public qmk-firmware-keychron-v3-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v3/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 ANSI with default keymap and with an encoder."))
+
+(define-public qmk-firmware-keychron-v3-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v3/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v3-jis-encoder-default
+  (make-qmk-firmware-keychron "keychron/v3/jis_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 JIS with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v4-ansi-default
+  (make-qmk-firmware-keychron "keychron/v4/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V4 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v4-iso-default
+  (make-qmk-firmware-keychron "keychron/v4/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V4 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v5-ansi-default
+  (make-qmk-firmware-keychron "keychron/v5/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V5 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v5-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v5/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V5 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v5-iso-default
+  (make-qmk-firmware-keychron "keychron/v5/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V5 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v5-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v5/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V5 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v6-ansi-default
+  (make-qmk-firmware-keychron "keychron/v6/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V6 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v6-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v6/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V6 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v6-iso-default
+  (make-qmk-firmware-keychron "keychron/v6/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V6 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v6-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v6/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V6 ISO with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v7-ansi-default
+  (make-qmk-firmware-keychron "keychron/v7/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V7 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v7-iso-default
+  (make-qmk-firmware-keychron "keychron/v7/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V7 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v8-ansi-default
+  (make-qmk-firmware-keychron "keychron/v8/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V8 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v8-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v8/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V8 ANSI with default keymap and with encoder."))
+
+(define-public qmk-firmware-keychron-v8-iso-default
+  (make-qmk-firmware-keychron "keychron/v8/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V8 ISO with default keymap."))
+
+(define-public qmk-firmware-keychron-v8-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/v8/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V8 ISO with default keymap and with encoder."))
 
 (define-public firmware-senoko
   (package

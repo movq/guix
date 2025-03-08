@@ -3,14 +3,14 @@
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -161,7 +161,7 @@ and for middleware components.")
            libxv
            mesa
            sdl
-           v4l-utils))
+           v4l-utils-minimal))
     (synopsis "1394-Based Digital Camera Control Library")
     (description "LibDC1394 is a library that provides functionality to control
 any camera that conforms to the 1394-Based Digital Camera Specification written
@@ -226,7 +226,7 @@ and very fast.")
 (define-public libvisual
   (package
     (name "libvisual")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -236,7 +236,7 @@ and very fast.")
          (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xwakwkqjsznc03pjlb6hcv1li1gw3r8xvyswqsm4msix5xq18a"))))
+        (base32 "12xf0qzn9w090kakrj59makjbjg9vhga5mgchmx6c1ypw10fjfbc"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -249,9 +249,15 @@ and very fast.")
             (lambda _
               (chdir "libvisual"))))))
     (native-inputs
-     (list gettext-minimal intltool libtool pkg-config))
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           intltool
+           libtool
+           pkg-config))
     (inputs
-     (list sdl))
+     (list sdl12-compat))
     (native-search-paths
      (list
       (search-path-specification
@@ -273,7 +279,7 @@ applications that want audio visualisation and audio visualisation plugins.")
 (define-public libvisual-plugins
   (package
     (name "libvisual-plugins")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -282,7 +288,7 @@ applications that want audio visualisation and audio visualisation plugins.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xwakwkqjsznc03pjlb6hcv1li1gw3r8xvyswqsm4msix5xq18a"))))
+        (base32 "12xf0qzn9w090kakrj59makjbjg9vhga5mgchmx6c1ypw10fjfbc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--disable-gstreamer-plugin"
@@ -298,7 +304,10 @@ applications that want audio visualisation and audio visualisation plugins.")
                     (lambda _
                       (chdir "libvisual-plugins"))))))
     (native-inputs
-     (list bison
+     (list automake
+           autoconf
+           autoconf-archive
+           bison
            flex
            gettext-minimal
            intltool
@@ -308,7 +317,7 @@ applications that want audio visualisation and audio visualisation plugins.")
      (list alsa-lib
            esound
            (librsvg-for-system)
-           gtk+-2
+           gtk+
            jack-2
            libx11
            libxext))
@@ -364,14 +373,14 @@ another.")
 (define-public orc
   (package
     (name "orc")
-    (version "0.4.32")
+    (version "0.4.40")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/data/src/"
                                   "orc/orc-" version ".tar.xz"))
               (sha256
                (base32
-                "1w0qmyj3v9sb2g7ff39pp38b9850y9hyy0bag26ifrby5f7ksvm6"))))
+                "1avlxyn8nvpml5lzdqpa0zq7vnrqj731y1h5jvyl2z7vipkvxhiz"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -401,7 +410,7 @@ arrays of data.")
 (define-public gstreamer-docs
   (package
     (name "gstreamer-docs")
-    (version "1.22.2")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -409,7 +418,7 @@ arrays of data.")
                     "/gstreamer-docs-" version ".tar.xz"))
               (sha256
                (base32
-                "1fljaydlinzw9jf5nkhwf7ihfzd5250k2cv220mi8dxxf7rgn18y"))))
+                "0vb4d35rglvjlj2y9r0nlgankflqw0ql6gwsf4612505sa01mz7s"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -461,7 +470,7 @@ the GStreamer multimedia framework.")
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.22.3")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -470,7 +479,7 @@ the GStreamer multimedia framework.")
              version ".tar.xz"))
        (sha256
         (base32
-         "0x2rdl6vfpbr7wnh1nk0rllw28cgx0js4g9vxfank7rz0naspzlz"))))
+         "03r6rwmih3nqxrfw9nkhpbwpwp1yf7qw3m2phl6a027mxrmppx7b"))))
     (build-system meson-build-system)
     (arguments
      (list #:disallowed-references (list python)
@@ -542,7 +551,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (version "1.22.3")
+    (version "1.24.9")
     (source
      (origin
       (method url-fetch)
@@ -550,7 +559,7 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "1ww9xx6c4mwvgn9k56d1xfnd3i1jm4v8rfiy4f07686ll24n4n8w"))))
+        "1jspg24zlpmg4bxa298v6l8hcaqw27411dj2v16y0g3xj13bkcsv"))))
     (build-system meson-build-system)
     (propagated-inputs
      (list glib                     ;required by gstreamer-sdp-1.0.pc
@@ -603,7 +612,13 @@ This package provides the core library and elements.")
               #$@(cond
                    ((target-x86-32?)
                     #~((substitute* "tests/check/meson.build"
-                         ((".*'libs/libsabi\\.c'.*") ""))))
+                         ((".*'libs/dsd\\.c'.*") "")
+                         ((".*'libs/libsabi\\.c'.*") "")
+                         ((".*'elements/volume\\.c'.*") ""))))
+                   ((target-ppc64le?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'elements/glimagesink\\.c'.*") "")
+                         ((".*'pipelines/gl-launch-lines\\.c'.*") ""))))
                    ((target-arm32?)
                     #~((substitute* "tests/check/meson.build"
                          ((".*'orc_adder.*") ""))))
@@ -644,7 +659,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.22.3")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -653,7 +668,7 @@ for the GStreamer multimedia library.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "0wq2f5q395vs7hnwjqpc2gysdvkgd4jmyfdszv9g9wrf795ib0dg"))))
+        (base32 "17vr55pgh2paqi82l5jn841873c2w0lal7kgz2i3qzikzw5yazc9"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -735,7 +750,7 @@ for the GStreamer multimedia library.")
            speex
            taglib
            twolame
-           v4l-utils
+           v4l-utils-minimal
            wavpack
            zlib))
     (propagated-inputs
@@ -763,14 +778,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.22.3")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1n116sphawmlqyjp1b8sv07vz4rjk1zn07286w37y4l65pp8yyg1"))
+                "1aswb97v1ird3rmfcsa32bvp4kgp8r987f83pd1knx8amylzgz1n"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -803,6 +818,10 @@ model to base your own plug-in on, here it is.")
                   ;; The 'elements_curlhttpsrc' test sometimes times out.
                   ((".*'elements/curlhttpsrc\\.c'.*") "")
 
+                  ;; The 'mxfdemux' test fails for unknown reasons (see:
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921).
+                  ((".*'elements/mxfdemux.c'.*") "")
+
                   ;; Unexpected critical/warning, see
                   ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3000>
                   ((".*'elements/netsim\\.c'.*") "")
@@ -822,7 +841,10 @@ model to base your own plug-in on, here it is.")
                          '())
 
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
-                  ((".*elements/dtls\\.c.*") ""))
+                  ((".*elements/dtls\\.c.*") "")
+
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921
+                  ((".*elements/mxfdemux\\.c.*") ""))
                 (substitute* "tests/check/elements/zxing.c"
                   ;; zxing 1.2.0 seemingly changed the type representation of
                   ;; the EAN_13 structure; disable it.
@@ -939,7 +961,7 @@ model to base your own plug-in on, here it is.")
             tinyalsa
             transcode
             usrsctp
-            v4l-utils
+            v4l-utils-minimal
             vo-aacenc
             vo-amrwbenc
             vulkan-headers
@@ -949,7 +971,7 @@ model to base your own plug-in on, here it is.")
             webrtc-audio-processing
             wildmidi
             wpebackend-fdo
-            zbar
+            zbar-minimal
             zxing-cpp-1.2)))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "Plugins for the GStreamer multimedia library")
@@ -961,7 +983,7 @@ par compared to the rest.")
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.22.3")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -969,7 +991,7 @@ par compared to the rest.")
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0q53snvh7kr8g7qqxy4v5ska0d78kgc5bkp6qjrnhcr9qbaqxj9x"))))
+        (base32 "1dn33ivfc0rnn545y40303h5z9bm5ca9f8j2czmhbk9q1w8k0ssb"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
@@ -1018,7 +1040,7 @@ think twice about shipping them.")
 (define-public gst-libav
   (package
     (name "gst-libav")
-    (version "1.22.3")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -1027,7 +1049,7 @@ think twice about shipping them.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "08x929yhjd2wpy05146fnqv6p2hw58ha079bwfkp2hwbh02wii9f"))))
+        (base32 "0v253lbic7abc9vpb690f80arql10193ljqkzgs03vh8wnd2ws1j"))))
     (build-system meson-build-system)
     (native-inputs (list perl pkg-config python-wrapper ruby))
     (inputs (list ffmpeg))
@@ -1041,7 +1063,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
 (define-public gst-editing-services
   (package
     (name "gst-editing-services")
-    (version "1.22.3")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1049,11 +1071,13 @@ decoders, muxers, and demuxers provided by FFmpeg.")
                     "gst-editing-services-" version ".tar.xz"))
               (sha256
                (base32
-                "18nfq3av5ksz17048l2b4r4zbh11yd0yq2asx0jy3c894pkbr98m"))))
+                "04khlbw3wy5zr2s246252zrd4hnzv2x36l5avz0lxif6pr9nwl07"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f                    ; FIXME: 16/23 failing tests.
+      ;; Most of the tests fail (see:
+      ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2489).
+      #:tests? #f
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases #~(modify-phases %standard-phases
                    #$@%common-gstreamer-phases)))
@@ -1109,7 +1133,7 @@ binary, but none of the actual plugins.")))
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.22.3")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1117,7 +1141,7 @@ binary, but none of the actual plugins.")))
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "073kii36ncgsyq0b5njbsvprrg1k3kmydr3dxwiccjv3pvxd7gkh"))))
+                "0bplhfnvsi3l9fmfb346n2dvzi1jrxqpp4kcwiwsrjrlgic1vrl0"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1133,7 +1157,7 @@ binary, but none of the actual plugins.")))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
-     (list gst-plugins-base python-pygobject-3.48))
+     (list gst-plugins-base python-pygobject))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer GObject Introspection overrides for Python")
     (description
@@ -1168,27 +1192,23 @@ mp3, you can use gst123 to play all your music files.")
     (license license:lgpl2.0+)))
 
 (define-public gst-plugins-espeak
-  (let ((commit "7f6e41274fb833a487a7ee8ac0c236f0821330cc")
-        (revision "1"))
-    (package
-      (name "gst-plugins-espeak")
-      (version (git-version "0.5.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/gst-plugins-espeak")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0va4ghcdda8cbqzv376hgmv1ay79va4kyazibfj8m5n52bhxxqgz"))))
-      (build-system gnu-build-system)
-      (inputs
-       (list espeak-ng gstreamer gst-plugins-base))
-      (native-inputs
-       (list autoconf automake libtool pkg-config))
-      (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
-      (synopsis "Use espeak")
-      (description "This is a Gstreamer @code{src} plugin to use the espeak
+  (package
+    (name "gst-plugins-espeak")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/gst-plugins-espeak")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c9j5gbsl0rzwkqgg1c1a2vlyvcsliyl8a57qkwsqrnqrwnvw28w"))))
+    (build-system gnu-build-system)
+    (inputs (list espeak-ng gstreamer gst-plugins-base))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
+    (synopsis "Gstreamer plugin for Espeak")
+    (description "This is a Gstreamer @code{src} plugin to use the espeak
 speech synthesizer as a sound source.")
-      (license license:lgpl2.0+))))
+    (license license:lgpl2.0+)))

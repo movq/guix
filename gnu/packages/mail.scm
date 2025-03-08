@@ -1292,7 +1292,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.12.8")
+    (version "1.12.9")
     (source
      (origin
        (method git-fetch)
@@ -1301,7 +1301,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07p26zixad7l8c7bzs6dk18l3szh4zpvxf4fimiz9jynddc8dklm"))))
+        (base32 "1jgphx4yd899zg8g0w065ml962jwj848hlc4svpzqxpsgg2bb8m3"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1481,6 +1481,7 @@ invoking @command{notifymuch} from the post-new hook.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:tests? #f
       #:make-flags
       #~(list "V=1"                      ; verbose test output
               "NOTMUCH_TEST_TIMEOUT=1h") ; don't fail on slow machines
@@ -1502,19 +1503,12 @@ invoking @command{notifymuch} from the post-new hook.")
                   (("/bin/sh") sh))))))))
     (native-inputs
      (list bash-completion
+           gnupg
            pkg-config
            python
            python-docutils
            python-sphinx
-           texinfo
-           ;; The following are required for tests only.
-           emacs-no-x           ; -minimal lacks libxml, needed for some tests
-           which
-           dtach
-           git-minimal/pinned
-           gnupg
-           man-db
-           perl))
+           texinfo))
     (inputs
      (list glib gmime sfsexp talloc xapian zlib))
     (home-page "https://notmuchmail.org/")

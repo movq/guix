@@ -9,7 +9,7 @@
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;; Copyright © 2021–2023 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -37,7 +37,66 @@
 (channel-news
  (version 0)
 
-  (entry (commit "b4cc3e50187bd20a9479df52022c8228d3af49ab")
+ (entry (commit "41e62cb10c3049610dc854f1d3e9b91aebd73aed")
+        (title
+         (en "Removable devices now mount under @file{/run/media/$USER} instead of @file{/media}")
+         (de "Wechseldatenträger werden jetzt unter @file{/run/media/$USER} statt @file{/media} eingebunden"))
+        (body
+         (en "UDisks, the daemon responsible for allowing unprivileged users
+mounting removable drives in GNOME and other desktop environments, will now
+make them available at mount points under the @file{/run/media/$USER}
+directory instead of directly under @file{/media}.  This will ensure that
+mount points are not erroneously persisted across reboots, after @file{/run}
+is made volatile in a future update.  Users are advised to ensure any backup
+script or solution they use are updated to reflect the new location of the
+mounted removable devices.")
+         (de "UDisks, der Daemon, der dafür sorgt, dass unprivilegierte Nutzer
+externe Laufwerke in GNOME und anderen Arbeitsumgebungen einbinden können,
+wird diese ab sofort an Einhängepunkten im Verzeichnis @file{/run/media/$USER}
+verfügbar machen und nicht mehr direkt in @file{/media}.  Dadurch werden
+Einhängepunkte nach Neustarts nicht mehr erhalten bleiben, sobald @file{/run}
+durch eine kommende Aktualisierung als flüchtig vorgegeben wird.  Wir raten
+unseren Nutzerinnen und Nutzern, Scripts oder Programme anzupassen, mit denen
+sie Backups anlegen, damit diese den neuen Ort für eingebundene
+Wechseldatenträger verwenden.")))
+
+ (entry (commit "8492a3c8962664db4bd0e7475f63be0ef59db87a")
+        (title
+         (en "Guix System switches to the Shepherd's system log")
+         (de "Guix System wechselt zu Shepherds Systemprotokoll")
+         (fr "Guix System passe au journal système de Shepherd"))
+        (body
+         (en "The default system log used on Guix System and part of
+@code{%base-services} has been switched from the @command{syslogd} command of
+GNU@tie{}Inetutils to the new built-in @code{system-log} service found in
+version 1.0 of the Shepherd.
+
+The advantages of this change are the fact that @code{system-log} can start
+logging earlier after boot and stop shortly before shutdown, along with full
+integration with the rest of @command{shepherd}, in particular with the new
+@code{log-rotation} service.")
+         (de "Das vorgegebene Systemprotokoll, das auf Guix System benutzt
+wird und Teil von @code{%base-services} ist, wurde ausgetauscht und anstelle
+des Befehls @command{syslogd} aus den GNU@tie{}Inetutils wird der neue, in
+Version 1.0 von Shepherd eingebaute @code{system-log}-Dienst benutzt.
+
+Die Vorteile dieser Änderung sind, dass @code{system-log} schon früher nach
+dem Start Protokolle aufnehmen kann, kurz vor dem Herunterfahren damit aufhört
+und außerdem mit dem Rest von @command{shepherd} voll integriert ist,
+insbesondere mit dem neuen Dienst @code{log-rotation} zur
+Protokollrotation.")
+         (fr "Le journal système par défaut sur Guix System, qui fait partie
+de @code{%base-services}, est passé de la commande @command{syslogd} de
+GNU@tie{}Inetutils au nouveau service @code{system-log} fourni par la version
+1.0 du Shepherd.
+
+Les avantages de ce changement sont le fait que @code{system-log} peut
+commencer à enregistrer les journaux plus tôt pendant la séquence de
+démarrage et s'arrêter plus tard au moment de l'arrêt, ainsi que son
+intégration complète avec le reste de @command{shepherd}, en particulier avec
+le nouveau service @code{log-rotation}.")))
+
+ (entry (commit "b4cc3e50187bd20a9479df52022c8228d3af49ab")
         (title
          (en "Linux-libre updated to 6.13")
          (de "Linux-libre wird auf 6.13 aktualisiert"))
@@ -76,7 +135,7 @@ der Hetzner-Cloud-API festlegen.  Außerdem können Sie mit einem
 @code{hetzner-configuration}-Verbundsobjekt die Bereitstellung anpassen und
 etwa die Systemarchitektur, den VPS-Typ usw.@: wählen.")))
 
-  (entry (commit "616ae36e0f557cecb4abe58c5b0973b9428d25e0")
+ (entry (commit "616ae36e0f557cecb4abe58c5b0973b9428d25e0")
         (title
          (en "Kernel persistent storage in UEFI disabled")
          (de "Im Kernel wurde persistenter Speicher in UEFI abgeschaltet"))
@@ -595,13 +654,13 @@ remontés et les éventuelles solutions ; envoyer un courrier à
 
  (entry (commit "fc35b9fa6d6ed3583d4f3fc9214f657022d49678")
         (title
-          (en "Linux-libre 6.9 removed due to end of upstream support")
-          (de "Linux-libre 6.9 wurde entfernt"))
+         (en "Linux-libre 6.9 removed due to end of upstream support")
+         (de "Linux-libre 6.9 wurde entfernt"))
         (body
-          (en "The linux-libre 6.9 kernel series has reached the end of
+         (en "The linux-libre 6.9 kernel series has reached the end of
              its life, and is no longer supported upstream.  For this
              reason, it has been removed from GNU Guix.")
-          (de "Die @code{linux-libre} 6.9-Versionsreihe hat ihr
+         (de "Die @code{linux-libre} 6.9-Versionsreihe hat ihr
 Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
 Versionsreihe aus GNU Guix entfernt worden.")))
 
@@ -727,13 +786,13 @@ Si vous avez des définitions de paquets personnels dépendantes de
 
  (entry (commit "6fad0fd1c32db2cb25447b694f08d5c7836536ad")
         (title
-          (en "Linux-libre 6.8 removed due to end of upstream support")
-          (de "Linux-libre 6.8 wurde entfernt"))
+         (en "Linux-libre 6.8 removed due to end of upstream support")
+         (de "Linux-libre 6.8 wurde entfernt"))
         (body
-          (en "The linux-libre 6.8 kernel series has reached the end of
+         (en "The linux-libre 6.8 kernel series has reached the end of
              its life, and is no longer supported upstream.  For this
              reason, it has been removed from GNU Guix.")
-          (de "Die @code{linux-libre} 6.8-Versionsreihe hat ihr
+         (de "Die @code{linux-libre} 6.8-Versionsreihe hat ihr
 Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
 Versionsreihe aus GNU Guix entfernt worden.")))
 
@@ -783,13 +842,13 @@ savoir plus.")))
 
  (entry (commit "238a74c7dfd1469af064b445abcee38fd7408d5b")
         (title
-          (en "Linux-libre 6.7 removed due to end of upstream support")
-          (de "Linux-libre 6.7 wurde entfernt"))
+         (en "Linux-libre 6.7 removed due to end of upstream support")
+         (de "Linux-libre 6.7 wurde entfernt"))
         (body
-          (en "The linux-libre 6.7 kernel series has reached the end of
+         (en "The linux-libre 6.7 kernel series has reached the end of
              its life, and is no longer supported upstream.  For this
              reason, it has been removed from GNU Guix.")
-          (de "Die @code{linux-libre} 6.7-Versionsreihe hat ihr
+         (de "Die @code{linux-libre} 6.7-Versionsreihe hat ihr
 Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
 Versionsreihe aus GNU Guix entfernt worden.")))
 
@@ -974,13 +1033,13 @@ cette anomalie.")))
 
  (entry (commit "10a193596368443f441077525ebbddf787d91e4b")
         (title
-          (en "Linux-libre 4.14 removed due to end of upstream support")
-          (de "Linux-libre 4.14 wurde entfernt"))
+         (en "Linux-libre 4.14 removed due to end of upstream support")
+         (de "Linux-libre 4.14 wurde entfernt"))
         (body
-          (en "The linux-libre 4.14 kernel series has reached the end of
+         (en "The linux-libre 4.14 kernel series has reached the end of
              its life, and is no longer supported upstream.  For this
              reason, it has been removed from GNU Guix.")
-          (de "Die @code{linux-libre} 4.14-Versionsreihe hat ihr
+         (de "Die @code{linux-libre} 4.14-Versionsreihe hat ihr
 Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
 Versionsreihe aus GNU Guix entfernt worden.")))
 
@@ -1095,13 +1154,13 @@ Services de virtualisation\"} pour en apprendre sur
 
  (entry (commit "db775e7367e8deffb513aad94f4afb875d796d0b")
         (title
-          (en "Linux-libre 6.3 removed due to end of upstream support")
-          (de "Linux-libre 6.3 wurde entfernt"))
+         (en "Linux-libre 6.3 removed due to end of upstream support")
+         (de "Linux-libre 6.3 wurde entfernt"))
         (body
-          (en "The linux-libre 6.3 kernel series has reached the end of
+         (en "The linux-libre 6.3 kernel series has reached the end of
              its life, and is no longer supported upstream.  For this
              reason, it has been removed from GNU Guix.")
-          (de "Vom Kernel @code{linux-libre} wird die 6.3-Versionsreihe keine
+         (de "Vom Kernel @code{linux-libre} wird die 6.3-Versionsreihe keine
 Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
 aus GNU Guix entfernt worden.")))
 
@@ -1504,13 +1563,13 @@ plus de détails.")))
 
  (entry (commit "9ea37eb9f5329c213757bbfe5d9241cde8433858")
         (title
-          (en "Linux-libre 6.0 removed due to end of upstream support")
-          (de "Linux-libre 6.0 wurde entfernt"))
+         (en "Linux-libre 6.0 removed due to end of upstream support")
+         (de "Linux-libre 6.0 wurde entfernt"))
         (body
-          (en "The linux-libre 6.0 kernel series has reached the end of
+         (en "The linux-libre 6.0 kernel series has reached the end of
              its life, and no longer supported upstream.  For this
              reason, it has been removed from GNU Guix.")
-          (de "Vom Kernel @code{linux-libre} wird die 6.0-Versionsreihe keine
+         (de "Vom Kernel @code{linux-libre} wird die 6.0-Versionsreihe keine
 Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
 aus GNU Guix entfernt worden.")))
 
@@ -1532,13 +1591,13 @@ aus GNU Guix entfernt worden.")))
 
  (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
         (title
-          (en "Linux-libre 4.9 removed due to end of upstream support")
-          (de "Linux-libre 4.9 wurde entfernt"))
+         (en "Linux-libre 4.9 removed due to end of upstream support")
+         (de "Linux-libre 4.9 wurde entfernt"))
         (body
-          (en "The linux-libre 4.9 kernel series has reach the end of its life,
+         (en "The linux-libre 4.9 kernel series has reach the end of its life,
 and is no longer supported upstream.  For this reason, it has been removed from
 GNU Guix.")
-          (de "Vom Kernel @code{linux-libre} wird die 4.9-Versionsreihe keine
+         (de "Vom Kernel @code{linux-libre} wird die 4.9-Versionsreihe keine
 Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
 aus GNU Guix entfernt worden.")))
 
