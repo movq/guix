@@ -859,3 +859,25 @@ used to override the build phases."
              (("\\(integer_decimal\n") "(integer_decimal)\n")
              (("\\(integer\\)") "")
              (("\"0\")") "\"0\"")))))))
+
+(define-public python-tree-sitter-language-pack
+  (package
+    (name "python-tree-sitter-language-pack")
+    (version "0.6.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri
+          (git-reference
+            (url "https://github.com/Goldziher/tree-sitter-language-pack.git")
+            (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32 "101l30biq5awsq6jsspqf1d20kan0qwz2xalfb9pckngfihncd8c"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+      (list python-setuptools
+            python-wheel))
+    (synopsis "Bundle of tree-sitter parsers")
+    (description "Bundle of tree-sitter parsers")
+    (home-page "https://github.com/Goldziher/tree-sitter-language-pack")
+    (license license:expat)))
