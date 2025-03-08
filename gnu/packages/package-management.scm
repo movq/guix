@@ -200,10 +200,8 @@
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
-       `(;; For reproducibility, see <https://issues.guix.gnu.org/74204>.
-         #:parallel-build? #false
+       `(#:tests? #f
          #:configure-flags (list
-
                             ;; Provide channel metadata for 'guix describe'.
                             ;; Don't pass '--with-channel-url' and
                             ;; '--with-channel-introduction' and instead use
@@ -234,7 +232,6 @@
                             ;; for tests.
                             "ac_cv_guix_test_root=/tmp/guix-tests"
                             ,@(if (target-hurd?) '("--with-courage") '()))
-         #:parallel-tests? #f         ;work around <http://bugs.gnu.org/21097>
 
          #:modules ((guix build gnu-build-system)
                     (guix build utils)
