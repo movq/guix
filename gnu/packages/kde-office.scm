@@ -155,13 +155,13 @@ Advanced plugins:
 (define-public ghostwriter
   (package
     (name "ghostwriter")
-    (version "24.12.1")
+    (version "24.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ghostwriter-" version ".tar.xz"))
               (sha256
-               (base32 "04pslp9660cwdpdqd93ldrzlkszq0kp0vb2vgl94vmark7r29xrz"))))
+               (base32 "181xi2f4fpm3iwdk00q7alf4pz5x1d3k6gikx7xpv7c9y215gj1f"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -194,7 +194,7 @@ cmark processors if they are installed.")
 (define-public tellico
   (package
     (name "tellico")
-    (version "4.1")
+    (version "4.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -202,7 +202,7 @@ cmark processors if they are installed.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0dni1n3caj2wb7kwiv08k2qqbv8swfd7xdil6aiqdvmv6xihycy7"))
+               (base32 "0jx512rgrbc8n8p2gnk543l3k53gf30a0zjixp8ly2z70w6qp2br"))
               (modules '((guix build utils)))
               (snippet
                ;; Fix including QtPrintSupport.

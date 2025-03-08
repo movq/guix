@@ -179,8 +179,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "3355de608cb2267435c2592fc7dc76a1dcc5c02d")
-        (revision 33))
+        (commit "5058b40aba825ab6e7b9e518dd1147d1e35fd7de")
+        (revision 34))
     (package
       (name "guix")
 
@@ -196,7 +196,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0i4l0n06sa9iqknlycy19h5yyqsx3ysyzhb8732d7s7zr2icibk2"))
+                  "04vk4lslcd6h22yj5pxvb1pdyyxd8421gjfyvyb1bl3xn7c77246"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -974,8 +974,8 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "435e99fad0314a6a074d95feb5505ac21f8c6496")
-        (revision "11"))
+  (let ((commit "7bdb7b99518c23d388db5a59911b290003b98823")
+        (revision "12"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
@@ -986,7 +986,7 @@ transactions from C or Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "07d484hz8zv9m1c0kshzz0q5pjli9160w4j3qn6f8i3dm9w13jw5"))
+                  "00zmjys8fx1kgngzp92l61q0d9hayfgycp0g73j3myii2y7bkdkd"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -1001,7 +1001,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-pfds
              guile-prometheus
@@ -1012,7 +1012,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-pfds
              guile-prometheus
@@ -1532,8 +1532,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "f73098f432e7084b377e4cbe1e72cde34ad63f18")
-        (revision "120"))
+  (let ((commit "bdf7c2f5062a13052f425b64ed0e38d7f080c29d")
+        (revision "123"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1544,7 +1544,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "13ks8zpajqdfhjwivffl28f51yavl8mvkdsqgp0hrfgb1jpj6z8n"))
+                  "1vifn2knhkhrhh7hjfr70nfg3r54w061v6pbyldq236jmfrkpvj1"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1696,6 +1696,8 @@ outputs of those builds.")
            guile-gnutls
            bash-minimal
            (libc-utf8-locales-for-target)))
+    (propagated-inputs
+     '())
     (description
      "The Guix Build Coordinator helps with performing lots of builds across
 potentially many machines, and with doing something with the results and
@@ -1833,7 +1835,7 @@ in an isolated environment, in separate namespaces.")
                                           "guile-prometheus"
                                           "guile-sqlite3"
                                           "guile-gnutls"
-                                          "guile-fibers"
+                                          "guile-fibers-next"
                                           "guile-knots")))
                        (wrap-program file
                          `("GUILE_LOAD_PATH" ":" prefix
@@ -1866,7 +1868,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-prometheus
              guile-lib
@@ -1880,7 +1882,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-prometheus
              guile-lib
@@ -2114,24 +2116,29 @@ cp -r /tmp/locale/*/en_US.*")))
            bash-minimal
            bubblewrap
            curl
-           dconf
            fuse
            gdk-pixbuf
-           gpgme
-           json-glib
-           libarchive
            libcap
            libostree
-           libseccomp
            libsoup-minimal-2
-           libxau
            libxml2
            p11-kit
            polkit
            util-linux
            xdg-dbus-proxy
            zstd))
-    (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
+    (propagated-inputs (list glib-networking
+                             gnupg
+                             gsettings-desktop-schemas
+                             ;; The following are listed in Requires.private of
+                             ;; `flatpak.pc'.
+                             curl
+                             dconf
+                             gpgme
+                             json-glib
+                             libarchive
+                             libseccomp
+                             libxau))
     (home-page "https://flatpak.org")
     (synopsis "System for building, distributing, and running sandboxed desktop
 applications")

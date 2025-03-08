@@ -3709,6 +3709,29 @@ optimization as the @code{optim()} function.  This package also adds more
 stopping criteria as well as allowing the adjustment of more tolerances.")
     (license license:gpl2)))
 
+(define-public r-lfc
+  (package
+    (name "r-lfc")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lfc" version))
+       (sha256
+        (base32 "1fh3i5mhzgz8k6y32m2y7lilxvm10kjkp5b70zm06iygazsk8bvz"))))
+    (properties `((upstream-name . "lfc")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/erhard-lab/lfc")
+    (synopsis
+     "Log fold change distribution tools for working with ratios of counts")
+    (description
+     "This is a package for ratios of count data such as obtained from RNA-seq
+are modelled using Bayesian statistics to derive posteriors for effects sizes.
+This approach is described in Erhard & Zimmer (2015) <doi:10.1093/nar/gkv696>
+and Erhard (2018) <doi:10.1093/bioinformatics/bty471>.")
+    (license license:asl2.0)))
+
 (define-public r-lmds
   (package
     (name "r-lmds")
@@ -4741,6 +4764,45 @@ optimisation algorithms can be applied stochastically to exploit interesting
 regions.  GAs can be run sequentially or in parallel, using an explicit
 master-slave parallelisation or a coarse-grain islands approach.")
     (license license:gpl2+)))
+
+(define-public r-grandr
+  (package
+    (name "r-grandr")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "grandR" version))
+       (sha256
+        (base32 "058cvcjrqhgm14vyhlm1mdhs3z0kfpjlfc3msadsvlhlb7p676sn"))))
+    (properties `((upstream-name . "grandR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cowplot
+                             r-ggplot2
+                             r-labeling
+                             r-lfc
+                             r-mass
+                             r-matrix
+                             r-minpack-lm
+                             r-numderiv
+                             r-patchwork
+                             r-plyr
+                             r-rcurl
+                             r-reshape2
+                             r-rlang
+                             r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/erhard-lab/grandR")
+    (synopsis
+     "Comprehensive analysis of nucleotide conversion sequencing data")
+    (description
+     "Nucleotide conversion sequencing experiments have been developed to add
+a temporal dimension to RNA-seq and single-cell RNA-seq.  Such experiments
+require specialized tools for primary processing such as GRAND-SLAM, and
+specialized tools for downstream analyses. @code{grandR} provides a
+comprehensive toolbox for quality control, kinetic modeling, differential gene
+expression analysis and visualization of such data.")
+    (license license:asl2.0)))
 
 (define-public r-greg
   (package
@@ -44025,6 +44087,35 @@ Analysis Toolkit (GATK) to load tables and plot data.  The GATK is a toolkit
 for variant discovery in high-throughput sequencing data.")
     (license license:expat)))
 
+(define-public r-intrees
+  (package
+    (name "r-intrees")
+    (version "1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "inTrees" version))
+       (sha256
+        (base32 "18gbw7v4xbsxdifk32qga3h3j17w40ljs1mkk0b4fzwin9z4sh27"))))
+    (properties `((upstream-name . "inTrees")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-arules
+                             r-data-table
+                             r-gbm
+                             r-rrf
+                             r-xgboost
+                             r-xtable))
+    (home-page "https://cran.r-project.org/package=inTrees")
+    (synopsis "Interpret Tree Ensembles")
+    (description
+     "For tree ensembles such as random forests, regularized random forests and
+gradient boosted trees, this package provides functions for: extracting,
+measuring and pruning rules; selecting a compact rule set; summarizing rules
+into a learner; calculating frequent variable interactions; formatting rules in
+latex code.  Reference: Interpreting tree ensembles with @code{inTrees} (Houtao
+Deng, 2019, <doi:10.1007/s41060-018-0144-8>).")
+    (license license:gpl3+)))
+
 (define-public r-randomforestexplainer
   (package
     (name "r-randomforestexplainer")
@@ -44086,6 +44177,31 @@ quantile regression and solutions for class imbalanced data.  It provides a
 fast interface using subsampling and confidence regions for variable
 importance.")
     (license license:gpl3+)))
+
+(define-public r-rrf
+  (package
+    (name "r-rrf")
+    (version "1.9.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RRF" version))
+       (sha256
+        (base32 "05sswrqjrwyyk9aha7fvvw78iymgv89y0asl5cqfl9fg7gsw9ghs"))))
+    (properties `((upstream-name . "RRF")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://sites.google.com/site/houtaodeng/rrf")
+    (synopsis "Regularized random forest")
+    (description
+     "Feature Selection with Regularized Random Forest.  This package is based
+on the @code{randomForest} package by Andy Liaw.  The key difference is the
+@code{RRF()} function that builds a regularized random forest.  Fortran
+original by Leo Breiman and Adele Cutler, R port by Andy Liaw and Matthew
+Wiener, Regularized random forest for classification by Houtao Deng,
+Regularized random forest for regression by Xin Guan.  Reference: Houtao
+Deng (2013) <doi:10.48550/@code{arXiv.1306.0237>}.")
+    (license license:gpl2+)))
 
 (define-public r-contfrac
   (package

@@ -580,7 +580,7 @@ Ubuntu Unity Shell.")
 (define-public gnome-shell-extension-appindicator
   (package
     (name "gnome-shell-extension-appindicator")
-    (version "53")
+    (version "59")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -589,7 +589,7 @@ Ubuntu Unity Shell.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0lyfznsq5x287vpz133y593s7s4mz9i4x2491sgqvir891zwsivy"))
+                "1k1h9haj0qgcv9hm3hw2nz7ppznp9zrpg922mhrfa6nj97carmqh"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list jq gnu-gettext
@@ -604,7 +604,7 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "47")
+    (version "65")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -616,7 +616,7 @@ GNOME Shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00v0v454y6hblzsx06aaysxbs6aky89vnkf7ydzxrddns24c2wix"))
+                "1p10qnrjrlcyw270k87xwx92kp2cmn8vp4vsk59y13v6k9yaq4q8"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
@@ -650,7 +650,7 @@ that caches clipboard history.")
 (define-public gnome-shell-extension-customize-ibus
   (package
     (name "gnome-shell-extension-customize-ibus")
-    (version "86")
+    (version "90")
     (source
      (origin
        (method git-fetch)
@@ -659,7 +659,7 @@ that caches clipboard history.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1psnbhqbqrp68dri0q98y7ikwz9z3701lcy8vvgixb2bh71y7519"))))
+        (base32 "1i7cw9kgp99b9awb2vfpxkwqdln4bfbf3qya19xnmzw16f5igbmn"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -682,14 +682,10 @@ that caches clipboard history.")
 behavior, system tray and input source indicator for IBus.")
     (license license:gpl3+)))
 
-(define-public gnome-shell-extension-topicons-redux
-  (deprecated-package "gnome-shell-extension-topicons-redux"
-                      gnome-shell-extension-appindicator))
-
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "79")
+    (version "99")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -698,7 +694,7 @@ behavior, system tray and input source indicator for IBus.")
                                            version))))
               (sha256
                (base32
-                "0fsfhgpg8441x28jzhjspb9i9c5502c2fcgdvfggcsmz0sf3v95y"))
+                "0hjmqd2xd33chxq7b7753m87by7z2mvr5njvs5wvshhg70kwwmxj"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -729,7 +725,7 @@ faster window switching.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    (version "55")
+    (version "58")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -739,7 +735,7 @@ faster window switching.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "158qbjl6m807g0fy15dvhwwwy6z8r0g7kh9gjyhm7n3y14v5p8wz"))))
+                "0jzpik0i03wpnxxmmhmn86vimpzvjmdkx76casi9sd7pwwdvi73f"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -822,7 +818,7 @@ control.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "26.0")
+    (version "30.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -831,7 +827,7 @@ control.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dvq2mb04b557g9nz4pm90x2c2jc1dwwbg2is1gkx38yk0dsj6r3"))))
+                "1y7m4y8zx7l6vl2f8w9nxac21x48ajcs5gf07r1k34adnf7wh8p2"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -871,14 +867,10 @@ GNOME Shell itself does not provide out of the box, such as the ability to hide
 certain elements or change animation speeds.")
     (license license:gpl3)))
 
-(define-public gnome-shell-extension-hide-app-icon
-  (deprecated-package "gnome-shell-extension-hide-app-icon"
-                      gnome-shell-extension-just-perfection))
-
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "56") ;Compatible with GNOME 44
+    (version "64")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -886,7 +878,7 @@ certain elements or change animation speeds.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "17rm3wjj8zfdxgh5vp5f35vgd4mc9f9c2w77hac4vyvkgvwfzcnn"))
+                "0dgp15qr9s9h9wam0a994sqd8rdab36wii6j6rai3s5p8bw8gsfn"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -921,11 +913,11 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
   ;; https://extensions.gnome.org/extension/6109/noannoyance-fork/ because it
   ;; supports newer GNOME Shell versions than the previously used “NoAnnoyance
   ;; v2”.
-  (let ((commit "5e9e6a1878d2a1d961f5d59505f15339c5b7e17e")
+  (let ((commit "8312e010908119b0b0a744c27e661c89b35eddb7")
         ;; “NoAnnoyance v2” version 17 correlates with
         ;; c6804a47063659f9f48d13a0942b78ce98aac72b, from which we count
         ;; commits.
-        (revision "6"))
+        (revision "23"))
     (package
       (name "gnome-shell-extension-noannoyance")
       (version (git-version "17" revision commit))
@@ -936,13 +928,20 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0br9zrwvn499kh3db84hhw1kl02jpchwb5ldfp892p15vwih8yrf"))
+                  "1pf575pwm304cn4kdjdjcxiyjsggmkcy9mrar901an0xr4vbm3pg"))
                 (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
        (list
         #:install-plan
-        #~'(("." "share/gnome-shell/extensions/noannoyance@vrba.dev"))))
+        #~'(("." "share/gnome-shell/extensions/noannoyance-fork@vrba.dev"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'compile-schemas
+              (lambda _
+                (with-directory-excursion "schemas"
+                  (invoke "glib-compile-schemas" ".")))))))
+      (native-inputs (list `(,glib "bin")))
       (synopsis "Remove 'Window is ready' annotation")
       (description "One of the many extensions that remove this message.
 It uses ES6 syntax and claims to be more actively maintained than others.")
@@ -952,7 +951,7 @@ It uses ES6 syntax and claims to be more actively maintained than others.")
 (define-public gnome-shell-extension-paperwm
   (package
     (name "gnome-shell-extension-paperwm")
-    (version "44.17.0")
+    (version "47.1.0")                  ; still compatible with GNOME 46
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -961,7 +960,7 @@ It uses ES6 syntax and claims to be more actively maintained than others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d91k9qih81wckqf6554kf8grv6q61rkk4g776g0ijpmf35ljdin"))
+                "0vgrkda38va1pwrzf5bkkmfbpm2i61487x86zky2f02wimxl9i7m"))
               (snippet
                '(begin (delete-file "schemas/gschemas.compiled")))))
     (build-system copy-build-system)
@@ -989,7 +988,7 @@ notebooks and tiling window managers.")
 (define-public gnome-shell-extension-night-theme-switcher
   (package
     (name "gnome-shell-extension-night-theme-switcher")
-    (version "74")
+    (version "78")
     (source
      (origin
        (method git-fetch)
@@ -998,7 +997,7 @@ notebooks and tiling window managers.")
               "https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension")
              (commit version)))
        (sha256
-        (base32 "1hiydjyn7shc32i81r70sqip9p3hhig7pqq1h7hsz9bc4qlyri7b"))
+        (base32 "13rqql22q3pv6dp3lmms7xbqna6h6x13gmd337fcqzc0k952xckc"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config (list glib "bin")))
@@ -1073,7 +1072,7 @@ copies you now want to paste.")
 (define-public gnome-shell-extension-v-shell
   (package
     (name "gnome-shell-extension-v-shell")
-    (version "37")
+    (version "47.1")
     (source
      (origin
        (method git-fetch)
@@ -1082,7 +1081,7 @@ copies you now want to paste.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1h9f3g1dswxkka0yyj51610w86mwl46ylch19b51gj5mmxlyvzlv"))
+         "0c2hl7wi83aacl5w09h5daph06zwiv63vn9za2v63az1i8333sgi"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
@@ -1113,7 +1112,7 @@ shell, including panels, corners, workspaces.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "40")
+    (version "44")
     (source
      (origin
        (method git-fetch)
@@ -1122,7 +1121,7 @@ shell, including panels, corners, workspaces.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "16n6ilszdn67835clqlr4flna69x9k00k5qrm55765dv2ny9jdcq"))
+         "1br4hv0xnb9q30p844z360f37xzk6xflfq27i8ipbxpk6bd12ik6"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
@@ -1153,7 +1152,7 @@ animation of closing windowed applications.")
 (define-public gnome-shell-extension-blur-my-shell
   (package
     (name "gnome-shell-extension-blur-my-shell")
-    (version "47")
+    (version "67")
     (source
      (origin
        (method git-fetch)
@@ -1163,7 +1162,7 @@ animation of closing windowed applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1a8prh6893zk8rnfi9q7waga2x7kx564jzmsdyhiffdbazbv8p6y"))))
+         "0zxz71iq8wzv7swfp4an8vwf8r4sswb6gi85cwh5afyc4mj5fn2r"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -1192,7 +1191,7 @@ GNOME Shell, including the top panel, dash and overview.")
 (define-public gnome-shell-extension-radio
   (package
     (name "gnome-shell-extension-radio")
-    (version "21")
+    (version "22")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1202,7 +1201,7 @@ GNOME Shell, including the top panel, dash and overview.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ghk95q3lhliz3his58hh2ql4p9csh6llzip412vwf29zdkr58s2"))))
+                "1f1cjch60yv39lsngj9xrlyzc4f1gcaydm5xc5kc0rqi48f83d1f"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -1225,7 +1224,7 @@ directly inside GNOME Shell.  It can manage stations and play streams.")
 (define-public gnome-shell-extension-vitals
   (package
     (name "gnome-shell-extension-vitals")
-    (version "62.0.0")
+    (version "69.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1234,7 +1233,7 @@ directly inside GNOME Shell.  It can manage stations and play streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wmw5yd38vyv13x6frbafp21bdhlyjd5ggimdf2696irfhnm828h"))
+                "1d587hh4l2v4skbvispy77lvkrj0c3wwkbvgxqya3dphmvc8pn27"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (delete-file "schemas/gschemas.compiled")

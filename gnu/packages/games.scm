@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014-2024 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -578,7 +578,7 @@ physics settings to tweak as well.")
 (define-public astromenace
   (package
     (name "astromenace")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
@@ -587,7 +587,7 @@ physics settings to tweak as well.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vw94issjzz6rji0ssqv5yrll513dvj7m0d33q8lbih1gdh4alal"))))
+        (base32 "0683a6bb4rvbz3jaqs6pc4msy6l3vr7fafxi4nmbvziv5kr7x9sv"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2292,15 +2292,15 @@ in one tile.")
 (define-public gnome-chess
   (package
     (name "gnome-chess")
-    (version "3.37.3")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-chess/"
-                                  (version-major+minor version)  "/"
+                                  (version-major version)  "/"
                                   "gnome-chess-" version ".tar.xz"))
               (sha256
                (base32
-                "09axf0q1mp13sv8cs0syfg8ahcd9r2qb26278r09j6s4njxmkfv4"))))
+                "1rzx8qxrfsicdmkyka434nv7adrh4x4qn6dri5bjqcallzh91g52"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -2309,17 +2309,19 @@ in one tile.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")
+               (("update_desktop_database: true")
+                "update_desktop_database: false")))))))
     (inputs
-     (list gtk+ librsvg))
+     (list gtk libadwaita librsvg))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for desktop-file-validate and appstream-util
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")       ; for desktop-file-validate and appstream-util
+           itstool
+           pkg-config
+           vala))
     (home-page "https://wiki.gnome.org/Apps/Chess")
     (synopsis "Chess board for GNOME")
     (description "GNOME Chess provides a 2D board for playing chess games
@@ -4746,19 +4748,17 @@ This package expects the game(s) to be placed in subdirectories of
     (home-page "http://exult.info/")
     (license license:gpl2+)))
 
-(define-public supertuxkart
-  (package
-    (name "supertuxkart")
-    (version "1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/supertuxkart/stk-code/"
-                           "releases/download/"
-                           version "/SuperTuxKart-" version "-src.tar.xz"))
+(define %supertuxkart-version "1.4")
+(define supertuxkart-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/supertuxkart/stk-code")
+          (commit %supertuxkart-version)))
        (sha256
         (base32
-         "00qg5i9y4i5gdiiq1dbfsgp7dwj60zb5lkgi2d9p3x5s34j3k44q"))
+         "1hv4p0430zw6qm5fgsmayhj8hdxx7qpzggwks5w26z0dz1b5m9w2"))
+       (file-name (git-file-name "supertuxkart" %supertuxkart-version))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled library sources
@@ -4772,38 +4772,102 @@ This package expects the game(s) to be placed in subdirectories of
                        "lib/enet"
                        "lib/mcpp"
                        "lib/mojoal"
-                       "lib/wiiuse"))
-           #t))))
+                       "lib/wiiuse"))))))
+
+(define supertuxkart-data
+  ;; There are no tags or releases for the stk-assets data, nor indication of
+  ;; which revision is bundled into the released SuperTuxKart-*-src tarball;
+  ;; use the latest SVN revision available.
+  (let ((commit "18593")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "supertuxkart-data")
+       ;; The package produced is a merger of supertuxkart's "stk-assets"
+       ;; repository and the "stk-code" repository's "data" directory, so
+       ;; include the code version as well.
+       (version (string-append %supertuxkart-version "-" commit))
+       (source
+        (origin
+          (method svn-fetch)
+          (uri (svn-reference
+                (url "https://svn.code.sf.net/p/supertuxkart/code/stk-assets")
+                (revision (string->number commit))))
+          (file-name (string-append name "-" commit "-checkout"))
+          (sha256
+           (base32
+            "0x2l45w1ahgkw9mrbcxzwdlqs7rams6rsga9m40qjapfiqmvlvbg"))))
+       (build-system copy-build-system)
+       (arguments
+        (list #:install-plan
+              #~'(("." "share/supertuxkart/data"
+                   #:exclude-regexp ("wip-.*")))
+              #:phases
+              #~(modify-phases %standard-phases
+                  (add-after 'unpack 'copy-code-data
+                    (lambda _
+                      (copy-recursively
+                       (string-append
+                        #$(this-package-input
+                           (git-file-name "supertuxkart" %supertuxkart-version))
+                        "/data/")
+                       "."))))))
+       (inputs (list supertuxkart-source))
+       (home-page "https://supertuxkart.net/Main_Page")
+       (synopsis "Data files for SuperTuxKart")
+       (description "This package contains data files for SuperTuxKart.")
+       (license (list license:gpl3+
+                      license:cc-by-sa3.0
+                      license:cc-by-sa4.0
+                      license:cc0))))))
+
+(define-public supertuxkart
+  (package
+    (name "supertuxkart")
+    (version %supertuxkart-version)
+    (source supertuxkart-source)
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no check target
-       #:configure-flags
-       (list "-DUSE_WIIUSE=0"
-             "-DUSE_SYSTEM_ENET=TRUE"
-             "-DUSE_CRYPTO_OPENSSL=TRUE"
-             ;; In order to use the system ENet library, IPv6 support (added in
-             ;; SuperTuxKart version 1.1) must be disabled.
-             "-DUSE_IPV6=FALSE")))
+     (list #:tests? #f                  ; no check target
+           #:configure-flags
+           #~(list "-DCHECK_ASSETS=FALSE" ; assets are out-of-tree
+                   (string-append "-DSTK_INSTALL_DATA_DIR_ABSOLUTE="
+                                  #$(this-package-input "supertuxkart-data")
+                                  "/share/supertuxkart")
+                   "-DUSE_WIIUSE=0"
+                   "-DUSE_SYSTEM_ENET=TRUE"
+                   "-DUSE_CRYPTO_OPENSSL=TRUE"
+                   ;; In order to use the system ENet library, IPv6 support
+                   ;; (added in SuperTuxKart version 1.1) must be disabled.
+                   "-DUSE_IPV6=FALSE")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'disable-data-install
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("^install\\(.*STK_DATA_DIR" &)
+                      (string-append "# " &))))))))
     (inputs
-     `(("curl" ,curl)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("glew" ,glew)
-       ("harfbuzz" ,harfbuzz)
-       ("libopenglrecorder" ,libopenglrecorder)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libxrandr" ,libxrandr)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("sdl2" ,sdl2)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)
-       ;; The following input is needed to build the bundled and modified
-       ;; version of irrlicht.
-       ("enet" ,enet)
-       ("libjpeg" ,libjpeg-turbo)
-       ("openssl" ,openssl)))
+     (list curl
+           freetype
+           fribidi
+           glew
+           harfbuzz
+           libopenglrecorder
+           libvorbis
+           libx11
+           libxrandr
+           mesa
+           openal
+           sdl2
+           sqlite
+           supertuxkart-data
+           zlib
+           ;; The following input is needed to build the bundled and modified
+           ;; version of irrlicht.
+           enet
+           libjpeg-turbo
+           openssl))
     (native-inputs (list mcpp pkg-config python))
     (home-page "https://supertuxkart.net/Main_Page")
     (synopsis "3D kart racing game")
@@ -9384,7 +9448,7 @@ their own levels.")
 (define-public libmanette
   (package
     (name "libmanette")
-    (version "0.2.6")
+    (version "0.2.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libmanette/"
@@ -9392,13 +9456,13 @@ their own levels.")
                                   "libmanette-" version ".tar.xz"))
               (sha256
                (base32
-                "1b3bcdkk5xd5asq797cch9id8692grsjxrc1ss87vv11m1ck4rb3"))))
+                "13v85gckp937lppjqk42wvkd9pafszigyr7wcm6afq1g8pjnndi9"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ; for glib-compile-resources
            gobject-introspection pkg-config vala))
-    (inputs
-     (list libevdev libgudev))
+    (propagated-inputs
+     (list glib libevdev libgudev))     ; as per manette-0.2.pc
     (home-page "https://wiki.gnome.org/Apps/Games")
     (synopsis "Game controller library")
     (description "Libmanette is a small GObject library giving you simple

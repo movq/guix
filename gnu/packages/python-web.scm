@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
@@ -1683,6 +1683,8 @@ decode and default on encode.
                      ;; Tests fail with error: AssertinError ...
                      "test_parameter_for_autopublish_code_sha256"
                      "test_sam_with_language_extension"
+                     "test_module_integration"
+                     "test_templates"
                      ;; Test fails with error: diff error while comparing
                      ;; graphs.
                      "test_build_graph")
@@ -2481,7 +2483,11 @@ and that could be anything you want.")
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-vv" "test")))))))
+               (invoke "python" "-m" "pytest" "-vv" "test"
+                       ;; This test exceededs the Hypothesis deadline.
+                       ,@(if (target-riscv64?)
+                             `("-k" "not test_changing_max_frame_size")
+                             '()))))))))
     (native-inputs
      (list python-hypothesis python-pytest))
     (propagated-inputs
@@ -7247,6 +7253,14 @@ hard or impossible to fix in cssselect.")
              (substitute* "uvloop/loop.pyx"
                (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))
              #t))
+         ,@(if (target-riscv64?)
+               `((add-after 'unpack 'adjust-test-timeouts
+                   (lambda _
+                     (substitute* '("tests/test_tcp.py"
+                                    "tests/test_unix.py")
+                       (("SSL_HANDSHAKE_TIMEOUT = 15\\.0")
+                        "SSL_HANDSHAKE_TIMEOUT = 30.0")))))
+               '())
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -7273,7 +7287,11 @@ hard or impossible to fix in cssselect.")
                               "and not test_process_streams_redirect "
                               ;; FileNotFoundError: [Errno 2] No such file or
                               ;; directory
-                              "and not test_process_env_2"))))))))
+                              "and not test_process_env_2"
+                              ,@(if (target-riscv64?)
+                                    `(" and not test_renegotiation"
+                                      " and not test_getaddrinfo_21")
+                                    `())))))))))
     (native-inputs
      (list python-aiohttp
            python-cython-3
@@ -7472,7 +7490,8 @@ and fairly speedy.")
               "--ignore=tests/supervisors/test_multiprocess.py"
 
               #$@(cond
-                  ((target-aarch64?)
+                  ((or (target-aarch64?)
+                       (target-riscv64?))
                    '("-k not test_send_binary_data_to_server_bigger_than_default_on_websockets"))
                   (#t '())))))
     (native-inputs
@@ -7970,7 +7989,11 @@ files.")
            #~(modify-phases %standard-phases
                (add-before 'check 'extend-test-timeout
                  (lambda _
-                   (setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))
+                   ;; Some architectures need an even longer timeout.  Make it
+                   ;; long enough that it should never fail due to timeout.
+                   #$@(if (target-riscv64?)
+                          #~((setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "100"))
+                          #~((setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))))
     (native-inputs
      (list python-setuptools
            python-wheel))

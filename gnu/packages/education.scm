@@ -219,7 +219,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "4.1")
+    (version "25.0.12")
     (source
      (origin
        (method url-fetch)
@@ -227,38 +227,37 @@ of categories with some of the activities available in that category.
              "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "1186ba3vn59fqdpgbvnvxqm8a3b7ginmw1sb3m5fr2az40xiqg9z"))))
+        (base32 "1my67r7x6j7snidnj47v3ndhf3i5sxn0zqj4d8apaw6mbqms96vj"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xorg-server
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The test suite requires a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             ;; The test suite wants to write to /homeless-shelter
-             (setenv "HOME" (getcwd)))))
-       #:configure-flags (list "-DQML_BOX2D_MODULE=disabled"
-                               "-DBUILD_TESTING=TRUE")))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'start-xorg-server
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; The test suite requires a running X server.
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1")
+                   ;; The test suite wants to write to /homeless-shelter
+                   (setenv "HOME" (getcwd)))))
+           #:configure-flags #~(list "-DQML_BOX2D_MODULE=disabled"
+                                     "-DBUILD_TESTING=TRUE")))
     (native-inputs
      (list extra-cmake-modules
            gettext-minimal
            kdoctools
            perl
-           qttools-5
+           pkg-config
+           qttools
            xorg-server-for-tests))
     (inputs
      (list openssl
            python-wrapper
-           qtbase-5
-           qtcharts-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtquickcontrols2-5
-           qtsensors-5
-           qtsvg-5))
+           qtcharts
+           qtdeclarative
+           qtmultimedia
+           qtsensors
+           qtsvg))
     (home-page "https://gcompris.net/index-en.html")
     (synopsis "Educational games for small children")
     (description
@@ -680,14 +679,14 @@ language and very flexible regarding to new or unknown keyboard layouts.")
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
-    (version "24.05.2")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kqtquickcharts-" version ".tar.xz"))
               (sha256
                (base32
-                "0b0nqg77lzfw6accfsr4yg9fgq78skryd1qwkqf1zijhq4h65708"))))
+                "0a9rpp165s3ishc1jsaalgjixir591a8f6r9qqzji50jgf629ivc"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtdeclarative-5))
@@ -701,14 +700,14 @@ charts.")
 (define-public ktouch
   (package
     (name "ktouch")
-    (version "24.05.2")
+    (version "24.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/ktouch-" version ".tar.xz"))
        (sha256
-        (base32 "1636s1brigmd7wbmjlfgz2qlrrp592rrk9nylh9bi0j1nf3xa8c5"))))
+        (base32 "1bnzsvw81glw6clx6j0s0h9rxqdb9avqjnjxswjwsj1bv6r8g71j"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools-5 pkg-config))

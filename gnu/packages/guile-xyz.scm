@@ -1617,18 +1617,15 @@ inheritance.")
                (url "https://github.com/jerry40/guile-simple-zmq")
                (commit commit)))
          (sha256
-          (base32
-           "1aq1s0f0z5g6qsv9jqr0663qv4rwxd9j1pmg1g8v6rl09xb8g8lp"))
+          (base32 "1aq1s0f0z5g6qsv9jqr0663qv4rwxd9j1pmg1g8v6rl09xb8g8lp"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       '(#:make-flags
-         '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
-
-      (native-inputs
-       (list guile-3.0))
-      (inputs
-       (list autoconf automake pkg-config zeromq))
+       (list
+        #:make-flags
+        #~'("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+      (native-inputs (list autoconf automake pkg-config guile-3.0))
+      (inputs (list zeromq))
       (home-page "https://github.com/jerry40/guile-simple-zmq")
       (synopsis "Guile wrapper over ZeroMQ library")
       (description
@@ -1640,7 +1637,8 @@ messaging library.")
   (package
     (inherit guile-simple-zmq)
     (name "guile2.2-simple-zmq")
-    (native-inputs (list guile-2.2))))
+    (native-inputs (modify-inputs (package-native-inputs guile-simple-zmq)
+                     (replace "guile" guile-2.2)))))
 
 (define-public jupyter-guile-kernel
   (let ((commit "f25fb90b95529b17a006a807bd04e6aee12ea304")
@@ -2313,7 +2311,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -2323,7 +2321,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1gkz19iz3ncf9ddr731lsaw12ca7ygj3dxziz54s9xpp5cw19r0v"))))
+         "1zxclhyrsbp9v6sj36kmphiwqhb06rcm1zjskg5091py8361wjd6"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -4851,7 +4849,7 @@ processing filters.")
        ("webkitgtk" ,webkitgtk-for-gtk3)
        ("gtksourceview" ,gtksourceview-4)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("vte" ,vte)
+       ("vte" ,vte/gtk+-3)
        ;; Gstreamer
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
@@ -6648,8 +6646,8 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "f41d1853ceb9f8d297fc756925a08f6d11d30d10")
-        (revision "12"))
+  (let ((commit "3aab1be1e7ece854ff20e4e5b84c1be2165c0234")
+        (revision "13"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
@@ -6660,20 +6658,20 @@ is an attempt to combine both into something useful.")
                     (commit commit)))
               (sha256
                (base32
-                "1rfl2dk57pc7dmvn7rm80mj4q0la5bv1x1smkq7mzsfpcyzps6mg"))
+                "13cji86c5jzp2zb3qffb9jkx34ykas2vwibm83pzl1158mk9npbd"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
            autoconf
            automake
-           guile-3.0
+           guile-next
            guile-lib
-           guile-fibers))
+           guile-fibers-next))
     (inputs
-     (list guile-3.0))
+     (list guile-next))
     (propagated-inputs
-     (list guile-fibers))
+     (list guile-fibers-next))
     (home-page "https://git.cbaines.net/guile/knots")
     (synopsis "Patterns and functionality to use with Guile Fibers")
     (description

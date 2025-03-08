@@ -14542,6 +14542,39 @@ provide error correction, haplotype reconstruction and estimation of the
 frequency of the different genetic variants present in a mixed sample.")
     (license license:gpl3+)))
 
+(define-public sickle
+  (package
+    (name "sickle")
+    (version "1.33")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/najoshi/sickle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bnq480lpylq9sfsa1y71b4qz0ipi2zjnp8ds48fh10ijlwmwmdc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;There are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "sickle" (string-append #$output "/bin")))))))
+    (propagated-inputs (list zlib))
+    (home-page "https://github.com/najoshi/sickle")
+    (synopsis "Adaptive trimming tool for FASTQ files using quality")
+    (description
+     "Sickle is a tool that trims reads based on quality and length
+thresholds.  It uses sliding windows to detect low-quality bases at the 3'-end
+and high-quality bases at the 5'-end.  Additionally, it discards reads based
+on the length threshold.")
+    (license license:expat)))
+
 (define-public ruby-bio-kseq
   (package
     (name "ruby-bio-kseq")
@@ -22681,8 +22714,8 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "381754801c2d0cf44c8a3a25326f3a89eef17411")
-        (revision "4"))
+  (let ((commit "21886d82292dc46521da2a03d978d78f3bd7210b")
+        (revision "5"))
     (package
       (name "r-voltron")
       (version (git-version "0.2.0" revision commit))
@@ -22694,7 +22727,7 @@ patterns.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1x8b51qlxz4zc23asz4wmvhy7fbvxnhn5svlalgdrj7bibq345qq"))))
+          (base32 "00d49c1zwd0nbcxc5rzzv6251bcgkcwmzpfr2k6r5l6zg58i6v3m"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
       (arguments
@@ -22709,11 +22742,21 @@ patterns.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "R/conversion.R"
                   (("return\\(NULL\\)")
-                   (string-append "Sys.setenv(GUIX_PYTHONPATH=\""
-                                  (getenv "GUIX_PYTHONPATH")
-                                  "\"); return(\""
-                                  (search-input-file inputs "/bin/python3")
-                                  "\")"))))))))
+                   (string-append
+                    "source(paste0(system.file(package=\"VoltRon\"), \"/guix-refs.R\"));\n"
+                    "return(guix_python);")))))
+            ;; We do this outside of the source code to ensure that
+            ;; references are accessible to Guix.
+            (add-after 'install 'record-python-reference
+              (lambda* (#:key inputs #:allow-other-keys)
+                (mkdir-p (string-append #$output "/site-library/VoltRon/"))
+                (call-with-output-file (string-append #$output "/site-library/VoltRon/guix-refs.R")
+                  (lambda (port)
+                    (format port "\
+Sys.setenv(GUIX_PYTHONPATH=\"~a\");
+guix_python <- \"~a\";"
+                            (getenv "GUIX_PYTHONPATH")
+                            (search-input-file inputs "/bin/python3")))))))))
       (inputs
        (list opencv
              ;; These Python inputs are used via reticulate.
@@ -24331,6 +24374,51 @@ ploidy and allele-specific copy number profiles.")
 copy number estimation, as described by
 @url{doi:10.1016/j.cell.2012.04.023,Nik-Zainal et al.}")
    (license license:gpl3)))
+
+(define-public r-bayesprism
+  (package
+    (name "r-bayesprism")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Danko-Lab/BayesPrism")
+             ;; The version string in the DESCRIPTION file was changed to
+             ;; 2.2.2 in this commit.
+             (commit "5d43190d5fdfc900571ae1b05b9dcad9ee6b8b2b")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rlq6nv1adc9w1ync8834kv59ksixxzbpf3xlbxi5s8x54gv4q9y"))))
+    (properties `((upstream-name . "BayesPrism")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "BayesPrism"))))))
+    (propagated-inputs (list r-biocparallel
+                             r-gplots
+                             r-matrix
+                             r-nmf
+                             r-scran
+                             r-snowfall
+                             r-r-utils))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/Danko-Lab/BayesPrism")
+    (synopsis "Bayesian cell type and gene expression deconvolution")
+    (description
+     "BayesPrism includes deconvolution and embedding learning modules.
+The deconvolution module models a prior from cell type-specific expression
+profiles from scRNA-seq to jointly estimate the posterior distribution of cell
+type composition and cell type-specific gene expression from bulk RNA-seq
+expression of tumor samples.  The embedding learning module uses
+@dfn{Expectation-maximization} (EM) to approximate the tumor expression using
+a linear combination of malignant gene programs while conditional on the
+inferred expression and fraction of non-malignant cells estimated by the
+deconvolution module.")
+    (license license:gpl3)))
 
 (define-public r-catch
   (let ((commit "196ddd5a51b1a5f5daa01de53fdaad9b7505e084")

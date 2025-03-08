@@ -542,12 +542,14 @@ as a joint effort between the BBC and Fluendo.")
        (patches
         (search-patches "libquicktime-ffmpeg.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; Avoid legacy dependencies such as GTK+ 2 and FFmpeg 4.
+     (list #:configure-flags #~(list "--without-ffmpeg"
+                                     "--without-gtk")))
     (native-inputs
      (list gettext-minimal doxygen pkg-config))
     (inputs
      (list alsa-lib
-           ffmpeg-4
-           gtk+-2
            lame
            libdv
            libjpeg-turbo
@@ -623,8 +625,10 @@ receiving MJPG streams.")
        (sha256
         (base32 "16pl22ra3x2mkp8p3awslhlhj46b1nq9g89301gb0q4rgmnm705i"))))
     (build-system gnu-build-system)
+    ;; Avoid a dependency on the legacy GTK+ 2.
+    (arguments (list #:configure-flags #~(list "--without-gtk")))
     (inputs
-     (list gtk+-2 libdv libjpeg-turbo libpng libquicktime sdl))
+     (list libdv libjpeg-turbo libpng libquicktime sdl))
     (native-inputs
      (list pkg-config))
     (synopsis "Tools for handling MPEG")
@@ -697,7 +701,7 @@ applications by providing high-level classes for commonly required tasks.")
 (define-public libde265
   (package
     (name "libde265")
-    (version "1.0.8")
+    (version "1.0.14")
     (source
      (origin
        (method git-fetch)
@@ -707,22 +711,17 @@ applications by providing high-level classes for commonly required tasks.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dzflqbk248lz5ws0ni5acmf32b3rmnq5gsfaz7691qqjxkl1zml"))))
+        (base32 "1a4n1hnr9ybji87irg2kya95slf4jnybnkg4x2zihnqqihbnv539"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list "--disable-static")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list autoconf automake libtool pkg-config python-wrapper))
     (inputs
-     `(;; XXX: Build fails with libvideogfx.
-       ;; ("libvideogfx" ,libvideogfx)
-       ("qt" ,qtbase-5)
-       ("sdl" ,sdl)))
+     ;; XXX: Build a complete version using libswscale or libvideogfx
+     ;; and qtbase-5.
+     (list sdl2))
     (synopsis "H.265 video codec implementation")
     (description "Libde265 is an implementation of the h.265 video codec.  It is
 written from scratch and has a plain C API to enable a simple integration into
@@ -3178,7 +3177,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2025.01.26")
+    (version "2025.02.19")
     (source
      (origin
        (method git-fetch)
@@ -3190,7 +3189,7 @@ YouTube.com and many more sites.")
        (snippet '(substitute* "pyproject.toml"
                    (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
-        (base32 "14xkh605flfghrlscf2if8lx4w55pb3xjws1qr3979fl5g4g4fvf"))))
+        (base32 "10xgvvrsvhajrjfq512hjfg7kfcab4cbnhnl5lm6ispgpbv03n52"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? ,(not (%current-target-system))
@@ -3414,7 +3413,7 @@ playlists.")
 (define-public libbluray
   (package
     (name "libbluray")
-    (version "1.0.2")
+    (version "1.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.videolan.org/videolan/"
@@ -3422,42 +3421,42 @@ playlists.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1zxfnw1xbghcj7b3zz5djndv6gwssxda19cz1lrlqrkg8577r7kd"))))
+                "0aszpsz3pc7p7z6yahlib4na585m6pqbg2d9dkpyipgml1lgv3s7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-bdjava-jar"
-                           "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'refer-to-libxml2-in-.pc-file
-           ;; Avoid the need to propagate libxml2 by referring to it
-           ;; directly, as is already done for fontconfig & freetype.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libxml2 (assoc-ref inputs "libxml2")))
-               (substitute* "configure"
-                 ((" libxml-2.0") ""))
-               (substitute* "src/libbluray.pc.in"
-                 (("^Libs.private:" field)
-                  (string-append field " -L" libxml2 "/lib -lxml2")))
-               #t)))
-         (add-before 'build 'fix-dlopen-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libaacs (assoc-ref inputs "libaacs"))
-                   (libbdplus (assoc-ref inputs "libbdplus")))
-               (substitute* "src/libbluray/disc/aacs.c"
-                 (("\"libaacs\"")
-                  (string-append "\"" libaacs "/lib/libaacs\"")))
-               (substitute* "src/libbluray/disc/bdplus.c"
-                 (("\"libbdplus\"")
-                  (string-append "\"" libbdplus "/lib/libbdplus\"")))
-               #t))))))
+     (list
+      #:configure-flags #~(list "--disable-bdjava-jar" "--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-packages-to-libs
+            ;; Avoid the need to propagate libxml2 et al. by referring to them
+            ;; directly.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (search-input-vicinity lib)
+                (dirname
+                 (search-input-file inputs
+                                    (string-append "lib/lib" lib ".so"))))
+              (substitute* "src/libbluray.pc.in"
+                (("@PACKAGES@") "")
+                (("^Libs.private:" field)
+                 (string-append field
+                                " -L" (search-input-vicinity "xml2")
+                                " -L" (search-input-vicinity "freetype")
+                                " -L" (search-input-vicinity "fontconfig")
+                                " -lxml2 -lfreetype -lfontconfig")))))
+          (add-before 'build 'fix-dlopen-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (lib/no.so library)
+                (let ((found (search-input-file inputs library)))
+                  (substring found 0 (- (string-length found)
+                                        (string-length ".so")))))
+              (substitute* "src/libbluray/disc/aacs.c"
+                (("\"libaacs\"")
+                 (string-append "\"" (lib/no.so "lib/libaacs.so") "\""))
+                (("\"libbdplus\"")
+                 (string-append "\"" (lib/no.so "lib/libbdplus.so") "\""))))))))
     (native-inputs (list pkg-config))
-    (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libaacs" ,libaacs)
-       ("libbdplus" ,libbdplus)
-       ("libxml2" ,libxml2)))
+    (inputs (list fontconfig freetype libaacs libbdplus libxml2))
     (home-page "https://www.videolan.org/developers/libbluray.html")
     (synopsis "Blu-Ray Disc playback library")
     (description
@@ -3468,7 +3467,7 @@ players, like VLC or MPlayer.")
 (define-public libdvdread
   (package
     (name "libdvdread")
-    (version "6.0.2")
+    (version "6.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.videolan.org/videolan/"
@@ -3476,7 +3475,7 @@ players, like VLC or MPlayer.")
                                   "libdvdread-" version ".tar.bz2"))
               (sha256
                (base32
-                "1c7yqqn67m3y3n7nfrgrnzz034zjaw5caijbwbfrq89v46ph257r"))))
+                "0sakl4c8y2kkp09km0b5353w66pvfc72y8wi1vjwn252jx4ladff"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-libdvdcss=yes")))
@@ -4063,6 +4062,20 @@ be used for realtime video capture via Linux-specific APIs.")
     (home-page "https://linuxtv.org/wiki/index.php/V4l-utils")
     ;; libv4l2 is LGPL2.1+, while utilities are GPL2 only.
     (license (list license:lgpl2.1+ license:gpl2))))
+
+(define-public v4l-utils-minimal
+  (package/inherit v4l-utils
+    (name "v4l-utils-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments v4l-utils)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'split)))
+       ((#:disallowed-references _ '())
+        (list qtbase qtbase-5))))
+    (outputs '("out"))
+    (inputs (modify-inputs (package-inputs v4l-utils)
+              (delete "qtbase")))))
 
 (define-public obs
   (package

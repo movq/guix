@@ -303,14 +303,14 @@ browser for easy news reading.")
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "24.12.2")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/gwenview-" version ".tar.xz"))
        (sha256
-        (base32 "0qw4jl4zasa32skmf4qysx4spn91j1n6pmc7w8s1l6n6ncsffkjg"))))
+        (base32 "0rh4249wqhm35ahpyhpnxdnaw8s0hklx2mdsmfj6m20f26w90ifb"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -371,7 +371,7 @@ annotating features.")
 (define-public kdenlive
   (package
     (name "kdenlive")
-    (version "24.12.2")
+    (version "24.12.3")
     (source
      (origin
        (method git-fetch)
@@ -380,7 +380,7 @@ annotating features.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06nhdg7qwyk64gsp0hicbyp0g8dbyij8mps05ifiv055g10a254x"))))
+        (base32 "0m1s27vska60qswrqfnjlrj9p787n5p8zx7gldn95sj1mdw9s7cr"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: there is a single test that spawns other tests and
@@ -814,7 +814,7 @@ expression library, that is used in Krita.")
 (define-public kcolorchooser
   (package
     (name "kcolorchooser")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
@@ -822,7 +822,7 @@ expression library, that is used in Krita.")
                            "/src/kcolorchooser-" version ".tar.xz"))
        (sha256
         (base32
-         "17vwzwqq42r3fkrg5871dkpdbph5xj8ria1m0diahbzl0d2z623l"))))
+         "0af20kdr09r8vdmxaqq5djdni37r7ik3mhfn5864q9jy07017816"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1463,14 +1463,14 @@ for scanner hardware.")
 (define-public libksane
   (package
     (name "libksane")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/libksane-" version ".tar.xz"))
        (sha256
-        (base32 "1sv81mpai350196x5sskvf2qsq2abmvjpv28zy7n8cy31if931ga"))))
+        (base32 "1b0cbf4cq0ajl5xlpy75wj4p1zsri2igh23pswj8ysnrrk0pxg5w"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
@@ -1518,7 +1518,7 @@ different notification systems.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "24.12.2")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
@@ -1527,7 +1527,7 @@ different notification systems.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1zs7xz9s47s34zxnzhwiz3ip85cpbq119zjg52sv0vpji8bdjadf"))))
+         "05xbxcxg9byj3rilmqig8281rjjd59w2wk3qw4v1z8irhn8fpl28"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1682,14 +1682,14 @@ to perform data analysis.")
 (define-public kdf
   (package
     (name "kdf")
-    (version "24.05.2")
+    (version "24.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdf-" version ".tar.xz"))
               (sha256
                (base32
-                "1gp0r0dj58zq5rflw7yb42znjwvbq3aa0xqz5dfbxf7m3widri6g"))))
+                "1agv2bpz0gi2l759w4pkafb1pfqyh3m7dhfxpmpvlr8759z4skyv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -1697,6 +1697,7 @@ to perform data analysis.")
      (list kcmutils
            kconfigwidgets
            kcoreaddons
+           kcrash
            ki18n
            kiconthemes
            kio
@@ -1717,14 +1718,14 @@ unmount drives and view them in a file manager.")
 (define-public ktimer
   (package
     (name "ktimer")
-    (version "24.12.2")
+    (version "24.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ktimer-" version ".tar.xz"))
               (sha256
                (base32
-                "0gzqn29lw1zxkhpi2l3rk784al1m8za62rhx4r8wjn772j2gink4"))))
+                "1kpz1hz0s32qc1cpbvrs9yw9w86ingc9sk03cykljsc493fhmy9m"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
@@ -1783,14 +1784,14 @@ Python, PHP, and Perl.")
 (define-public libkdegames
   (package
     (name "libkdegames")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkdegames-" version ".tar.xz"))
        (sha256
-        (base32 "0y7y883bd9f2w9dq5l9r8jsi6hrk0fddaj9w7y1g9zk4rfkmm13y"))))
+        (base32 "1r82gid4wpp70517zc0d5pbnm904c28iwd1sj1p4f3j5j2jxah6n"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
@@ -1828,7 +1829,7 @@ Python, PHP, and Perl.")
 (define-public marble-qt
   (package
     (name "marble-qt")
-    (version "24.05.2")
+    (version "24.12.3")
     (source
      (origin
        (method git-fetch)
@@ -1837,47 +1838,52 @@ Python, PHP, and Perl.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "126zm2r637zd8xg0mrqh3g0phlph440ayyzrx8hfvb03drx6y70z"))))
+        (base32 "0x8s714ar2q35fzllkbd08wqx24xyvwfd7xm3w7r3wyndri3lfm3"))))
     (build-system qt-build-system)
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
      ;; corresponding configure flag to build tests.
-     (list #:tests? #f
-           #:configure-flags
-           #~(list "-DBUILD_MARBLE_TOOLS=YES" ; file conversion tools
-                   "-DBUILD_TOUCH=YES"
-                   "-DBUILD_MARBLE_TESTS=FALSE")))
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5 qttools-5
-           osmctools))
+     (list
+      #:tests? #f
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DBUILD_MARBLE_TOOLS=YES" ;file conversion tools
+                                "-DBUILD_TOUCH=YES")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'alter-osmctools-lookup
+                     (lambda _
+                       (substitute* "tools/vectorosm-tilecreator/autotests/CMakeLists.txt"
+                         (("\\$<TARGET_FILE:osmconvert>")
+                          (which "osmconvert"))))))))
+    (native-inputs (list abseil-cpp extra-cmake-modules kdoctools osmctools
+                         qttools))
     ;; One optional dependency missing: libwlocate.
-    (inputs
-     (list gpsd
-           kcoreaddons-5
-           kcrash-5
-           ki18n-5
-           kio-5
-           knewstuff-5
-           kparts-5
-           krunner-5
-           kwallet-5
-           perl
-           phonon
-           protobuf
-           qtbase-5
-           qtdeclarative-5
-           qtlocation-5
-           qtserialport
-           qtsvg-5
-           qtwebchannel-5
-           qtwebengine-5
-           shapelib
-           shared-mime-info
-           zlib))
+    (inputs (list gpsd
+                  kcoreaddons
+                  kcrash
+                  ki18n
+                  kio
+                  knewstuff
+                  kparts
+                  krunner
+                  kwallet
+                  perl
+                  phonon
+                  protobuf
+                  qt5compat
+                  qtdeclarative
+                  qtlocation
+                  qtpositioning
+                  qtserialport
+                  qtsvg
+                  qtwebchannel
+                  qtwebengine
+                  shapelib
+                  shared-mime-info
+                  zlib))
     (home-page "https://marble.kde.org/")
     (synopsis "Virtual globe and world atlas")
-    (description "Marble is similar to a desktop globe.  At closer scale it
+    (description
+     "Marble is similar to a desktop globe.  At closer scale it
 becomes a world atlas, while OpenStreetMap takes the user to street level.  It
 supports searching for places of interest, viewing Wikipedia articles,
 creating routes by drag and drop and more.")
@@ -1886,14 +1892,14 @@ creating routes by drag and drop and more.")
 (define-public okular
   (package
     (name "okular")
-    (version "24.12.2")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1pjn2pjc4diamadnchyqjlcqlmnr82sjz7ny4yp3w2lhx9yw4v03"))))
+        (base32 "1836wiiq6frvz4ddsi1iir4dkmd9p0lc4mwd5pn5swbb03f9824d"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1973,7 +1979,7 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
 (define-public poxml
   (package
     (name "poxml")
-    (version "24.12.2")
+    (version "24.12.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -1981,7 +1987,7 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
                               "/src/poxml-" version ".tar.xz"))
               (sha256
                (base32
-                "16c3v285vry7g878amy99c8r28vcqlydd511658lysidwz8xkmig"))))
+                "0nmclngg0mrd1j2app6fggpvp93sw5p4q1nddwq8is0dabm57yx1"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))

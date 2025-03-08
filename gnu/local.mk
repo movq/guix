@@ -765,6 +765,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/nix.scm				\
   %D%/services/nfs.scm			\
   %D%/services/pam-mount.scm			\
+  %D%/services/power.scm			\
   %D%/services/science.scm			\
   %D%/services/security.scm			\
   %D%/services/security-token.scm		\
@@ -851,6 +852,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/docker.scm				\
   %D%/tests/emacs.scm				\
   %D%/tests/file-sharing.scm			\
+  %D%/tests/foreign.scm				\
   %D%/tests/ganeti.scm				\
   %D%/tests/gdm.scm				\
   %D%/tests/guix.scm				\
@@ -1007,6 +1009,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ath9k-htc-firmware-gcc.patch		\
   %D%/packages/patches/ath9k-htc-firmware-gcc-compat.patch	\
   %D%/packages/patches/atlas-gfortran-compat.patch		\
+  %D%/packages/patches/audacity-ffmpeg-fallback.patch		\
   %D%/packages/patches/audiofile-fix-datatypes-in-tests.patch	\
   %D%/packages/patches/audiofile-fix-sign-conversion.patch	\
   %D%/packages/patches/audiofile-CVE-2015-7747.patch		\
@@ -1132,7 +1135,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
-  %D%/packages/patches/connman-add-missing-libppp-compat.h.patch	\
   %D%/packages/patches/containerd-create-pid-file.patch	\
   %D%/packages/patches/converseen-hide-updates-checks.patch	\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
@@ -1242,7 +1244,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/enblend-enfuse-reproducible.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
-  %D%/packages/patches/epiphany-fix-encoding-test.patch	\
   %D%/packages/patches/ergodox-firmware-fix-json-target.patch	\
   %D%/packages/patches/ergodox-firmware-fix-numpad.patch	\
   %D%/packages/patches/ericw-tools-add-check-for-sse2-in-light.cc.patch	\
@@ -1277,7 +1278,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/fbgemm-use-system-libraries.patch	\
   %D%/packages/patches/fbreader-curl-7.62.patch		\
   %D%/packages/patches/fbreader-fix-icon.patch		\
-  %D%/packages/patches/feedbackd-use-system-gmobile.patch	\
   %D%/packages/patches/fenics-dolfin-algorithm.patch		\
   %D%/packages/patches/fenics-dolfin-demo-init.patch		\
   %D%/packages/patches/fenics-dolfin-boost.patch		\
@@ -1408,8 +1408,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/gd-fix-tests-on-i686.patch		\
   %D%/packages/patches/gd-brect-bounds.patch			\
   %D%/packages/patches/gdb-hurd64.patch				\
+  %D%/packages/patches/gdk-pixbuf-honor-GUIX_GDK_PIXBUF_MODULE_FILES.patch	\
   %D%/packages/patches/gdm-default-session.patch		\
-  %D%/packages/patches/gdm-elogind-support.patch		\
   %D%/packages/patches/gdm-remove-hardcoded-xwayland-path.patch	\
   %D%/packages/patches/gdm-wayland-session-wrapper-from-env.patch	\
   %D%/packages/patches/gdm-pass-gdk-pixbuf-loader-env.patch	\
@@ -1489,7 +1489,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.29-git-updates.patch     	\
   %D%/packages/patches/glibc-2.29-supported-locales.patch     	\
   %D%/packages/patches/glibc-supported-locales.patch     	\
-  %D%/packages/patches/gmobile-make-it-installable.patch	\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\
   %D%/packages/patches/gnash-fix-giflib-version.patch	        \
@@ -1731,6 +1730,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgda-fix-build.patch			\
   %D%/packages/patches/libgda-fix-missing-initialization.patch	\
   %D%/packages/patches/libgda-skip-postgresql-tests.patch	\
+  %D%/packages/patches/libgdata-fix-tests.patch	\
   %D%/packages/patches/libgit2-mtime-0.patch			\
   %D%/packages/patches/libgit2-uninitialized-proxy-settings.patch	\
   %D%/packages/patches/libgnome-encoding.patch			\
@@ -1758,6 +1758,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libphonenumber-reproducible-build.patch	\
   %D%/packages/patches/libqalculate-3.8.0-libcurl-ssl-fix.patch	\
   %D%/packages/patches/libquicktime-ffmpeg.patch 		\
+  %D%/packages/patches/libsecret-fix-test-paths.patch		\
   %D%/packages/patches/libsepol-versioned-docbook.patch		\
   %D%/packages/patches/libtar-CVE-2013-4420.patch 		\
   %D%/packages/patches/libtar-CVE-2021-33643-CVE-2021-33644.patch	\
@@ -1856,6 +1857,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mpg321-CVE-2019-14247.patch		\
   %D%/packages/patches/mpg321-gcc-10.patch			\
   %D%/packages/patches/modglue-fix-build.patch		\
+  %D%/packages/patches/modem-manager-fix-test-wrapper.patch	\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
   %D%/packages/patches/monero-use-system-miniupnpc.patch			\
   %D%/packages/patches/mono-1.2.6-bootstrap.patch		\
@@ -1897,7 +1899,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\
   %D%/packages/patches/ngircd-handle-zombies.patch		\
   %D%/packages/patches/network-manager-plugin-path.patch	\
-  %D%/packages/patches/network-manager-meson.patch		\
   %D%/packages/patches/newlib-getentropy.patch			\
   %D%/packages/patches/nginx-socket-cloexec.patch		\
   %D%/packages/patches/nickle-man-release-date.patch		\
@@ -2139,8 +2140,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-xmp-toolkit-add-missing-error-codes.patch	\
   %D%/packages/patches/qemu-7.2.4-build-info-manual.patch	\
   %D%/packages/patches/qemu-build-info-manual.patch		\
-  %D%/packages/patches/qemu-disable-aarch64-migration-test.patch	\
   %D%/packages/patches/qemu-disable-bios-tables-test.patch	\
+  %D%/packages/patches/qemu-disable-migration-test.patch	\
   %D%/packages/patches/qemu-glibc-2.27.patch 			\
   %D%/packages/patches/qemu-glibc-2.30.patch 			\
   %D%/packages/patches/qemu-fix-agent-paths.patch 		\
@@ -2299,6 +2300,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/telegram-desktop-unbundle-cppgir.patch   \
   %D%/packages/patches/telegram-desktop-unbundle-gsl.patch      \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
+  %D%/packages/patches/telepathy-glib-fix-test.patch	\
   %D%/packages/patches/teuchos-remove-duplicate-using.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\
@@ -2384,7 +2386,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/vinagre-newer-freerdp.patch             \
   %D%/packages/patches/vinagre-newer-rdp-parameters.patch      \
   %D%/packages/patches/virtuoso-ose-remove-pre-built-jar-files.patch	\
-  %D%/packages/patches/virt-manager-fix-gtk-cursor-theme-backtace.patch	\
   %D%/packages/patches/vsearch-unbundle-cityhash.patch		\
   %D%/packages/patches/vte-CVE-2012-2738-pt1.patch			\
   %D%/packages/patches/vte-CVE-2012-2738-pt2.patch			\
@@ -2413,6 +2414,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wpa-supplicant-dbus-group-policy.patch		\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-disable-portal-tests.patch\
+  %D%/packages/patches/xdg-desktop-portal-disable-configuration-search-exit.patch\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
   %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\
@@ -2457,6 +2459,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/zig-0.12-use-system-paths.patch		\
   %D%/packages/patches/zig-0.13-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.13-fix-runpath.patch		\
+  %D%/packages/patches/zig-0.14-fix-runpath.patch		\
+  %D%/packages/patches/zig-0.14-use-baseline-cpu-by-default.patch	\
+  %D%/packages/patches/zig-0.14-use-system-paths.patch		\
   %D%/packages/patches/zsh-egrep-failing-test.patch		\
   %D%/packages/patches/zuo-bin-sh.patch
 

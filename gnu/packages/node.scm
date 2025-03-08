@@ -82,6 +82,11 @@
                     (("TRUE") "true")
                     (("FALSE") "false"))
 
+                  ;; Patch for compatibility with ICU 75 and newer, which
+                  ;; adds non-breaking narrow spaces.
+                  (substitute* "test/parallel/test-intl.js"
+                    (("12:00:00 AM") "12:00:00 AM"))
+
                   ;; Fix process.versions.XXXX assumption of always having
                   ;; a version string of major.minor.patch and not major.minor.
                   (substitute* "test/parallel/test-process-versions.js"
@@ -337,6 +342,7 @@ for easily building fast, scalable network applications.  Node.js uses an
 event-driven, non-blocking I/O model that makes it lightweight and efficient,
 perfect for data-intensive real-time applications that run across distributed
 devices.")
+    (supported-systems (delete "riscv64-linux" %supported-systems))
     (home-page "https://nodejs.org/")
     (license license:expat)
     (properties '((max-silent-time . 7200)   ;2h, needed on ARM
@@ -960,7 +966,7 @@ fi"
      (list ;; Runtime dependencies for binaries used as a bootstrap.
            c-ares-for-node-lts
            brotli
-           icu4c-73
+           icu4c
            libuv-for-node-lts
            `(,nghttp2 "lib")
            openssl
@@ -976,7 +982,7 @@ fi"
      (list bash-minimal
            coreutils
            c-ares-for-node-lts
-           icu4c-73
+           icu4c
            libuv-for-node-lts
            llhttp-bootstrap
            brotli
@@ -985,6 +991,7 @@ fi"
            `(,nghttp2 "lib")
            openssl
            zlib))
+    (supported-systems %supported-systems)
     (properties (alist-delete 'hidden? (package-properties node-bootstrap)))))
 
 (define-public node node-lts)

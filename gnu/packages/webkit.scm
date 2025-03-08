@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Abhishek Cherath <abhi@quic.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,7 +75,7 @@
 (define-public libwpe
   (package
     (name "libwpe")
-    (version "1.12.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
@@ -82,7 +83,7 @@
         (string-append "https://wpewebkit.org/releases/libwpe-"
                        version ".tar.xz"))
        (sha256
-        (base32 "13618imck69w7fbmljlh62j4gnlspb9zfqzv9hlkck3bi8icmvp8"))))
+        (base32 "0ajb6c7z0lzwgp23pwq7vqly7lmnlbnwrivd906pj1nhng3a7wy7"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
@@ -102,14 +103,14 @@ the WPE-flavored port of WebKit.")
 (define-public wpebackend-fdo
   (package
     (name "wpebackend-fdo")
-    (version "1.12.0")
+    (version "1.14.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wpewebkit.org/releases/"
                                   "wpebackend-fdo-" version ".tar.xz"))
               (sha256
                (base32
-                "1b3l02dns1yxw3rq18cv00qan4hp95mxw5b3ssc0fh93ap0wjfb2"))))
+                "0v6wb60m1f628b78dlr2j03xz14r1gdz70iyvf8h51asb511h4hh"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
@@ -127,13 +128,13 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.44.1")
+    (version "2.46.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0qamkk9db8m6x4qv5y10lihc18yzgrgbn6ldqw00ckghn1ci8ns2"))
+               (base32 "0ay3cq3hbm2l7h7sgc5jbi8v5yhbbgzdvrkcnyxaj2r2jgk1vczj"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -144,7 +145,7 @@ engine that uses Wayland for graphics output.")
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
-    (outputs '("out" "doc" "debug"))
+    (outputs '("out" "doc"))
     (arguments
      (list
       ;; The release archive doesn't include the resources/sources needed to
@@ -191,7 +192,12 @@ engine that uses Wayland for graphics output.")
               (let ((store-directory (%store-directory)))
                 (substitute*
                     "Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp"
-                  (("@storedir@") store-directory)))))
+                  (("@storedir@") store-directory)
+                  ;; This silences GTK locale errors.
+                  ;; Unfortunately, simply bind mounting /run/current-system
+                  ;; does not work since it leads to weird issues
+                  ;; with symlinks that confuse bubblewrap.
+                  (("@localedir@") "/run/current-system/locale")))))
           (add-after 'unpack 'do-not-disable-new-dtags
             ;; Ensure the linker uses new dynamic tags as this is what Guix
             ;; uses and validates in the validate-runpath phase.
@@ -270,6 +276,7 @@ engine that uses Wayland for graphics output.")
            mesa
            openjpeg
            sqlite
+           sysprof
            woff2
            wpebackend-fdo
            xdg-dbus-proxy))
@@ -322,18 +329,20 @@ propagated by default) such as @code{gst-plugins-good} and
   (package
     (inherit webkitgtk)
     (name "wpewebkit")
-    (version "2.44.1")
+    (version "2.46.6")
     (source (origin
               (inherit (package-source webkitgtk))
               (uri (string-append "https://wpewebkit.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "16y1gdz38d4b99b8zrvxy0nbrc70ih02ngi8090x7148rx7vz7rc"))))
+               (base32 "0qk29aifi5iaylm594dvb85ihb1ad1ya473mgn7mgc67p53q93rg"))))
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)
         #~(cons "-DPORT=WPE"
                 (delete "-DPORT=GTK" #$flags)))))
+    (inputs (modify-inputs (package-inputs webkitgtk)
+              (prepend libinput)))
     (synopsis "WebKit port optimized for embedded devices")
     (description "WPE WebKit allows embedders to create simple and performant
 systems based on Web platform technologies.  It is designed with hardware

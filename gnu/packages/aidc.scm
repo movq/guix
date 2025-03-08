@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,8 +29,10 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -43,7 +46,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages video)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system glib-or-gtk))
 
 (define-public zxing-cpp
   ;; Use the master branch as it includes unreleased build system improvements
@@ -171,10 +175,11 @@ barcodes of the modern ECC200 variety.  libdmtx is a shared library, allowing
 C/C++ programs to use its capabilities without restrictions or overhead.")
     (license license:bsd-3)))
 
+;; XXX: qt variant utils are broken: zbarcam-qt fails with segmentation fault.
 (define-public zbar
   (package
     (name "zbar")
-    (version "0.23.90")
+    (version "0.23.92")
     (source
      (origin
        (method git-fetch)
@@ -184,35 +189,36 @@ C/C++ programs to use its capabilities without restrictions or overhead.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0rf3i7lx0fqzxsngird6l4d4dnl612nr32rm8sib699qqx67px8n"))))
-    (build-system gnu-build-system)
+        (base32 "0k3g0ql2m4dnflppp9r3k804d927g7zslczblzcrbvhp02g6n5an"))))
+    (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:configure-flags (list "--with-gtk=auto"
+     (list
+      #:configure-flags '(list "--disable-static"
+                               "--with-gtk=auto"
                                "--with-python=auto"
                                (string-append "--with-dbusconfdir="
                                               (assoc-ref %outputs "out")
                                               "/etc"))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)))
+     (list autoconf
+           automake
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           libtool
+           patchelf
+           pkg-config
+           python-wrapper))
     (inputs
-     `(("dbus" ,dbus)
-       ("imagemagick" ,imagemagick)
-       ("libjpeg" ,libjpeg-turbo)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("qtx11extras" ,qtx11extras)
-       ("v4l-utils" ,v4l-utils)))
+     (list dbus
+           imagemagick
+           libjpeg-turbo
+           perl
+           python
+           v4l-utils-minimal))
     (propagated-inputs
      ;; These are in 'requires' field of .pc files.
-     (list glib gtk+ qtbase-5))
+     (list glib gtk+))
     (synopsis "Bar code reader")
     (description
      "ZBar can read barcodes from various sources, such as video streams,
@@ -224,6 +230,20 @@ For application developers, language bindings are included for C, C++ and
 Python as well as GUI widgets for GTK and Qt.")
     (home-page "https://github.com/mchehab/zbar")
     (license license:lgpl2.1+)))
+
+(define-public zbar-minimal
+  (package/inherit zbar
+    (name "zbar-minimal")
+    (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments zbar)
+       ((#:configure-flags flags)
+        #~(cons* "--with-gtk=no" (delete "--with-gtk=auto" #$flags)))
+       ((#:disallowed-references _ '())
+        (list qtbase gtk+))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs zbar)
+       (delete "gtk+")))))
 
 (define-public qrcodegen-cpp
   (package

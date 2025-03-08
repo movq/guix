@@ -9,7 +9,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 Patrick Hetu <patrick.hetu@auf.org>
@@ -78,6 +78,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -170,7 +171,7 @@ such as mate-panel and xfce4-panel.")
 (define cairo
   (package
     (name "cairo")
-    (version "1.18.0")
+    (version "1.18.2")
     (source
      (origin
        (method url-fetch)
@@ -178,7 +179,7 @@ such as mate-panel and xfce4-panel.")
         (string-append "https://cairographics.org/releases/cairo-"
                        version ".tar.xz"))
        (sha256
-        (base32 "0r0by563s75xyzz0d0j1nmjqmdrk2x9agk7r57p3v8vqp4v0ffi4"))))
+        (base32 "0nnli5cghygbl9bvlbjls7nspnrrzx1y1pbd7p649s154js9nax6"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ; see http://lists.gnu.org/archive/html/bug-guix/2013-06/msg00085.html
@@ -291,7 +292,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
               (sha256
                (base32
                 "0izq2lpqxrf1l755nxrxkkiarywkx5j43asznankxplbxgm0358h"))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (outputs '("out"
                "bin"))                  ;160K, only hb-view depend on cairo
     (inputs
@@ -309,9 +310,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                    which)))
     (arguments
      (list #:configure-flags
-           #~(list "--with-graphite2"
-                   "--with-gobject"
-                   (string-append "--bindir=" #$output:bin "/bin"))))
+           #~(list "-Dgraphite2=enabled")))
     (synopsis "OpenType text shaping engine")
     (description
      "HarfBuzz is an OpenType text shaping engine.")
@@ -385,7 +384,7 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.50.14")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
@@ -394,7 +393,7 @@ applications.")
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
-                "1s41sprfgkc944fva36zjmkmdpv8hn1bdpyg55xc4663pw2z4rqx"))))
+                "1n0y5l5wfq2a86dimraazvz1v9dvqdjkmpqgzkbk9rqy09syv7la"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
@@ -618,7 +617,7 @@ printing and other features typical of a source code editor.")
 (define-public gtksourceview
   (package
     (name "gtksourceview")
-    (version "5.8.0")
+    (version "5.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gtksourceview/"
@@ -626,7 +625,7 @@ printing and other features typical of a source code editor.")
                                   "gtksourceview-" version ".tar.xz"))
               (sha256
                (base32
-                "0cw9h4aa84a48b3kd3rv0bb2mk7q1vz9hwkppxpqh8gg1p1d838i"))))
+                "07rcnhwqyiqs9icld3965g41wd3n9a808y7agjpasnjwk2njmj44"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
@@ -680,7 +679,7 @@ highlighting and other features typical of a source code editor.")
 (define-public gtksourceview-4
   (package
     (inherit gtksourceview)
-    (version "4.8.3")
+    (version "4.8.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gtksourceview/"
@@ -688,7 +687,7 @@ highlighting and other features typical of a source code editor.")
                                   "gtksourceview-" version ".tar.xz"))
               (sha256
                (base32
-                "10n61sa0g447nx73yapb00z57shp48gfvk1lv1s29ji0cd81j063"))))
+                "0zd84229bddvp8zpnn86q34i16mhf9x3pzry795gilc3na7x3jby"))))
     (native-inputs
      (modify-inputs (package-native-inputs gtksourceview)
        (replace "gobject-introspection" gobject-introspection)))
@@ -719,7 +718,7 @@ highlighting and other features typical of a source code editor.")
 (define-public gdk-pixbuf
   (package
     (name "gdk-pixbuf")
-    (version "2.42.10")
+    (version "2.42.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -727,7 +726,10 @@ highlighting and other features typical of a source code editor.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jz4kziz5lirnjjvbspbqzsigk8vnqknng1fga89d81vs5snr6zf"))))
+                "1iz392vrlrnb92hrak697bgndsbkrcxhqxilxn6f99xr8ls5nl5r"))
+              (patches
+               (search-patches
+                "gdk-pixbuf-honor-GUIX_GDK_PIXBUF_MODULE_FILES.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -735,7 +737,10 @@ highlighting and other features typical of a source code editor.")
        #:configure-flags '("-Dinstalled_tests=false"
                            ,@(if (%current-target-system)
                                  '()
-                                 '("-Dgtk_doc=true")))
+                                 '("-Dgtk_doc=true"))
+                           ;; GTK+ 3 needs the XPM loader, see
+                           ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7143>.
+                           "-Dothers=enabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-thumbnailer
@@ -798,9 +803,8 @@ highlighting and other features typical of a source code editor.")
      ;; This file is produced by the gdk-pixbuf-loaders-cache-file
      ;; profile hook.
      (list (search-path-specification
-            (variable "GDK_PIXBUF_MODULE_FILE")
+            (variable "GUIX_GDK_PIXBUF_MODULE_FILES")
             (files (list %gdk-pixbuf-loaders-cache-file))
-            (separator #f)              ;single valued
             (file-type 'regular))))
     (synopsis "Image loading library")
     (description "GdkPixbuf is a library that loads image data in various
@@ -842,7 +846,7 @@ ever use this library.")
   (hidden-package
    (package
      (name "at-spi2-core")
-     (version "2.48.4")
+     (version "2.52.0")
      (source (origin
                (method url-fetch)
                (uri (string-append "mirror://gnome/sources/" name "/"
@@ -850,7 +854,7 @@ ever use this library.")
                                    name "-" version ".tar.xz"))
                (sha256
                 (base32
-                 "05d5azffbglnvqzwk8ngg61jksm3brrwhmfpymsrccz8j8lv3v19"))))
+                 "1azmbzik0gl2s03c9lq3dff3h1iql1zvlwn28yhizl68421zrhqa"))))
      (build-system meson-build-system)
      (arguments
       (list
@@ -1044,7 +1048,7 @@ application suites.")
   (package
     (inherit gtk+-2)
     (name "gtk+")
-    (version "3.24.41")
+    (version "3.24.43")
     (source
      (origin
        (method url-fetch)
@@ -1053,7 +1057,7 @@ application suites.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1ymna7b8p668wxbca1pgjqpw02ya4p86yaa9pja7l27kg9463nj7"))
+         "1izky8dxaxp4bg5nii4n58dgpkw79mvmvbkldf04n0qmhmjg013y"))
        (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     ;; There is no "doc" output, because adding gtk-doc here would introduce a
@@ -1165,7 +1169,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.14.5")
+    (version "4.16.1")
     (source
      (origin
        (method url-fetch)
@@ -1173,7 +1177,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0kg286za53qhl6ngw4rrvbpm3q04g30qf2q77sck7c86y2wz4ism"))
+        (base32 "0p11k5afy3g9d6p402zrn9izkypwzlb51y9qanibzyc1sjmiwslj"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))
        (modules '((guix build utils)))))
@@ -1190,11 +1194,7 @@ application suites.")
          "-Dcloudproviders=enabled"     ;for cloud-providers support
          "-Dtracker=enabled"            ;for filechooser search support
          "-Dcolord=enabled"             ;for color printing support
-         #$@(if (%current-target-system)
-                ;; If true, gtkdoc-scangobj will try to execute a
-                ;; cross-compiled binary.
-                '("-Dgtk_doc=false")
-                '("-Dgtk_doc=true"))
+         "-Ddocumentation=true"
          "-Dman-pages=true")
       #:test-options #~(list "--setup=x11" ;defaults to wayland
                              ;; Use the same test options as upstream uses for
@@ -1204,6 +1204,7 @@ application suites.")
                              "--no-suite=flaky"
                              "--no-suite=headless" ; requires mutter…
                              "--no-suite=gsk-compare-broadway"
+                             "--no-suite=needs-udmabuf"
                              ;; These seem to fail on aarch64, and Debian has
                              ;; also disabled these, see:
                              ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
@@ -1243,29 +1244,14 @@ application suites.")
                 (("[ \t]*'empty-text.node',") "")
                 (("[ \t]*'testswitch.node',") "")
                 (("[ \t]*'widgetfactory.node',") "")
-                ;; The unaligned-offscreen test fails for unknown reasons, also
-                ;; on different distributions (see:
-                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
-                (("  'unaligned-offscreen',") "")
                 ;; This test, 'gtk:tools / validate', started failing for
                 ;; unknown reasons after updating mesa to 23.3.1 and xorgproto
                 ;; to 2023.2.
                 ((" 'validate',") "")
-                ;; XXX: These test failures come newly from 4.14.
-                ;; Not all of them are reported upstream yet, but the text nodes
-                ;; are mentioned in
-                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/6647>.
-                (("'glyph-subpixel-position',") "")
-                (("'subpixel-positioning',") "")
-                (("'subpixel-positioning-hidpi-nogl-nocairo',") "")
-                (("'text.*\\.node',") "")
-                (("'text-mixed-color-colrv1',") ""))
+                ;; XXX: Figure out why this fails and report upstream.
+                ((".*'memorytexture',.*") ""))
               (substitute* "testsuite/reftests/meson.build"
-                (("[ \t]*'label-wrap-justify.ui',") "")
-                ;; The inscription-markup.ui fails due to /etc/machine-id
-                ;; related warnings (see:
-                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/5169).
-                (("[ \t]*'inscription-markup.ui',") ""))
+                (("[ \t]*'label-wrap-justify.ui',") ""))
               ;; These tests fail on an Apple M1 (aarch64) with the following errors:
               ;; - MESA: error: ZINK: failed to choose pdev
               ;; - libEGL warning: egl: failed to create dri2 screen
@@ -1292,7 +1278,9 @@ application suites.")
                           (("'outset_shadow_rounded_top',") "")
                           (("'outset_shadow_simple',") "")
                           (("'shadow-offset-clip',") "")
-                          (("'shrink-rounded-border',") "")))
+                          (("'shrink-rounded-border',") ""))
+                        (substitute* "testsuite/css/parser/meson.build"
+                          ((".*color-mix.*") "")))
                      #~())
               ;; XXX: These failures appear specific to i686 – investigate them.
               #$@(if (target-x86-32?)
@@ -1767,14 +1755,14 @@ guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
 (define-public cairomm
   (package
     (name "cairomm")
-    (version "1.16.2")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.cairographics.org/releases/"
                                   "cairomm-" version ".tar.xz"))
               (sha256
                (base32
-                "0gy1gn79gwqzrf1d7f7rf25yy2dr7xginkg3al7jpnkxm6cbyqva"))))
+                "1yrwy14k1lh74kmr41pnms6zr1c9z8md4xkji2mfia1y9qwma4mq"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1832,7 +1820,7 @@ library.")
 (define-public pangomm
   (package
     (name "pangomm")
-    (version "2.50.1")
+    (version "2.54.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1840,7 +1828,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "054jglmnbig14fs99qqi5y174z9j90r6dprpyszw42742cs95jfc"))))
+                "1kvs9vbqikwlcfm7v8hhzc48xjpamfsq5skpabs1lyn4nz8iynsa"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1894,7 +1882,7 @@ text rendering library.")
 (define-public atkmm
   (package
     (name "atkmm")
-    (version "2.36.2")
+    (version "2.36.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1902,7 +1890,7 @@ text rendering library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0yg0v8f0xms2cfj1r9q6yrl4757wrivpb4q56rbmx626yycxsqkg"))))
+                "0x2rdjmgmxza83lznss69nz7z6ny1cbh1ih2fbdhmpn4l3m69hkf"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1962,7 +1950,7 @@ text rendering library.")
 (define-public gtkmm
   (package
     (name "gtkmm")
-    (version "4.6.1")
+    (version "4.14.0")
     (source
      (origin
        (method url-fetch)
@@ -1971,7 +1959,7 @@ text rendering library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1q6iycd7jfbn6rp4sq6r7ndm96dc21inq8mq1d9xsky6kv5gwphd"))))
+        (base32 "1npcf6i07riw20rg5x6rnqi0jlh7cwdvsvjqd7fa6k3l9d2a0l4k"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -2347,7 +2335,7 @@ information.")
 (define-public gtk-doc
   (package
     (name "gtk-doc")
-    (version "1.33.2")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2355,7 +2343,7 @@ information.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hxza8qp52lrq7s1vbilz2vh4170cail560zi8khl0zb42d706yc"))
+                "0746lwxgybc5ss3hzdd0crjjghk0ck0x9jbmz73iig405arp42xj"))
               (patches
                (search-patches "gtk-doc-respect-xml-catalog.patch"))))
     (build-system meson-build-system)
@@ -2538,7 +2526,7 @@ Parcellite and adds bugfixes and features.")
 (define-public graphene
   (package
     (name "graphene")
-    (version "1.10.6")
+    (version "1.10.8")
     (source
      (origin
        (method git-fetch)
@@ -2548,7 +2536,7 @@ Parcellite and adds bugfixes and features.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g2jjy6xizzjxlp0dr81h1f5l16dzcnhznhj6jvhpdjqcvgp98xr"))))
+        (base32 "18a0icpr003y0bh1kghgh2nqrm8a8s5lak8lbnc9wdfkc760vlw8"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
@@ -2776,7 +2764,8 @@ printed to standard output.")
                 "--localstatedir=/var"
                 ;; The shebang of the generated test files should be patched
                 ;; before enabling tests.
-                "--disable-tests")
+                "--disable-tests"
+                "--disable-dumper")
         #:make-flags
         #~(list (string-append "typelibdir=" #$output "/lib/girepository-1.0"))
         #:phases
@@ -2808,8 +2797,7 @@ printed to standard output.")
                 (setenv "HAVE_VALGRIND_FALSE" "#"))))))
       (inputs
        (list glib
-             gtk+
-             gtk+-2))
+             gtk+))
       (native-inputs
        (list autoconf
              automake
@@ -3065,7 +3053,7 @@ Unix desktop environment under X11 as well as Wayland.")
 (define-public webp-pixbuf-loader
   (package
     (name "webp-pixbuf-loader")
-    (version "0.2.4")
+    (version "0.2.7")
     (source
      (origin
        (method git-fetch)
@@ -3074,7 +3062,7 @@ Unix desktop environment under X11 as well as Wayland.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dsdkw0i8fg3051653zmz68s068a2w23d708av64afzvav1xvhv0"))))
+        (base32 "0cp51qv8mjjhs3x40d1p31c5f2ilajs4m15da5z5l240bmwk1490"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3108,7 +3096,7 @@ Unix desktop environment under X11 as well as Wayland.")
 (define-public libpanel
   (package
     (name "libpanel")
-    (version "1.2.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -3117,7 +3105,7 @@ Unix desktop environment under X11 as well as Wayland.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wal073anl6iviyljyr8pw0m7av4ik6azpmrwzxw4snp95ib27aq"))))
+        (base32 "09lgzjydnahi14xn5rchb91d6m3idzgb68xm3lklwnkdda7dz0w8"))))
     (build-system meson-build-system)
     (arguments
      (list

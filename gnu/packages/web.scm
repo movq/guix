@@ -62,6 +62,7 @@
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
@@ -346,6 +347,36 @@ and its related documentation.")
                (sha256
                 (base32
                  "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
+
+(define-public leafnode
+  (package
+    (name "leafnode")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/leafnode/leafnode/"
+                                  version "/leafnode-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pkryzndqaxs1ym7gs77r6x8mmzpnm5x7n2ph8ga45zn45rwwrxl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   (substitute* "Makefile.am"
+                     (("/bin/sh") (which "sh"))))))))
+    (native-inputs (list autoconf automake))
+    (inputs (list pcre2))
+    (home-page "https://sourceforge.net/projects/leafnode/")
+    (synopsis "NNTP news proxy")
+    (description
+     "Leafnode is a caching Usenet news proxy that enables online newsreaders
+to read news off-line and aggregates news from various NNTP servers into
+one.")
+    ;; Most of the code is under Expat license, with some GPL, LGPL exceptions.
+    (license license:gpl2+)))
 
 (define-public miniflux
   (package
@@ -2037,7 +2068,10 @@ UTS#46.")
      (list
       #:import-path "github.com/evanw/esbuild/cmd/esbuild"
       #:unpack-path "github.com/evanw/esbuild"
-      #:test-flags #~(list #$(if (target-64bit?) "-race" "-short"))
+      #:test-flags #~(list #$(if (and (target-64bit?)
+                                      ;; The -race option is not supported on riscv64
+                                      (not (target-riscv64?)))
+                                 "-race" "-short"))
       ;; Test subdirectories are compiled from #:import-path.
       #:test-subdirs #~(list "../../internal/..." "../../pkg/..." )))
     (inputs
@@ -5415,7 +5449,7 @@ Cloud.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-json-4
              guile-email
@@ -5755,6 +5789,39 @@ fast and flexible way of exploring HTML from the terminal.")
 (define-public uhttpmock
   (package
     (name "uhttpmock")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://tecnocode.co.uk/downloads/uhttpmock/"
+                           "uhttpmock-" version ".tar.xz"))
+       (sha256
+        (base32 "1gw4g3m99j00rjd3flbxigv3qgbkafnkhf77c76hv7yy58dc1vgy"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list gobject-introspection
+           ;; For check phase.
+           glib-networking gsettings-desktop-schemas pkg-config))
+    (inputs (list libsoup))
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:configure-flags #~(list "-Dgtk_doc=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home-for-tests
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (home-page "https://gitlab.com/groups/uhttpmock")
+    (synopsis "Library for mocking web service APIs which use HTTP or HTTPS")
+    (description
+     "Uhttpmock is a project for mocking web service APIs which use HTTP or
+HTTPS.  It provides a library, libuhttpmock, which implements recording and
+playback of HTTP request/response traces.")
+    (license license:lgpl2.1+)))
+
+(define-public uhttpmock-with-libsoup2
+  (package
+    (inherit uhttpmock)
     (version "0.5.3")
     (source
      (origin
@@ -5764,25 +5831,13 @@ fast and flexible way of exploring HTML from the terminal.")
        (sha256
         (base32 "0bqizz69hxk8rn4z57asz1d45vizl1rj6i5k3rzxn2x3qcik514h"))))
     (build-system glib-or-gtk-build-system)
-    (native-inputs
-     (list gobject-introspection
-           ;; For check phase.
-           glib-networking gsettings-desktop-schemas pkg-config))
-    (inputs
-     `(("libsoup" ,libsoup-minimal-2)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home-for-tests
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
-    (home-page "https://gitlab.com/groups/uhttpmock")
-    (synopsis "Library for mocking web service APIs which use HTTP or HTTPS")
-    (description
-     "Uhttpmock is a project for mocking web service APIs which use HTTP or
-HTTPS.  It provides a library, libuhttpmock, which implements recording and
-playback of HTTP request/response traces.")
-    (license license:lgpl2.1+)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home-for-tests
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (inputs (list libsoup-minimal-2))))
 
 (define-public woof
   (package
@@ -8677,7 +8732,7 @@ compressed JSON header blocks.
 (define-public nghttp3
   (package
     (name "nghttp3")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
@@ -8686,7 +8741,7 @@ compressed JSON header blocks.
                            "nghttp3-" version ".tar.gz"))
        (sha256
         (base32
-         "09iv9n47kr7nfc4wmbv2nadv19sixf0f3z7w5pr6cfr64gn4d9br"))))
+         "0gpnqibb1ndqq7yacl2f9d7iznfbzws71rza12kaf72shqvyn1zv"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

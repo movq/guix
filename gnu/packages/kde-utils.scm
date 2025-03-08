@@ -60,14 +60,14 @@
 (define-public ark
   (package
     (name "ark")
-    (version "24.12.1")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ark-" version ".tar.xz"))
               (sha256
                (base32
-                "1f96k7jisjdvpg8wjrm1pyz6p6zkqcx70054cg3sd0244skrzrna"))
+                "181w855vvg08xcd7d0nmnvcdnjhp0nix23d6g5gmx9agb6ppmbdd"))
               ;; The libarchive package in Guix does not support
               ;; xar; disable related tests.
               (patches (search-patches "ark-skip-xar-test.patch"))))
@@ -322,7 +322,7 @@ your computer.")
 (define-public isoimagewriter
   (package
     (name "isoimagewriter")
-    (version "24.12.1")
+    (version "24.12.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -331,7 +331,7 @@ your computer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gjgmrkwn06w18vb9h76w6dln93jsh1c3mc7v71d99jzcc5hc9i4"))))
+                "0vrxki3iixa35fimsy20wv3pipp3xnkd6i13vdb4hhv8zzip320b"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kauth
@@ -454,14 +454,14 @@ Kate's features include:
 (define-public kbackup
   (package
     (name "kbackup")
-    (version "24.05.2")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kbackup-" version ".tar.xz"))
               (sha256
                (base32
-                "0s75il0hxs95sdmj3jll8rdl1n8y86qgwww15idda18yww8d0bwm"))))
+                "1c0sbplld5rqjn9g72bg98biv7r2s8zid8b9rbh2f1pxc6d6dzf5"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kguiaddons
@@ -493,14 +493,14 @@ drive, USB stick, etc
 (define-public kcalc
   (package
     (name "kcalc")
-    (version "24.05.2")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kcalc-" version ".tar.xz"))
               (sha256
                (base32
-                "0p1m3yv52dc2mzalk19l3zpdwpwi5jg0fib5lgb1ln71kwb07y8n"))))
+                "1ykpnq45f1s1fchb2zw9jmlac12j2qbmvgzgw44zplbffb138y0f"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules kdoctools))
@@ -635,19 +635,20 @@ with support for QR scanning.")
 (define-public kfind
   (package
     (name "kfind")
-    (version "24.05.2")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kfind-" version ".tar.xz"))
               (sha256
                (base32
-                "18r0fkv5dnl1l23c94igf09g71z3pk571hh1ff4df9ixajyvw43b"))))
+                "03w4119375pcjaqmnza3iz5ffggldhs3nna5m10zywm36m771kzm"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list karchive
                   kcoreaddons
+                  kcrash
                   kfilemetadata
                   kxmlgui
                   ki18n

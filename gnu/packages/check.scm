@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2018-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2018-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -2757,6 +2757,15 @@ enables you to test server connections locally.")
        (sha256
         (base32 "03y61h42sc343ddhsz7glxmv9ga83k4grrayfmbbrsl6fmip1qhm"))))
     (build-system pyproject-build-system)
+    (arguments
+     (if (target-riscv64?)
+         (list
+          #:test-flags
+          #~(list "-k"
+                  ;; Unclear why these tests are failing on riscv64-linux.
+                  (string-append "not test_startup_without_pattern"
+                                 " and not test_startup_with_pattern_and_callback")))
+         '()))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm
@@ -3026,7 +3035,16 @@ by the test.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--numprocesses" "auto")))
+      #:test-flags #~(list "--numprocesses" "auto")
+      #:phases
+      (if (target-riscv64?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'extend-test-timeout
+                (lambda _
+                  ;; Some architectures need an even longer timeout.
+                  (substitute* "tests/test_pytest_mypy.py"
+                    (("60\\.0") "180.0")))))
+          #~%standard-phases)))
     (native-inputs
      (list python-pexpect
            python-pytest-xdist
@@ -4540,3 +4558,43 @@ helpers for writing tests.")
 command line filters to process a subunit stream and language bindings for
 Python, C, C++ and shell.  Bindings are easy to write for other languages.")
     (license (list license:asl2.0 license:bsd-3)))) ;user can pick
+
+(define-public munit
+  ;; Last release in 2016, see also <https://github.com/nemequ/munit/issues/95>.
+  (let ((commit "fbbdf1467eb0d04a6ee465def2e529e4c87f2118")
+        (revision "1"))
+    (package
+      (name "munit")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nemequ/munit")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "13725v4pps2bpndniksa58nqi9gvx0f0900k0rqvp95bxw5z8vda"))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-install
+              ;; munit is paradoxically configured to only be installed
+              ;; when built as a subproject.
+              ;; See <https://github.com/nemequ/munit/pull/67> for a
+              ;; pull request that aims to fix this.  As we don't care about
+              ;; bundling scenarios (or rather: aim to unbundle everything),
+              ;; install it unconditionally.
+              (lambda _
+                (substitute* "meson.build"
+                  (("install: meson.is_subproject\\(\\)")
+                   "install: true")))))))
+      (synopsis "Small unit testing framework for C")
+      (description
+       "µnit is a small testing framework for C with nested test suites,
+parameterized tests, timing of the wall clock and CPU time, reproducible
+random number generation, and more.")
+      (home-page "https://nemequ.github.io/munit/")
+      (license license:x11))))

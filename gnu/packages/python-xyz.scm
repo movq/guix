@@ -990,7 +990,7 @@ applications in mind and the idea to make logging fun.")
 (define-public python-ubelt
   (package
     (name "python-ubelt")
-    (version "1.0.1")
+    (version "1.3.6")
     (source
      (origin
        (method git-fetch)
@@ -999,34 +999,31 @@ applications in mind and the idea to make logging fun.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hac9nqqvqfbca2s4g0mp1fnj0ah60bg9fb8234ibna3jww8qs33"))))
-    (build-system python-build-system)
+        (base32 "1v2kf9lbdfaf9nppdq45rfanz4bdd2v6x59iajcznwgc4jmhj2na"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" "/tmp") ;else the test suite hangs
-                     (invoke "pytest" "-vv" "-k"
-                             (string-append
-                              ;; The builder user home doesn't match HOME,
-                              ;; which causes this test to fail.
-                              "not userhome "
-                              ;; This one pointlessly tries
-                              ;; locating various binaries on
-                              ;; the path.
-                              "and not find_exe"))))))))
-    (propagated-inputs (list python-ordered-set))
+     (list
+      ;; The builder user home doesn't match HOME, which causes this test to
+      ;; fail.
+      #:test-flags #~(list "-k" "not userhome")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))))) ;else the test suite hangs
     (native-inputs
      (list python-pytest
            python-requests
+           python-setuptools
+           python-wheel
            python-xdoctest))
+    (propagated-inputs
+     (list python-ordered-set))
     (home-page "https://github.com/Erotemic/ubelt")
     (synopsis "Python library for hashing, caching, timing and more")
-    (description "Ubelt is a small library of simple functions that extend the
-Python standard library.  It includes an @acronym{API, Application Programming
+    (description
+     "Ubelt is a small library of simple functions that extend the Python
+standard library.  It includes an @acronym{API, Application Programming
 Interface} to simplify common problems such as caching, timing, computing
 progress, among other things.")
     (license license:asl2.0)))
@@ -2626,7 +2623,7 @@ configuration file.")
 (define-public python-pytooling
   (package
     (name "python-pytooling")
-    (version "8.1.0")
+    (version "8.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2635,7 +2632,7 @@ configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07mca75d2zd6xl0isf0vrcblsc2niyqi7941dgjpiafnsgiygfzf"))))
+        (base32 "1w4am69n07dhim6ddxm9k30hr5zjbxd84rgqp54mppp8fmh7iyq9"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ; requires recent versions of mypy and lxml
@@ -5360,14 +5357,14 @@ Prefix) - Encode and decode data structures.")
 (define-public python-pyicu
   (package
     (name "python-pyicu")
-    (version "2.9")
+    (version "2.14")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "PyICU" version))
       (sha256
        (base32
-        "0y2qhh443vydi3y7kmhyb6kz3z6d7qq7ld0sg88mfqalcp7dca9w"))))
+        "0ci1l21b79xka80lf0bgmahfskqa8mw6k714fzalwmawpn9fpixc"))))
     (build-system python-build-system)
     (inputs
      (list icu4c))
@@ -5855,20 +5852,38 @@ any Python package.")
      "Extras is a set of extensions to the Python standard library.")
     (license license:expat)))
 
+(define-public python-types-colorama
+  (package
+    (name "python-types-colorama")
+    (version "0.4.15.20240311")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-colorama" version))
+       (sha256
+        (base32 "0ylwp6r6k69icsd96zbsan7i1x0rwj427lv5jpxi8avxs6c7z3m2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for colorama")
+    (description "This package provides typing stubs for colorama.")
+    (license license:asl2.0)))
+
 (define-public python-milc
   (package
     (name "python-milc")
-    (version "1.6.8")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "milc" version))
               (sha256
                (base32
-                "1pnwdg2653lc82qsv6c0kv9qcydh2f6w5mx5l4227zy1f6kr7b52"))))
+                "1kkiric668mikc5d3jn1x27jrasqlqlyj8lh6d7zp8a866icjan0"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-appdirs python-argcomplete python-colorama
-                             python-halo python-spinners))
-    (native-inputs (list python-setuptools python-wheel))
+                             python-halo python-spinners python-platformdirs
+                             python-types-colorama))
+    (native-inputs (list python-setuptools python-wheel python-pip))
     (home-page "https://github.com/clueboard/milc")
     (synopsis "Python library for command line interface programs")
     (description "MILC is a Python library for developing command line
@@ -32233,7 +32248,8 @@ standard error channel (stderr) in your program.")
                  "not test_is_block_device"
 
                  ,@(cond
-                    ((target-aarch64?)
+                    ((or (target-aarch64?)
+                         (target-riscv64?))
                      '(" and not test_keyboardinterrupt_during_test"))
                     (#t '()))
 

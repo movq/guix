@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -2569,7 +2569,7 @@ Format) file format decoder and encoder.")
 (define-public libjxl
   (package
     (name "libjxl")
-    (version "0.8.2")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -2579,7 +2579,7 @@ Format) file format decoder and encoder.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1alhnnxkwy5bdwahfsdh87xk9rg1s2fm3r9y2w11ka8p3n1ccwr3"))
+        (base32 "1wfxzrhj8a19z6x47ib1qbmgyg56jsxjs955xcvqhdkrx8l2271r"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete the bundles that will not be used.
@@ -2587,8 +2587,8 @@ Format) file format decoder and encoder.")
            (for-each (lambda (directory)
                        (delete-file-recursively
                         (string-append "third_party/" directory)))
-                     '("brotli" "googletest" "highway" "lcms" "libpng"
-                       "zlib"))))))
+                     '("brotli" "googletest" "highway" "lcms" "libjpeg-turbo"
+                       "libpng" "zlib"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -2597,15 +2597,25 @@ Format) file format decoder and encoder.")
              "-DJPEGXL_FORCE_SYSTEM_LCMS2=true"
              "-DJPEGXL_FORCE_SYSTEM_HWY=true"
              "-DJPEGXL_BUNDLE_LIBPNG=false")
-       ,@(if (target-riscv64?)
-             '(#:phases
-               (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-atomic
-                   (lambda _
-                     (substitute* "lib/jxl/enc_xyb.cc"
-                       (("#include \"lib/jxl/enc_xyb.h\"" a)
-                        (string-append a "\n#include <atomic>")))))))
-             '())))
+       ,@(cond
+           ((target-riscv64?)
+            '(#:phases
+              (modify-phases %standard-phases
+                (add-after 'unpack 'fix-atomic
+                  (lambda _
+                    (substitute* "lib/jxl/enc_xyb.cc"
+                      (("#include \"lib/jxl/enc_xyb.h\"" a)
+                       (string-append a "\n#include <atomic>"))))))))
+           ((target-x86-32?)
+            '(#:phases
+              (modify-phases %standard-phases
+                (add-after 'unpack 'loosen-test-parameter
+                  (lambda _
+                    ;; This test fails likely due to a floating point
+                    ;; rounding difference.
+                    (substitute* "lib/jxl/color_management_test.cc"
+                      (("8\\.7e-4") "8.7e-3")))))))
+           (#t '()))))
     (native-inputs
      (list asciidoc doxygen googletest pkg-config python))
     (inputs

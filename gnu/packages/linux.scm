@@ -428,8 +428,8 @@ defconfig.  Return the appropriate Make target if applicable, otherwise return
   (linux-libre-deblob-scripts
    linux-libre-6.13-version
    linux-libre-6.13-gnu-revision
-   (base32 "1fs8d4xkgssji51cz9pxj749qgr63ns6szlmjqf613cakdmlw5j7")
-   (base32 "0bgc4f2xxb68f35iwq8d039zd2lw7d1pv7i2335587s4dyyp8xan")))
+   (base32 "0m8k0ms0kwc9jr9akzdk2ckriw8qrlx3b7isyqsc4rvdg4c41vrx")
+   (base32 "1ywbnwmcwjclndmv5nrxcjws1dhqd4maf2i2l3kmnj5ipnvjdjaf")))
 (define-public linux-libre-6.13-pristine-source
   (let ((version linux-libre-6.13-version)
         (hash (base32 "1qp6aprkkf2iwlhg2czd2msyqc728ab1vyr2v1nw3yzkhh3wngi8")))
@@ -437,36 +437,36 @@ defconfig.  Return the appropriate Make target if applicable, otherwise return
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.13)))
 
-(define-public linux-libre-6.12-version "6.12.16")
+;; The "longterm" kernels — the older releases with long-term upstream support.
+;; Here are the support timelines:
+;; <https://www.kernel.org/category/releases.html>
+
+(define-public linux-libre-6.12-version "6.12.17")
 (define-public linux-libre-6.12-gnu-revision "gnu")
 (define deblob-scripts-6.12
   (linux-libre-deblob-scripts
    linux-libre-6.12-version
    linux-libre-6.12-gnu-revision
-   (base32 "1q7irnysdzi85wapdwnrm0jza8ahaza4977m349ykxrrahbxh1nj")
-   (base32 "1ijzynl3isl9az2aqnb4cvrq1y90f3irhc4d7flrzi1ra4dqjc9w")))
+   (base32 "1d2v3608fxa1s7ncpkkzxa48g2qz4agrxx1kyww3fn8z66l8k4vj")
+   (base32 "1pzqaqccjbd089ff3i1kd788y9dj063x12vzffhi335xf930ad6f")))
 (define-public linux-libre-6.12-pristine-source
   (let ((version linux-libre-6.12-version)
-        (hash (base32 "1i3xkprqsd3yqbai1pbgrszcg6ycy5rwpblzzw5m4lagd4m3d0az")))
+        (hash (base32 "1cv3vrvwsj4ldbq7f9ccmal9as2ziw0cn8g3fd4lx5w09z9mq82w")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.12)))
 
-;; The "longterm" kernels — the older releases with long-term upstream support.
-;; Here are the support timelines:
-;; <https://www.kernel.org/category/releases.html>
-
-(define-public linux-libre-6.6-version "6.6.79")
+(define-public linux-libre-6.6-version "6.6.80")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
    linux-libre-6.6-version
    linux-libre-6.6-gnu-revision
-   (base32 "1a28pdl645bj4d8gac71dmwmll6a2kgd3k7gkpfvi94yqkzd9r2z")
-   (base32 "1gqha26cxijizyhg6k5397bc9pn54wxz01d4gb7j2xx22rkxjwhb")))
+   (base32 "10vhj2rj8mpfnxh4yarpvj79bnnb3yk70s8qjxhhzb9ln6slh8gy")
+   (base32 "1cjhbw04n72avb4i0yc7bcggwziyvfdl80h53c8hyd8g9wk90sjk")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "13gyklpaxil0dc08pxrq4hpxi7crb81f70qnmacs188d8w2gk9h7")))
+        (hash (base32 "09qkadl9fm0c589qyjdwhgryr85xampz0k7lsafmrx142g813ybc")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
@@ -1288,9 +1288,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-arm64-honeycomb
   ;; Kernel for use on the HoneyComb LX2 boards:
   ;; <https://shop.solid-run.com/product/SRCFTXE000IV13/>.
-  (make-linux-libre* linux-libre-5.15-version
-                     linux-libre-5.15-gnu-revision
-                     linux-libre-5.15-source
+  (make-linux-libre* linux-libre-lts-version
+                     linux-libre-lts-gnu-revision
+                     linux-libre-lts-source
                      '("aarch64-linux")
                      #:extra-version "arm64-honeycomb"
                      #:extra-options
@@ -1342,8 +1342,35 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_CRYPTO_USER_API_AEAD" . #true)
 
                         ;; For connecting to ci.guix.gnu.org over VPN.
-                        ("CONFIG_WIREGUARD" . m))
-                      (default-extra-linux-options linux-libre-5.15-version))))
+                        ("CONFIG_WIREGUARD" . m)
+
+                        ;; restool support
+                        ("CONFIG_FSL_MC_UAPI_SUPPORT" . #t)
+                        ("CONFIG_FSL_MC_BUS" . #t)
+                        ("CONFIG_VFIO_FSL_MC" . #t)
+                        ("CONFIG_FSL_MC_DPIO" . #t)
+                        ("CONFIG_ARM_GIC_V3_ITS_FSL_MC" . #t)
+
+                        ;; vsockets support
+                        ;; TODO This seems to be enabled by default on other
+                        ;; architectures?
+                        ("CONFIG_VSOCKETS" . m)
+                        ("CONFIG_VSOCKETS_DIAG" . m)
+                        ("CONFIG_VSOCKETS_LOOPBACK" . m)
+                        ("CONFIG_VMWARE_VMCI_VSOCKETS" . m)
+                        ("CONFIG_VIRTIO_VSOCKETS" . m)
+                        ("CONFIG_VIRTIO_VSOCKETS_COMMON" . m)
+                        ("CONFIG_HYPERV_VSOCKETS" . m)
+                        ("CONFIG_VHOST_IOTLB" . m)
+                        ("CONFIG_VHOST_RING" . m)
+                        ("CONFIG_VHOST_TASK" . #true)
+                        ("CONFIG_VHOST" . m)
+                        ("CONFIG_VHOST_MENU" . #true)
+                        ("CONFIG_VHOST_NET" . m)
+                        ("CONFIG_VHOST_SCSI" . m)
+                        ("CONFIG_VHOST_VSOCK" . m)
+                        ("CONFIG_VHOST_VDPA" . m))
+                      (default-extra-linux-options linux-libre-lts-version))))
 
 (define-public linux-libre-riscv64-generic
   (make-linux-libre* linux-libre-version
@@ -4473,7 +4500,7 @@ to the in-kernel OOM killer.")
     (version "3.2.14")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url "https://github.com/gentoo/eudev")
+              (uri (git-reference (url "https://github.com/eudev-project/eudev")
                                   (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -4558,7 +4585,7 @@ to the in-kernel OOM killer.")
      (list `(,util-linux "lib") ;for blkid
            kmod))
     (outputs '("out" "static"))
-    (home-page "https://wiki.gentoo.org/wiki/Project:Eudev")
+    (home-page "https://github.com/eudev-project/eudev")
     (synopsis "Userspace device management")
     (description "Udev is a daemon which dynamically creates and removes
 device nodes from /dev/, handles hotplug events and loads drivers at boot
@@ -10524,7 +10551,7 @@ then IP sets may be the proper tool for you.")
 (define-public liburing
   (package
     (name "liburing")
-    (version "2.3")
+    (version "2.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10533,7 +10560,7 @@ then IP sets may be the proper tool for you.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ngg5640adlinkal8b28x5snrbab9yr8jw1w539h39k4pqnsbpmw"))))
+                "1skzzdb769jm8p098k292maqycfchpz16mqm6ml8sfzkq2hfck6p"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Tests are dependent on kernel version and features
