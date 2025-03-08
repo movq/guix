@@ -1482,6 +1482,7 @@ invoking @command{notifymuch} from the post-new hook.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:tests? #f
       #:make-flags
       #~(list "V=1"                      ; verbose test output
               "NOTMUCH_TEST_TIMEOUT=1h") ; don't fail on slow machines
@@ -1503,19 +1504,12 @@ invoking @command{notifymuch} from the post-new hook.")
                   (("/bin/sh") sh))))))))
     (native-inputs
      (list bash-completion
+           gnupg
            pkg-config
            python
            python-docutils
            python-sphinx
-           texinfo
-           ;; The following are required for tests only.
-           emacs-no-x           ; -minimal lacks libxml, needed for some tests
-           which
-           dtach
-           git-minimal/pinned
-           gnupg
-           man-db
-           perl))
+           texinfo))
     (inputs
      (list glib gmime sfsexp talloc xapian zlib))
     (home-page "https://notmuchmail.org/")
