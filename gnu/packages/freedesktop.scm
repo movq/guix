@@ -3246,6 +3246,7 @@ compatible with the well-known scripts of the same name.")
            gdk-pixbuf
            geoclue
            glib
+           gst-plugins-base
            json-glib
            libportal
            pipewire))
