@@ -448,229 +448,17 @@ data types.")
 ;; Current 2.x version.
 (define-public python-2 python-2.7)
 
-(define-public python-3.10
-  (package
-    (inherit python-2)
-    (name "python")
-    (version "3.10.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.python.org/ftp/python/"
-                                  version "/Python-" version ".tar.xz"))
-              (patches (search-patches
-                        "python-3-arm-alignment.patch"
-                        "python-3-deterministic-build-info.patch"
-                        "python-3-fix-tests.patch"
-                        "python-3-hurd-configure.patch"
-                        "python-3-reproducible-build.patch"
-                        "python-3-search-paths.patch"))
-              (sha256
-               (base32
-                "0j6wvh2ad5jjq5n7sjmj1k66mh6lipabavchc3rb4vsinwaq9vbf"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete the bundled copy of libexpat.
-                  (delete-file-recursively "Modules/expat")
-                  (substitute* "Modules/Setup"
-                    ;; Link Expat instead of embedding the bundled one.
-                    (("^#pyexpat.*") "pyexpat pyexpat.c -lexpat\n"))
-                  ;; Delete windows binaries
-                  (for-each delete-file
-                            (find-files "Lib/distutils/command" "\\.exe$"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-2)
-       ((#:configure-flags flags)
-        `(append ,flags '("--without-static-libpython")))
-       ((#:make-flags _)
-        `(list (string-append
-                (format #f "TESTOPTS=-j~d" (parallel-job-count))
-                ;; test_mmap fails on low-memory systems
-                " --exclude test_mmap test_socket"
-                ,@(if (system-hurd?)
-                      '(" test_posix"      ;multiple errors
-                        " test_time"
-                        " test_pty"
-                        " test_shutil"
-                        " test_tempfile"   ;chflags: invalid argument:
-                                           ;  tbv14c9t/dir0/dir0/dir0/test0.txt
-                        " test_asyncio"    ;runs over 10min
-                        " test_os"         ;stty: 'standard input':
-                                           ;  Inappropriate ioctl for device
-                        " test_openpty"    ;No such file or directory
-                        " test_selectors"  ;assertEqual(NUM_FDS // 2, len(fds))
-                                           ;  32752 != 4
-                        " test_compileall" ;multiple errors
-                        " test_poll"       ;list index out of range
-                        " test_subprocess" ;runs over 10min
-                        " test_asyncore"   ;multiple errors
-                        " test_threadsignals"
-                        " test_eintr"      ;Process return code is -14
-                        " test_io"         ;multiple errors
-                        " test_logging"
-                        " test_signal"
-                        " test_threading"  ;runs over 10min
-                        " test_flags"      ;ERROR
-                        " test_bidirectional_pty"
-                        " test_create_unix_connection"
-                        " test_unix_sock_client_ops"
-                        " test_open_unix_connection"
-                        " test_open_unix_connection_error"
-                        " test_read_pty_output"
-                        " test_write_pty"
-                        " test_concurrent_futures" ;freeze
-                        " test_venv"       ;freeze
-                        " test_multiprocessing_forkserver" ;runs over 10min
-                        " test_multiprocessing_spawn" ;runs over 10min
-                        " test_builtin"
-                        " test_capi"
-                        " test_dbm_ndbm"
-                        " test_exceptions"
-                        " test_faulthandler"
-                        " test_getopt"
-                        " test_importlib"
-                        " test_json"
-                        " test_multiprocessing_fork"
-                        " test_multiprocessing_main_handling"
-                        " test_pdb "
-                        " test_regrtest"
-                        " test_sqlite")
-                      '()))))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           ,@(if (system-hurd?)
-                 `((delete 'patch-regen-for-hurd)  ;regen was removed after 3.5.9
-                   (add-after 'unpack 'disable-multi-processing
-                     (lambda _
-                       (substitute* "Makefile.pre.in"
-                         (("-j0") "-j1")))))
-                 '())
-           (add-after 'unpack 'remove-vendored-wheel-content
-             (lambda _
-               ;; Delete .exe from embedded .whl (zip) files
-               (for-each
-                (lambda (whl)
-                  (let ((dir "whl-content")
-                        (circa-1980 (* 10 366 24 60 60)))
-                    (mkdir-p dir)
-                    (with-directory-excursion dir
-                      (let ((whl (string-append "../" whl)))
-                        (invoke "unzip" whl)
-                        (for-each delete-file
-                                  (find-files "." "\\.exe$"))
-                        (delete-file whl)
-
-                        ;; Search for cacert.pem, delete it, and rewrite the
-                        ;; file which directs python to look for it.
-                        (let ((cacert (find-files "." "cacert\\.pem")))
-                          (unless (null? cacert)
-                            (let ((certifi (dirname (car cacert))))
-                              (delete-file (string-append certifi "/cacert.pem"))
-                              (delete-file (string-append certifi "/core.py"))
-                              (with-output-to-file (string-append certifi "/core.py")
-                                (lambda _
-                                  (display "\"\"\"
-certifi.py
-~~~~~~~~~~
-This file is a Guix-specific version of core.py.
-
-This module returns the installation location of SSL_CERT_FILE or
-/etc/ssl/certs/ca-certificates.crt, or its contents.
-\"\"\"
-import os
-
-_CA_CERTS = None
-
-try:
-    _CA_CERTS = os.environ [\"SSL_CERT_FILE\"]
-except:
-    _CA_CERTS = os.path.join(\"/etc\", \"ssl\", \"certs\", \"ca-certificates.crt\")
-
-def where() -> str:
-    return _CA_CERTS
-
-def contents() -> str:
-    with open(where(), \"r\", encoding=\"ascii\") as data:
-        return data.read()"))))))
-
-                        ;; Reset timestamps to prevent them from ending
-                        ;; up in the Zip archive.
-                        (ftw "." (lambda (file stat flag)
-                                   (utime file circa-1980 circa-1980)
-                                   #t))
-                        (apply invoke "zip" "-X" whl
-                               (find-files "." #:directories? #t))))
-                    (delete-file-recursively dir)))
-                (find-files "Lib/ensurepip" "\\.whl$"))))
-           (add-before 'check 'set-TZDIR
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               ;; test_email requires the Olson time zone database.
-               (setenv "TZDIR"
-                       (string-append (assoc-ref
-                                       (or native-inputs inputs) "tzdata")
-                                      "/share/zoneinfo"))))
-           (replace 'rebuild-bytecode
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; Disable hash randomization to ensure the generated .pycs
-                 ;; are reproducible.
-                 (setenv "PYTHONHASHSEED" "0")
-
-                 (for-each (lambda (output)
-                             ;; XXX: Delete existing pycs generated by the build
-                             ;; system beforehand because the -f argument does
-                             ;; not necessarily overwrite all files, leading to
-                             ;; indeterministic results.
-                             (for-each (lambda (pyc)
-                                         (delete-file pyc))
-                                       (find-files output "\\.pyc$"))
-
-                             (apply invoke
-                                    `(,,(if (%current-target-system)
-                                            "python3"
-                                            '(string-append out
-                                                            "/bin/python3"))
-                                      "-m" "compileall"
-                                      "-o" "0" "-o" "1" "-o" "2"
-                                      "-f" ; force rebuild
-                                      "--invalidation-mode=unchecked-hash"
-                                      ;; Don't build lib2to3, because it's
-                                      ;; Python 2 code.
-                                      "-x" "lib2to3/.*"
-                                      ,output)))
-                           (map cdr outputs)))))
-           (replace 'install-sitecustomize.py
-             ,(customize-site version))))))
-    (inputs
-     (modify-inputs (package-inputs python-2.7)
-       (replace "openssl" openssl)))
-    (native-inputs
-     (let ((inputs (modify-inputs (package-native-inputs python-2)
-                     (prepend tzdata-for-tests
-                              unzip
-                              (@ (gnu packages compression) zip)))))
-       (if (%current-target-system)
-           (modify-inputs inputs (prepend this-package))
-           inputs)))
-    (native-search-paths
-     (list (guix-pythonpath-search-path version)
-           ;; Used to locate tzdata by the zoneinfo module introduced in
-           ;; Python 3.9.
-           (search-path-specification
-            (variable "PYTHONTZPATH")
-            (files (list "share/zoneinfo")))))))
-
 (define-public python-3.12
   (package
-    (name "python-next")
-    (version "3.12.2")
+    (name "python")
+    (version "3.12.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.python.org/ftp/python/" version
                            "/Python-" version ".tar.xz"))
        (sha256
-        (base32 "0w6qyfhc912xxav9x9pifwca40b4l49vy52wai9j0gc1mhni2a5y"))
+        (base32 "04hiz3rji39b613zjx4666jaq2jqykgshhlqdq07rcwhkxfq683j"))
        (patches (search-patches "python-3-deterministic-build-info.patch"
                                 "python-3.12-fix-tests.patch"
                                 "python-3-hurd-configure.patch"))
@@ -1051,7 +839,7 @@ data types.")
 (define-public python-next python-3.12)
 
 ;; Current 3.x version.
-(define-public python-3 python-3.10)
+(define-public python-3 python-3.12)
 
 ;; Current major version.
 (define-public python python-3)
