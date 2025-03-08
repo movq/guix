@@ -3245,7 +3245,6 @@ compatible with the well-known scripts of the same name.")
             geoclue
             pipewire
             fuse))
-    (arguments
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DESKTOP_PORTAL_DIR")
