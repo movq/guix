@@ -232,7 +232,7 @@ library.  It supports almost all PNG features and is extensible.")
   ;; The APNG patch is maintained separately and may lag behind upstream libpng.
   (package
     (name "libpng-apng")
-    (version "1.6.39")
+    (version "1.6.46")
     (source
      (origin
        (method url-fetch)
@@ -245,7 +245,7 @@ library.  It supports almost all PNG features and is extensible.")
                    "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
                    "/libpng16/libpng-" version ".tar.xz")))
        (sha256
-        (base32 "0dv90dxvmqpk7mbywyjbz8lh08cv4b0ksqp1y62mzvmlf379cihz"))))
+        (base32 "1cbwf20zlm4gcv8rpjivkngrjgl5366w21lr9qmbk2lr0dq8papk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -277,7 +277,7 @@ library.  It supports almost all PNG features and is extensible.")
                                   version "/libpng-" version "-apng.patch.gz"))
                   (sha256
                    (base32
-                    "1z8cx011a2c7vagwgi92rbmky1wi8awmrdldqh9f5k80pbmbdi2a"))))))
+                    "00ykl1bzb79xsjwrq7dl0yz9dz5g3zwj0lry5zam3vs6s3gw5gi9"))))))
     (native-inputs
      (list libtool))
     ;; libpng.la says "-lz", so propagate it.
