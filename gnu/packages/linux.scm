@@ -73,7 +73,7 @@
 ;;; Copyright © 2022, 2023 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
@@ -722,16 +722,11 @@ defconfig.  Return the appropriate Make target if applicable, otherwise return
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
-(define-public linux-libre-headers-5.15.49
-  (make-linux-libre-headers "5.15.49" "gnu"
-                            "13zqdcm4664vh7g57sxbfrlpsxm7zrma72mxdfdz7d9yndy2gfv8"))
+(define-public linux-libre-headers-6.12.17
+  (make-linux-libre-headers "6.12.17" "gnu"
+                            "1j3iyivh8h9abryjqksf4k51wgwnwqy2l3zsc019bm84xmka38xm"))
 
-;; linux 5.19 include loongarch support.
-(define-public linux-libre-headers-5.19.17
-  (make-linux-libre-headers "5.19.17" "gnu"
-                            "0m1yabfvaanbzv0ip04r4kvs16aq0pp2dk93xzi5cq18i3vw351m"))
-
-(define-public linux-libre-headers linux-libre-headers-5.15.49)
+(define-public linux-libre-headers linux-libre-headers-6.12.17)
 ;; linux-libre-headers-latest points to the latest headers package
 ;; and should be used as a dependency for packages that depend on
 ;; the headers.
@@ -2274,7 +2269,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
 (define-public util-linux
   (package
     (name "util-linux")
-    (version "2.37.4")
+    (version "2.40.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/"
@@ -2282,7 +2277,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                                   "util-linux-" version ".tar.xz"))
               (sha256
                (base32
-                "10svcnsqmrsd660bzcm7k6dm8sa7hkknhr3bag1nccwimlb6jkk3"))
+                "0ygvflcr7v7x2rmr9h5mi07yx00i9368ggf3znd8bs847drsy7aw"))
               (patches (search-patches "util-linux-tests.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -2292,8 +2287,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                   (substitute* "configure"
                     (("build_nologin=yes") "build_nologin=no")
                     (("build_logger=yes") "build_logger=no")
-                    (("build_kill=yes") "build_kill=no"))
-                  #t))))
+                    (("build_kill=yes") "build_kill=no"))))))
     (build-system gnu-build-system)
     (outputs '("out"            ;6.4 MiB executables and documentation
                "lib"            ;8.8 MiB shared libraries, headers and locales
@@ -2343,7 +2337,13 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                      ;; Change the test to refer to the right file.
                      (substitute* "tests/ts/misc/mcookie"
                        (("/etc/services")
-                        services)))))
+                        services))
+                     (substitute* "tests/helpers/test_mkfds.c"
+                       (("/etc/fstab")
+                        (which "sh")))
+                     (substitute* "tests/helpers/test_enosys.c"
+                       (("/bin/false")
+                        (which "false"))))))
                (add-before 'check 'disable-setarch-test
                  (lambda _
                    ;; The setarch tests are unreliable in QEMU's user-mode
@@ -2393,10 +2393,12 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
     (inputs
      (list file                         ;for libmagic
            ncurses
+           sqlite
            zlib))
     (native-inputs
      (list net-base                     ;for tests
-           perl))
+           perl
+           pkg-config))
     (home-page "https://www.kernel.org/pub/linux/utils/util-linux/")
     (synopsis "Collection of utilities for the Linux kernel")
     (description "Util-linux is a diverse collection of Linux kernel

@@ -1924,7 +1924,11 @@ exec " gcc "/bin/" program
       (inherit pkg)
       (native-inputs
        `(("xz" ,xz-mesboot)
-         ,@(package-native-inputs pkg))))))
+         ("sed" ,sed-mesboot)
+         ,@(package-native-inputs pkg)))
+      (arguments (substitute-keyword-arguments (package-arguments pkg)
+                   ((#:configure-flags flags ''())
+                    `(cons "--disable-year2038" ,flags)))))))
 
 (define (%boot-mesboot6-inputs)
   `(("bash" ,bash-mesboot)
@@ -2073,6 +2077,7 @@ exec " gcc "/bin/" program
               ,(if (target-64bit?)
                    ''("TIME_T_32_BIT_OK=yes")
                    ''())
+              '("--disable-year2038")
               ,(match (%current-system)
                  ((or "arm-linux" "aarch64-linux")
                   ''("--disable-dependency-tracking"))
@@ -2193,6 +2198,7 @@ exec " gcc "/bin/" program
      `(#:implicit-inputs? #f
        #:tests? #f
        #:guile ,%bootstrap-guile
+       #:configure-flags (list "--disable-year2038")
        ,@(package-arguments tar)))))
 
 (define (%boot0-inputs)
@@ -2660,7 +2666,7 @@ memoized as a function of '%current-system'."
                    (substitute* "scripts/min-tool-version.sh"
                      (("echo 5\\.1\\.0")  ;GCC
                       "echo 4.8.4")
-                     (("echo 2\\.23\\.0") ;binutils
+                     (("echo 2\\.25\\.0") ;binutils
                       "echo 2.20.1")))))))))
     (native-inputs
      `(("perl" ,perl-boot0)

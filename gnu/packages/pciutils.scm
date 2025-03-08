@@ -39,7 +39,7 @@
 (define-public hwdata
   (package
     (name "hwdata")
-    (version "0.391")                   ;updated monthly
+    (version "0.392")                   ;updated monthly
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48,7 +48,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1shz7fayni7jxyz3i6d304mjh5cld88pj0rv85r804y23w5x8p8q"))))
+                "1kp5gs2ld1a8mcq03w9s7kmwi9fq7s01pkll8namkh2rysh4yfqf"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
@@ -70,7 +70,7 @@ Each database is contained in a specific package output, such as the
 (define-public pciutils
   (package
     (name "pciutils")
-    (version "3.8.0")
+    (version "3.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -78,7 +78,8 @@ Each database is contained in a specific package output, such as the
                     version ".tar.xz"))
               (sha256
                (base32
-                "01aglgw9ds9qiswcbi2lx90lswncikrlyv8mmp4haix8542bvvci"))))
+                "09j9rfjaw2ahdwvvlp7ldjgn522pbbqhh0zm396n60l555w1zwbp"))
+              (patches (search-patches "pciutils-hurd64.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -89,16 +90,8 @@ Each database is contained in a specific package output, such as the
              (copy-file (search-input-file (or native-inputs inputs)
                                            "share/hwdata/pci.ids")
                         "pci.ids")))
-         #$@(if (target-hurd64?)
-               #~((add-after 'unpack 'apply-hurd64-patch
-                    (lambda _
-                      (let ((patch-file
-                             #$(local-file
-                                (search-patch "pciutils-hurd64.patch"))))
-                        (invoke "patch" "--force" "-p1" "-i" patch-file)))))
-               #~())
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              ;; There's no 'configure' script, just a raw makefile.
              (substitute* "Makefile"
                #$@(if (%current-target-system)
@@ -116,13 +109,13 @@ Each database is contained in a specific package output, such as the
                         "STRIP=\n"))
                      '())
                (("^PREFIX=.*$")
-                (string-append "PREFIX := " (assoc-ref outputs "out")
+                (string-append "PREFIX := " #$output
                                "\n"))
                (("^MANDIR:=.*$")
                 ;; By default the thing tries to automatically
                 ;; determine whether to use $prefix/man or
                 ;; $prefix/share/man, and wrongly so.
-                (string-append "MANDIR := " (assoc-ref outputs "out")
+                (string-append "MANDIR := " #$output
                                "/share/man\n"))
 
                (("^SHARED=.*$")
@@ -143,27 +136,25 @@ Each database is contained in a specific package output, such as the
                (("(.*INSTALL.*)update-pciids.8(.*)" _ head tail)
                 (string-append head tail)))))
          (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              ;; Install the commands, library, and .pc files.
              (invoke "make" "install" "install-lib"))))
 
        ;; Make sure programs have an RPATH so they can find libpciutils.so.
-       #:make-flags #~(list #$(string-append "CC="
-                                          (if (%current-target-system)
-                                              (cc-for-target)
-                                              "gcc"))
-                          (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out") "/lib"))
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
 
-       ;; No test suite.
-       #:tests? #f))
+      ;; No test suite.
+      #:tests? #f))
     (native-inputs
      (list hwdata pkg-config which))
     (inputs
-     `(,@(if (not (target-hurd?))
-             `(("kmod" ,kmod))
-             '())
-       ("zlib" ,zlib)))
+     (append
+      (if (not (target-hurd?))
+          (list kmod)
+          '())
+      (list zlib)))
     (home-page "https://mj.ucw.cz/sw/pciutils/")
     (synopsis "Programs for inspecting and manipulating PCI devices")
     (description

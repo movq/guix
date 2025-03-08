@@ -232,14 +232,14 @@ implementation offers several extensions over the standard utility.")
 (define-public tar
   (package
    (name "tar")
-   (version "1.34")
+   (version "1.35")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/tar/tar-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0a0x87anh9chbi2cgcyy7pmnm5hzk4yd1w2j8gm1wplwhwkbvgk3"))
+              "05nw7q7sazkana11hnf3f77lmybw1j9j6lsk93bsxirf6hvzyqjd"))
             (patches (search-patches "tar-skip-unreliable-tests.patch"
                                      "tar-remove-wholesparse-check.patch"))))
    (build-system gnu-build-system)
@@ -382,14 +382,14 @@ differences.")
 (define-public diffutils
   (package
    (name "diffutils")
-   (version "3.10")
+   (version "3.11")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/diffutils/diffutils-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "17nhkdn5a2z6pwcmjs4jas2plg066hbdz06y5vhypr14qwyfkrch"))))
+              "07hkwbws3nhxqrsvsf01h6gl2q4pcfhf8s3hv3vqbmbxwdgz0gm7"))))
    (build-system gnu-build-system)
    (arguments
     (list
@@ -431,14 +431,14 @@ interactive means to merge two files.")
 (define-public findutils
   (package
    (name "findutils")
-   (version "4.9.0")
+   (version "4.10.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/findutils/findutils-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1zk2sighc26bfdsm97bv7cd1cnvq7r4gll4zqpnp0rs3kp0bigx2"))
+              "1xd4y24qfsdfp3ndz7d5j49lkhbhpzgr13wrvsmx4izjgyvf11qk"))
             (patches (search-patches "findutils-localstatedir.patch"))))
    (build-system gnu-build-system)
    (arguments
@@ -1835,14 +1835,14 @@ and daylight-saving rules.")
 (define-public libiconv
   (package
     (name "libiconv")
-    (version "1.15")
+    (version "1.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/libiconv/libiconv-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0y1ij745r4p48mxq84rax40p10ln7fc7m243p8k8sia519i3dxfc"))
+                "1s35d4kk7abfqrcicjzy5s9gpip6dzyhn157a7qq5sxlz7sga21v"))
               (modules '((guix build utils)))
               (snippet
                ;; Work around "declared gets" error on glibc systems (fixed by
