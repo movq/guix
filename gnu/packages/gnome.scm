@@ -7179,6 +7179,9 @@ MS Graph APIs.")
       #~(list "-Dsystemduserunitdir=no"
               "-Dtmpfilesdir=no"
               "-Dman=true"
+              "-Dgoa=false"
+              "-Dgoogle=false"
+              "-Donedrive=false"
               ;; Otherwise, the RUNPATH will lack the final path component.
               (string-append "-Dc_link_args=-Wl,-rpath="
                              #$output "/lib/gvfs"))
@@ -7212,7 +7215,6 @@ MS Graph APIs.")
            fuse
            gcr
            glib
-           gnome-online-accounts
            gsettings-desktop-schemas
            libarchive
            libbluray
