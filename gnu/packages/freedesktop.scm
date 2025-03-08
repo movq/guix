@@ -3214,27 +3214,6 @@ compatible with the well-known scripts of the same name.")
         (base32
          "0fjjaymvpvsjcz7scv5g3i3qzp1f4yyvscfmxlxkzpzgd7qndmik"))))
     (build-system meson-build-system)
-    (native-inputs
-     (list pkg-config
-           `(,glib "bin")
-           gettext-minimal
-           python
-           python-dbusmock
-           python-pytest
-           python-pytest-xdist))
-    (inputs
-      (list bubblewrap
-            gdk-pixbuf
-            glib
-            gst-plugins-base
-            flatpak
-            fontconfig
-            json-glib
-            libportal
-            dbus
-            geoclue
-            pipewire
-            fuse))
     (arguments
      `(#:tests? #f
        #:configure-flags
@@ -3267,6 +3246,7 @@ compatible with the well-known scripts of the same name.")
            gdk-pixbuf
            geoclue
            glib
+           gst-plugins-base
            json-glib
            libportal
            pipewire))
