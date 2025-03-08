@@ -118,14 +118,14 @@
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define firefox-l10n
-  (let ((commit "d219efa7c64850dfb5904893e17a5431c7058192"))
+  (let ((commit "817aee91c116f1877f7f5e43c9392c56c57d1876"))
     (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "0g778fnxg5mkqm3rgryzl64f3n4pczngjdlby07vh2dycvmlyga8")))))
+      (sha256 (base32 "1sd5psx44ip2q9rs6jgb5fngix691jln0r6faaxw9xnmxbrxfd7v")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
@@ -207,17 +207,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20250223200343")
+(define %librewolf-build-id "20250308130014")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "135.0.1-1")
+    (version "136.0-2")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "01krqfx3havzknjl45affmlhl3dkk3is951iy3rr1qrvrvfxzyvl"
-      #:librewolf-hash "19w4734qbzhrsdhbzz9m82s7fhz1wndv0rkkbz6xjxwad94dgzy3"
+      #:firefox-hash "0mvg53fr9zi6pq2pwa6qzqi88brqig1wlzic9sz52i4knx733viv"
+      #:librewolf-hash "0zb5f6hml7nmyf8hms66s07ba97x2px2hgqqi4lmwr5hm9mf942z"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -393,6 +393,16 @@
                      (lambda _
                        (setenv "MOZ_BUILD_DATE"
                                #$%librewolf-build-id)))
+                   (add-before 'configure 'patch-icu-lookup
+                     (lambda _
+                       (let* ((file "js/moz.configure")
+                              (old-content (call-with-input-file file get-string-all)))
+                         (substitute* file
+                           (("icu-i18n >= 76.1" all)
+                            (string-append all ", icu-uc >= 76.1")))
+                         (if (string=? old-content
+                                       (pk (call-with-input-file file get-string-all)))
+                             (error "substitute did nothing, phase requires an update")))))
                    (replace 'configure
                      (lambda* (#:key inputs outputs configure-flags
                                #:allow-other-keys)
@@ -673,7 +683,7 @@
                   gtk+
                   gtk+-2
                   hunspell
-                  icu4c-75
+                  icu4c-76
                   jemalloc
                   libcanberra
                   libevent
