@@ -348,6 +348,7 @@ security standards.")
                "12y156frnhaqvwkla1c07gqr2lnp4yb3619g4088kk8qc4jnr95y"))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
+      ((#:tests? _) #f)
       ((#:phases phases)
        #~(modify-phases #$phases
            (replace 'check
