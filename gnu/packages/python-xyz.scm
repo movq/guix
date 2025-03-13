@@ -4037,19 +4037,13 @@ Unicode-to-LaTeX conversion.")
                    (substitute* "setup.cfg"
                      (("doctest_optionflags.*")
                       "")
-                     (("--cov.*")))))
-               (add-after 'unpack 'remove-unwanted-dev-dependencies
-                 (lambda _
-                   (substitute* "requirements-dev.txt"
-                     (("(check-manifest|coverage|coveralls|pytest-cov|twine)")
-                      "")))))))
+                     (("--cov.*"))))))))
     (propagated-inputs
      (list python-numpy))
     (native-inputs
      (list python-cython
            python-pytest
            python-setuptools
-           python-sphinx
            python-twine
            python-wheel))
     (home-page "https://unidata.github.io/cftime/")
