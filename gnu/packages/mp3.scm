@@ -57,6 +57,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages linux)               ;alsa-lib
@@ -243,7 +244,7 @@ a highly stable and efficient implementation.")
 (define-public taglib
   (package
     (name "taglib")
-    (version "1.12")
+    (version "2.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -252,7 +253,7 @@ a highly stable and efficient implementation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q7dkn5rh9v6b0scmcp2qmjv3iransafmpn6jvgid0yq75m2nqd2"))))
+                "0prmf9zicf5x8drgi3g1sg02rdc3ybfg21sgj9c28ld7il571hnx"))))
     (build-system cmake-build-system)
     (arguments
       '(#:tests? #f ; Tests are not ran with BUILD_SHARED_LIBS on.
@@ -268,7 +269,7 @@ a highly stable and efficient implementation.")
                                          (assoc-ref inputs "zlib")
                                          "/lib -lz\")")))
                        #t)))))
-    (inputs (list zlib))
+    (inputs (list utfcpp zlib))
     (home-page "https://taglib.org")
     (synopsis "Library to access audio file meta-data")
     (description
