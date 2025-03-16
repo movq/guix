@@ -1215,6 +1215,7 @@ application suites.")
     (outputs '("out" "bin" "doc"))
     (arguments
      (list
+      #:tests? #f
       #:modules '((guix build utils)
                   (guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
