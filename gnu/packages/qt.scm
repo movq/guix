@@ -784,6 +784,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
+       ((#:tests? _) #f)
        ((#:configure-flags _ ''())
         `(let ((out (assoc-ref %outputs "out")))
            (list "-DQT_BUILD_TESTS=ON"
