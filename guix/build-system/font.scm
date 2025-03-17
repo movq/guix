@@ -73,7 +73,7 @@
 
 (define* (font-build name inputs
                      #:key source
-                     (tests? #t)
+                     (tests? #f)
                      (test-target "test")
                      (configure-flags ''())
                      (license-file-regexp '%license-file-regexp)

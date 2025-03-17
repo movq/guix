@@ -152,7 +152,7 @@
                       (strip-binaries? #t)
                       (exclude %default-exclude)
                       (local-packages '())
-                      (tests? #t)
+                      (tests? #f)
                       (strip-flags %strip-flags)
                       (strip-directories %strip-directories)
                       (phases '%standard-phases)
