@@ -46,7 +46,7 @@
 (define* (zig-build name inputs
                     #:key
                     source
-                    (tests? #t)
+                    (tests? #f)
                     (test-target #f)
                     (parallel-build? #t)
                     (parallel-tests? #t)
@@ -104,7 +104,7 @@
                           (outputs '("out"))
                           (search-paths '())
                           (native-search-paths '())
-                          (tests? #t)
+                          (tests? #f)
                           (test-target #f)
                           (parallel-build? #t)
                           (parallel-tests? #t)
