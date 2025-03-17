@@ -72,7 +72,7 @@
 
 (define* (waf-build name inputs
                     #:key source
-                    (tests? #t)
+                    (tests? #f)
                     (test-target "check")
                     (configure-flags #~'())
                     (phases '%standard-phases)

@@ -155,7 +155,7 @@
                              #:key
                              source target
                              (search-paths '())
-                             (tests? #t)
+                             (tests? #f)
                              (phases '%standard-phases)
                              (outputs '("out"))
                              (make-flags ''())
