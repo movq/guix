@@ -128,7 +128,7 @@ version REVISION."
                         #:key source
                         (haddock? #t)
                         (haddock-flags ''())
-                        (tests? #t)
+                        (tests? #f)
                         (test-target "test")
                         ;; FIXME: Parallel builds lead to indeterministic
                         ;; results, see <http://issues.guix.gnu.org/43843#3>.

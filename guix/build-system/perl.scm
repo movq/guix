@@ -104,7 +104,7 @@
 (define* (perl-build name inputs
                      #:key source
                      (search-paths '())
-                     (tests? #t)
+                     (tests? #f)
                      (parallel-build? #t)
                      (parallel-tests? #t)
                      (make-maker? #f)

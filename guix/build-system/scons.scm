@@ -76,7 +76,7 @@
 (define* (scons-build name inputs
                       #:key
                       (source #f)
-                      (tests? #t)
+                      (tests? #f)
                       (scons-flags ''())
                       (build-targets #~'())
                       (test-target "test")

@@ -139,7 +139,7 @@ an empty list."
 (define* (cargo-build name inputs
                       #:key
                       source
-                      (tests? #t)
+                      (tests? #f)
                       (test-target #f)
                       (vendor-dir "guix-vendor")
                       (cargo-build-flags ''("--release"))

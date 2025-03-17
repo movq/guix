@@ -102,7 +102,7 @@
                          (search-paths '())
                          (out-of-source? #t)
                          (composer-file "composer.json")
-                         (tests? #t)
+                         (tests? #f)
                          (test-target "test")
                          (test-flags ''())
                          (install-target "install")

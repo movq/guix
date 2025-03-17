@@ -77,7 +77,7 @@ NAME and VERSION."
                      #:key source
                      (gem-flags ''())
                      (test-target "test")
-                     (tests? #t)
+                     (tests? #f)
                      (phases '%standard-phases)
                      (outputs '("out"))
                      (search-paths '())

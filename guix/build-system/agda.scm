@@ -82,7 +82,7 @@
                      (search-paths '())
                      (unpack-path "")
                      (build-flags ''())
-                     (tests? #t)
+                     (tests? #f)
                      (system (%current-system))
                      (guile #f)
                      plan

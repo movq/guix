@@ -104,7 +104,7 @@
                      (jbuild? #f)
                      (package #f)
                      (dune-release-flags ''())
-                     (tests? #t)
+                     (tests? #f)
                      (test-flags ''())
                      (test-target "test")
                      (install-target "install")

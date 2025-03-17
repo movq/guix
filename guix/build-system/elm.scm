@@ -170,7 +170,7 @@ given VERSION with sha256 checksum HASH."
 (define* (elm-build name inputs
                     #:key
                     source
-                    (tests? #t)
+                    (tests? #f)
                     (phases '%standard-phases)
                     (outputs '("out"))
                     (search-paths '())

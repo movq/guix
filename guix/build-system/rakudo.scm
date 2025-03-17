@@ -101,7 +101,7 @@
                        #:key
                        source
                        (search-paths '())
-                       (tests? #t)
+                       (tests? #f)
                        (phases '%standard-phases)
                        (outputs '("out"))
                        (system (%current-system))

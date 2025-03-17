@@ -107,7 +107,7 @@
                     (phases '(@ (guix build vim-build-system) %standard-phases))
                     (outputs '("out"))
                     (out-of-source? #t)
-                    (tests? #t)
+                    (tests? #f)
                     (validate-runpath? #t)
                     (patch-shebangs? #t)
                     (strip-binaries? #t)

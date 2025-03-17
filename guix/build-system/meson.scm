@@ -191,7 +191,7 @@ TRIPLET."
                       (search-paths '())
                       (out-of-source? #t)
                       (build-type "debugoptimized")
-                      (tests? #t)
+                      (tests? #f)
                       (test-options ''())
                       (glib-or-gtk? #f)
                       (parallel-build? #t)

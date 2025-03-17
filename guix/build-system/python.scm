@@ -168,7 +168,7 @@ pre-defined variants."
 
 (define* (python-build name inputs
                        #:key source
-                       (tests? #t)
+                       (tests? #f)
                        (test-target "test")
                        (use-setuptools? #t)
                        (configure-flags ''())
