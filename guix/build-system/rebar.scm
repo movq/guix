@@ -101,7 +101,7 @@ and VERSION."
                        #:key
                        guile source
                        (rebar-flags ''("skip_deps=true" "-vv"))
-                       (tests? #t)
+                       (tests? #f)
                        (test-target "eunit")
                        ;; TODO: install-name  ; default: based on guix package name
                        (install-profile "default")

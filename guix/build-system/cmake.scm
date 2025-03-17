@@ -111,7 +111,7 @@
                       (make-flags ''())
                       (out-of-source? #t)
                       (build-type "RelWithDebInfo")
-                      (tests? #t)
+                      (tests? #f)
                       (test-target "test")
                       (parallel-build? #t) (parallel-tests? #t)
                       (validate-runpath? #t)

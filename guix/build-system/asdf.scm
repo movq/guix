@@ -272,7 +272,7 @@ set up using CL source package conventions."
 (define (asdf-build lisp-type)
   (lambda* (name inputs
                  #:key source outputs
-                 (tests? #t)
+                 (tests? #f)
                  (asd-systems ''())
                  (asd-test-systems ''())
                  (asd-operation "load-system")

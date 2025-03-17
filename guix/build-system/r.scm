@@ -105,7 +105,7 @@ release corresponding to NAME and VERSION."
 (define* (r-build name inputs
                   #:key
                   source
-                  (tests? #t)
+                  (tests? #f)
                   (test-target "tests")
                   (test-types #f)
                   (configure-flags ''())

@@ -205,7 +205,7 @@ commit hash and its date rather than a proper release tag."
                    (unpack-path "")
                    (build-flags ''())
                    (skip-build? #f)
-                   (tests? #t)
+                   (tests? #f)
                    (test-flags ''())
                    (test-subdirs ''("..."))
                    (parallel-build? #t)

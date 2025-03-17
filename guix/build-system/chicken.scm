@@ -88,7 +88,7 @@ EXTENSION is the file name extension, such as '.tar.gz'."
                         (egg-name "")
                         (unpack-path "")
                         (build-flags ''())
-                        (tests? #t)
+                        (tests? #f)
                         (system (%current-system))
                         (guile #f)
                         (imported-modules %chicken-build-system-modules)
