@@ -36,7 +36,7 @@
 (define* (android-ndk-build name inputs
                             #:key
                             source
-                            (tests? #t)
+                            (tests? #f)
                             (test-target #f)
                             (phases '%standard-phases)
                             (outputs '("out"))

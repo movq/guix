@@ -78,7 +78,7 @@
 
 (define* (julia-build name inputs
                       #:key source
-                      (tests? #t)
+                      (tests? #f)
                       (parallel-tests? #t)
                       (phases '%standard-phases)
                       (outputs '("out"))

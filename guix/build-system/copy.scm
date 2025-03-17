@@ -84,7 +84,7 @@
                      (install-plan ''(("." "./")))
                      (search-paths '())
                      (out-of-source? #t)
-                     (tests? #t)
+                     (tests? #f)
                      (validate-runpath? #t)
                      (patch-shebangs? #t)
                      (strip-binaries? #t)

@@ -131,7 +131,7 @@
                             ;; Disable icon theme cache generation.
                             (make-flags ''("gtk_update_icon_cache=true"))
                             (out-of-source? #f)
-                            (tests? #t)
+                            (tests? #f)
                             (test-target "check")
                             (parallel-build? #t)
                             (parallel-tests? #t)

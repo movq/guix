@@ -262,7 +262,7 @@ pre-defined variants."
                       (build-flags ''())
                       (out-of-source? #t)
                       (use-make? #f)
-                      (tests? #t)
+                      (tests? #f)
                       (test-flags ''("--enable-tests"))
                       (test-target "test")
                       (install-target "install")

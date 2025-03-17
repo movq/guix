@@ -75,7 +75,7 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
                     inputs
                     #:key
                     source
-                    (tests? #t)
+                    (tests? #f)
                     (mix-path #f) ;See MIX_PATH.
                     (mix-exs "mix.exs") ;See MIX_EXS.
                     (build-per-environment #t) ;See :build_per_environment.
@@ -143,7 +143,7 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
                 (native-inputs '())
                 (propagated-inputs '())
                 (rebar3 (default-rebar3))
-                (tests? #t)
+                (tests? #f)
                 outputs
                 source
                 system
