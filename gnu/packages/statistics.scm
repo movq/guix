@@ -3078,7 +3078,7 @@ popular stats packages like SAS, Stata and SPSS.")
     (build-system python-build-system)
     (propagated-inputs (list python-pandas))
     (inputs (list libiconv zlib))
-    (native-inputs (list python-cython-3))
+    (native-inputs (list python-cython))
     (home-page "https://github.com/Roche/pyreadstat")
     (synopsis
      "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")

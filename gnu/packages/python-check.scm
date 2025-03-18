@@ -671,7 +671,7 @@ Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage
       ;; sync. kernprof.line_profiler = . kernprof.__version__ = 4.2.0.
       #~(list "--deselect=tests/test_cli.py::test_version_agreement")))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-ubelt
@@ -2294,7 +2294,7 @@ plain (undecoratored) native coroutine tests.")
             (lambda _
               (with-directory-excursion "tests/example-project"
                 (invoke "python" "setup.py" "build_ext" "--inplace")))))))
-    (native-inputs (list python-cython-3 python-setuptools python-wheel))
+    (native-inputs (list python-cython python-setuptools python-wheel))
     (propagated-inputs (list python-pytest))
     (home-page "https://github.com/lgpage/pytest-cython")
     (synopsis "Cython extension modules testing plugin")

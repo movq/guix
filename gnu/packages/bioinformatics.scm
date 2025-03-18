@@ -9927,7 +9927,7 @@ sequencing tag position and orientation.")
            python-scikit-learn
            python-scipy))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-wheel
@@ -20173,7 +20173,7 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
                     (invoke "python3" "-m" "unittest" "pyrodigal.tests" "-vv")))))))))
     (propagated-inputs (list python-archspec python-importlib-resources))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-mock
            python-unittest2
            python-wheel))
