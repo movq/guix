@@ -9395,7 +9395,7 @@ efficient (memory- and speedwise compared to pandas) @code{unique} and
 For some datatypes the overhead can be reduced by using khash by factor 4-8.")
     (license license:expat)))
 
-(define-public python-cython
+(define-public python-cython-0.29
   (package
     (name "python-cython")
     (version "0.29.32")
@@ -9448,26 +9448,12 @@ programming language and the extended Cython programming language.  It makes
 writing C extensions for Python as easy as Python itself.")
     (license license:asl2.0)))
 
-;; Needed for scipy and numpy
-(define-public python-cython-0.29.35
+(define-public python-cython
   (package
-    (inherit python-cython)
-    (name "python-cython")
-    (version "0.29.35")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Cython" version))
-              (sha256
-               (base32
-                "09y5r22nyswqpwc02agla1bnzh2jx2db25pnq9pc5cq8pyh1yf3f"))))
-    (properties '())))
-
-(define-public python-cython-3
-  (package
-    (inherit python-cython)
+    (inherit python-cython-0.29)
     ;; Cython 3 is not officially released yet, so distinguish the name
     ;; for now.
-    (name "python-cython-next")
+    (name "python-cython")
     (version "3.0.11")
     (source (origin
               (method url-fetch)
@@ -9687,7 +9673,7 @@ capabilities.")
     (arguments
      (list
       ;; TODO: Tests fail on setup, there is some issue with vendored-meson.
-      #:tests? #f 
+      #:tests? #f
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
@@ -10484,7 +10470,7 @@ convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.
                (("build_inplace=False") "build_inplace=True")))))))
     (native-inputs
      (list python-covdefaults
-           python-cython-3
+           python-cython
            python-expandvars
            python-pytest
            python-pytest-cov
@@ -18782,7 +18768,7 @@ JSON Reference and JSON Pointer.")
        (sha256
         (base32 "15x1in22gwam7wwga5lbj1pd8hc9jk741pia3pv1m29n2xywpq2z"))))
     (build-system python-build-system)
-    (native-inputs (list python-cython-3))
+    (native-inputs (list python-cython))
     (home-page "https://github.com/breezy-team/fastbencode")
     (synopsis "Python Bencode (de)serializer with optional fast C extensions")
     (description
@@ -20633,7 +20619,7 @@ document.")
                     (invoke "nosetests" "-v" "symengine.tests"))
                   (format #t "test suite not run~%")))))))
     (native-inputs
-     (list cmake python-cython-3 python-nose))
+     (list cmake python-cython python-nose))
     (inputs
      (list symengine))
     (home-page "https://github.com/symengine/symengine.py")
@@ -22246,7 +22232,7 @@ to support both Python 2 and Python 3 with minimal overhead.")
        #:phases (modify-phases %standard-phases
                   (add-before 'build 'configure
                     (assoc-ref gnu:%standard-phases 'configure)))))
-    (native-inputs (list python-cython-3 python-sphinx))
+    (native-inputs (list python-cython python-sphinx))
     (inputs (list pari-gp))
     (home-page "https://github.com/sagemath/cysignals")
     (synopsis "Handling of interrupts and signals for Cython")
