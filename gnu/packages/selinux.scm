@@ -52,7 +52,7 @@
 (define-public libsepol
   (package
     (name "libsepol")
-    (version "3.4")
+    (version "3.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -61,8 +61,7 @@
               (file-name (git-file-name "selinux" version))
               (sha256
                (base32
-                "1lcmgmfr0q7g5cwg6b7jm6ncw8cw6c1jblkm93v1g37bfhcgrqc0"))
-              (patches (search-patches "libsepol-versioned-docbook.patch"))))
+                "0l1jl6cyadv48mz1y9a19zahcaiwslh9j3hawrkbq26pch9zsw9f"))))
     (build-system gnu-build-system)
     (arguments
      (list
