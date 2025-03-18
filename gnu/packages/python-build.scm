@@ -347,20 +347,21 @@ facilitate packaging Python projects, where packaging includes:
 (define-public python-wheel
   (package
     (name "python-wheel")
-    (version "0.40.0")
+    (version "0.45.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "wheel" version))
         (sha256
          (base32
-          "0ww8fgkvwv35ypj4cnngczdwp6agr4qifvk2inb32azfzbrrc4fd"))))
+          "0ab7ramncrii43smhvcidrbv4w4ndl80435214a7nl4qj6yil7k6"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: The test suite runs "python setup.py bdist_wheel", which in turn
      ;; fails to find the newly-built bdist_wheel library, even though it is
      ;; available on PYTHONPATH.  What search path is consulted by setup.py?
      '(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/pypa/wheel")
     (synopsis "Format for built Python packages")
     (description
