@@ -26588,6 +26588,7 @@ package attempts to address the shortcomings of @code{isodate}.")
         (base32
          "0ckzngs3scaa1mcfmsi1w40a1l8cxxnncscrxzjjwjyisx8z0fmw"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/RonnyPfannschmidt/iniconfig")
     (synopsis "Simple INI-file parser")
     (description "The @code{iniconfig} package provides a small and simple
