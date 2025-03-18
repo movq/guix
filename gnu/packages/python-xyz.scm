@@ -7879,6 +7879,7 @@ Google and Numpydoc format.")
                       (if tests?
                           (invoke "python" "test/alltests.py")
                           (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://docutils.sourceforge.net/")
     (synopsis "Python Documentation Utilities")
     (description
