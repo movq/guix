@@ -9637,6 +9637,7 @@ and is very extensible.")
            (lambda _
              (with-directory-excursion "tests"
                (invoke "sh" "runtests")))))))
+    (native-inputs (list python-setuptools))
     (home-page "http://projectmallard.org")
     (synopsis "Convert Ducktype to Mallard documentation markup")
     (description
