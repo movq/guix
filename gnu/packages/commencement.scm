@@ -1853,10 +1853,30 @@ exec " gcc "/bin/" program
                      ("libc" ,glibc-mesboot)
                      ("gcc" ,gcc-mesboot)))))
 
+(define bash-mesboot
+  (package
+    (inherit static-bash)
+    (name "bash-mesboot")
+    (source (bootstrap-origin (package-source static-bash)))
+    (native-inputs
+      `(("gcc-wrapper" ,gcc-mesboot-wrapper)
+        ("gcc" ,gcc-mesboot)
+        ,@(fold alist-delete (%boot-mesboot4-inputs) '("gcc" "gcc-wrapper"))))
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (inputs '())
+    (propagated-inputs '())
+    (arguments
+     (ensure-keyword-arguments (package-arguments static-bash)
+                               `(#:implicit-inputs? #f
+                                 #:guile ,%bootstrap-guile
+                                 #:tests? #f
+                                 #:parallel-build? #t)))))
+
 (define (%boot-mesboot5-inputs)
-  `(("gcc-wrapper" ,gcc-mesboot-wrapper)
+  `(("bash" ,bash-mesboot)
+    ("gcc-wrapper" ,gcc-mesboot-wrapper)
     ("gcc" ,gcc-mesboot)
-    ,@(fold alist-delete (%boot-mesboot4-inputs) '("gcc" "gcc-wrapper"))))
+    ,@(fold alist-delete (%boot-mesboot4-inputs) '("bash" "gcc" "gcc-wrapper"))))
 
 (define (mesboot-package name pkg)
   (package
@@ -1871,12 +1891,12 @@ exec " gcc "/bin/" program
      (ensure-keyword-arguments (package-arguments pkg)
                                `(#:implicit-inputs? #f
                                  #:guile ,%bootstrap-guile
-                                 #:tests? #f)))))
+                                 #:tests? #f
+                                 #:parallel-build? #t)))))
 
 ;; These packages are needed to complete the rest of the bootstrap.
 ;; In the future, Gash et al. could handle it directly, but it's not
 ;; ready yet.
-(define bash-mesboot (mesboot-package "bash-mesboot" static-bash))
 
 ;; "sed" from Gash-Utils lacks the 'w' command as of 0.2.0.
 (define sed-mesboot
