@@ -12877,6 +12877,7 @@ PNG, PostScript, PDF, and SVG file output.")
        (sha256
         (base32 "1mcy64hllgm938v8k1x2a4g0q9swsnrfnsvhz59kr28a6ajgpv3j"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/decorator/")
     (synopsis "Python module to simplify usage of decorators")
     (description
