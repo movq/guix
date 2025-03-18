@@ -2023,7 +2023,7 @@ computing environments.")
                         test-flags))))))))
     (inputs (list openblas))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pandas
            python-pytest
            python-pytest-xdist
