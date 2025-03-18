@@ -628,6 +628,7 @@ datetime type.")
         (base32
          "0wxry6riyqajl02mkad8g2q98sx5jr13zndj3fandpzfcxv13qvj"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://bitbucket.org/nielsenb/aniso8601")
     (synopsis "Python library for parsing ISO 8601 strings")
     (description
