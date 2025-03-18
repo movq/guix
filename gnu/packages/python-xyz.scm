@@ -19806,6 +19806,7 @@ connection pool.")
         (base32
          "0bhnr2ac7wy5l85ji909gyljyk85n92w8pdvslmrvc8qih4r1x01"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://contextlib2.readthedocs.org/")
     (synopsis "Tools for decorators and context managers")
     (description "This module is primarily a backport of the Python
