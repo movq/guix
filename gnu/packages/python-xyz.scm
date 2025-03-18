@@ -23122,6 +23122,7 @@ into aligned columns.")
                 "1k6n6zbgrrs83crp6mr3yqj9zlv40b8rpisyrliwsq7naml2p3gz"))
               (patches (search-patches "python-chai-drop-python2.patch"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/agoragames/chai")
     (synopsis "Mocking framework for Python")
     (description
