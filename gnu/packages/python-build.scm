@@ -161,6 +161,7 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
          "09n9qih9rpj95q3r4a40li7hk6swma11syvgwdc68qm1fxsc6q8y"))))
     (build-system python-build-system)
     (arguments `(#:tests? #f))          ;to avoid pytest dependency
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/six/")
     (synopsis "Python 2 and 3 compatibility utilities")
     (description
