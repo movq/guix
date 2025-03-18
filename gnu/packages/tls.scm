@@ -216,9 +216,7 @@ living in the same process.")
                 "0ghpyhhfa3nsraph6dws50jb3dc8g2cfl7dizdnyrm179fawakzp"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? (not (or (%current-target-system)
-                             (target-hurd?)))
-           ;; Ensure we don't keep a reference to the tools used for testing.
+     (list ;; Ensure we don't keep a reference to the tools used for testing.
            #:disallowed-references (if (target-hurd?)
                                        '()
                                        (list net-tools iproute socat))
