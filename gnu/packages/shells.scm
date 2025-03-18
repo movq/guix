@@ -142,7 +142,8 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
      (list doxygen groff ; for 'fish --help'
            procps))             ; for the test suite
     (arguments
-     '(#:phases
+     '(#:tests? #t
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-env
            (lambda _
