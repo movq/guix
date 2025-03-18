@@ -17393,6 +17393,7 @@ provided that can be used to do various manipulations with LilyPond files.")
           (base32
             "0hfzmwknxqhg20aj83fx80vna74xfimg8sk18wb85fmin9kh2pbx"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/ActiveState/appdirs")
     (synopsis
       "Determine platform-specific dirs, e.g. a \"user data dir\"")
