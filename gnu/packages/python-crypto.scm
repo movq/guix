@@ -496,6 +496,7 @@ def contents() -> str:
         return data.read()")))))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://certifi.io/")
     (synopsis "Python CA certificate bundle")
     (description
