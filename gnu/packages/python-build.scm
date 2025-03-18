@@ -441,6 +441,7 @@ installed with a newer @code{pip} or with wheel's own command line utility.")
                        (find-files dir ".*")))
                 (list "docs" "htmldoc" "examples")
                 (list doc html-doc examples))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/pyparsing/pyparsing")
     (synopsis "Python parsing class library")
     (description
