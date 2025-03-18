@@ -548,6 +548,7 @@ connections from and to iOS devices by connecting to a socket provided by a
                                   "/libimobiledevice/releases/download/"
                                   version "/libimobiledevice-" version
                                   ".tar.bz2"))
+              (patches (search-patches "libimobiledevice-fix-cython3.patch"))
               (sha256
                (base32
                 "1xmhfnypg6j7shl73wfkrrn4mj9dh8qzaj3258q9zkb5cc669wjk"))))
