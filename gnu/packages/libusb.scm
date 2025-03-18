@@ -509,7 +509,7 @@ broken iOS devices.")
     (inputs
      (list python))
     (native-inputs
-     (list autoconf automake libtool pkg-config python-cython)) ; to build Python bindings
+     (list autoconf automake libtool pkg-config python-cython python-setuptools)) ; to build Python bindings
     (home-page "https://libimobiledevice.org/")
     (synopsis "C library to handle Apple Property List files")
     (description "This package provides a small portable C library to handle
