@@ -178,10 +178,6 @@ in the Mozilla clients.")
                   (ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-26))
-      #:tests? (not (or (%current-target-system)
-                        ;; Tests take more than 30 hours on some architectures.
-                        (target-riscv64?)
-                        (target-ppc32?)))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
