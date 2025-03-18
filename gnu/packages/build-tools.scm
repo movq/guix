@@ -353,7 +353,7 @@ resembles Python.")
      (list meson
            ninja
            python-colorama
-           python-cython-3
+           python-cython
            python-pyproject-metadata
            python-tomli
            python-typing-extensions
@@ -363,7 +363,7 @@ resembles Python.")
            git-minimal/pinned
            patchelf
            pkg-config
-           python-cython-3
+           python-cython
            python-gitpython
            python-pytest
            python-pytest-cov

@@ -230,7 +230,7 @@ the real span of the lattice.")
     (inputs
      (list fplll gmp mpfr pari-gp))
     (propagated-inputs
-     (list python-cysignals python-cython-3 python-flake8 python-numpy
+     (list python-cysignals python-cython python-flake8 python-numpy
            python-pytest))
     (home-page "https://github.com/fplll/fpylll")
     (synopsis "Python interface for fplll")
@@ -538,7 +538,7 @@ fast arithmetic.")
                 "10370kqik6q6vdqrqv3gbznsyaxbgqb3rbrff4alpw0sqr5s07c7"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-cython-3))
+     (list python-cython))
     (propagated-inputs
      (list python-numpy))
     (inputs
