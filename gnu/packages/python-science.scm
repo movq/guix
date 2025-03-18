@@ -880,7 +880,7 @@ logic, also known as grey logic.")
                              python-twine))
     (native-inputs (list gfortran
                          pkg-config
-                         python-cython-3
+                         python-cython
                          python-meson-python
                          python-numpy
                          python-pytest
@@ -970,7 +970,7 @@ implements several methods for sequential model-based optimization.
               ;; permission.
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pandas
            python-pytest
            python-setuptools
@@ -1037,7 +1037,7 @@ the following purposes in mind:
        (list python-black
              python-pypa-build
              python-coverage
-             python-cython-3
+             python-cython
              python-packaging
              python-pytest
              python-setuptools
@@ -1660,7 +1660,7 @@ doing practical, real world data analysis in Python.")
     (native-inputs
      (list meson-python
            python-beautifulsoup4
-           python-cython-3
+           python-cython
            python-html5lib
            python-lxml
            python-matplotlib
@@ -4136,7 +4136,7 @@ documentation for more information.")
            python-six
            python-tabulate))
     (native-inputs
-     (list python-pytest python-cython-3 python-setuptools python-wheel))
+     (list python-pytest python-cython python-setuptools python-wheel))
     (home-page "https://www.github.com/maartenbreddels/vaex")
     (synopsis "Core of Vaex library for exploring tabular datasets")
     (description "Vaex is a high performance Python library for lazy

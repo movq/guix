@@ -198,7 +198,7 @@ represented as strings.")
          "1f43bx3pryc1mg7i9gijl2c6aavijlbcxx9wyw11jn40lak1g85a"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython-3 python-setuptools python-wheel))
+     (list python-cython python-setuptools python-wheel))
     (propagated-inputs
      (list python-cysignals))
     (inputs
@@ -278,7 +278,7 @@ libraries GMO, MPFR and MPC.")
         (base32 "1zggfj09zkfcabcsasq27vwbhdmkig4yn380gi6wykcih9n22anl"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-wheel))
@@ -373,7 +373,7 @@ database.")
     (build-system pyproject-build-system)
     (native-inputs
       (list autoconf automake m4 pkg-config ; for ./bootstrap
-            python-cython-3
+            python-cython
             python-cysignals
             python-memory-allocator
             python-pkgconfig

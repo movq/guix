@@ -987,7 +987,7 @@ projections.")
              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs (list python-certifi python-numpy python-packaging))
     (inputs (list gdal))
-    (native-inputs (list python-cython-3
+    (native-inputs (list python-cython
                          python-pytest
                          python-pytest-cov
                          python-setuptools
@@ -1840,7 +1840,7 @@ extension.")
               (with-directory-excursion #$output
                 (apply invoke "pytest" "-vv" test-flags)))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-setuptools-scm
