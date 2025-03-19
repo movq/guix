@@ -1502,6 +1502,8 @@ available via the @code{unittest.mock} module.")
       (origin
         (method url-fetch)
         (uri (pypi-uri "nose" version))
+        (patches (search-patches "python-nose-py311.patch"
+                                 "python-nose-py312.patch"))
         (sha256
           (base32
             "164a43k7k2wsqqk1s6vavcdamvss4mz0vd6pwzv2h9n8rgwzxgzi"))))
