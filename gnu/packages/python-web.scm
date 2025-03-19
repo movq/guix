@@ -3685,7 +3685,7 @@ data.")
                (invoke "python" "-m" "tornado.test.runtests"
                        "--verbose=yes")))))))
     (native-inputs
-     (list python-certifi))
+     (list python-certifi python-setuptools))
     (home-page "https://www.tornadoweb.org/")
     (synopsis "Python web framework and asynchronous networking library")
     (description
