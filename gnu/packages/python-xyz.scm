@@ -18257,6 +18257,7 @@ suitable for a wide range of protocols based on the ASN.1 specification.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-pyasn1))
+    (native-inputs (list python-setuptools))
     (home-page "https://sourceforge.net/projects/pyasn1/")
     (synopsis "ASN.1 codec implementations")
     (description
