@@ -18334,6 +18334,7 @@ for OER and UPER.")
         (base32
          "0v8f6qjfi5i7qc5icsbv2pi24qy6k6m8wjqjvdf2sxjvlpq3yr4x"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/kjd/idna")
     (synopsis "Internationalized domain names in applications")
     (description
