@@ -32852,6 +32852,7 @@ package are included automatically.")
         (base32
          "1h7iam33vwxk8bvslfj4qlsdprdnwf8bvzhqh3jq5frr391cadbw"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page
      "https://github.com/gorakhargosh/pathtools")
     (synopsis "Path utilities for Python")
