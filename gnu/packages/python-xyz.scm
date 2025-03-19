@@ -19839,7 +19839,8 @@ automatically detect a wide range of file encodings.")
                        `("GUIX_PYTHONPATH" ":" suffix
                          ,(list sitedir python-sitedir)))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/ousret/charset_normalizer")
     (synopsis "Universal Charset Detector, alternative to Chardet")
     (description "This library helps you read text from an unknown charset
