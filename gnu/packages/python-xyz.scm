@@ -33828,6 +33828,7 @@ choose to use Base64 without the “=” padding.")
           (base32
            "0h5wi1bfcqqr1x3j1pa7dmkx7siprsyksbsy80fl2sdrrgpji0b0"))))
       (build-system python-build-system)
+      (native-inputs (list python-setuptools))
       (home-page "https://github.com/workhorsy/py-cpuinfo")
       (synopsis "Get CPU info with Python")
       (description
