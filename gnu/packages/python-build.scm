@@ -396,6 +396,7 @@ installed with a newer @code{pip} or with wheel's own command line utility.")
       `(#:tests? #f))                     ;to avoid circular dependencies
      (propagated-inputs
       (list python-toml python-wheel))
+     (native-inputs (list python-setuptools))
      (home-page "https://github.com/pypa/pep517")
      (synopsis "Wrappers to build Python packages using PEP 517 hooks")
      (description
