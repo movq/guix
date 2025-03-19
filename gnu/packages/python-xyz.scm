@@ -12213,6 +12213,7 @@ a multithreaded image-processing system with low memory needs.")
                                       (string-append doc file)))
                          '("/README.rst" "/CHANGES" "/LICENSE"))
                (copy-recursively "examples" examples)))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/eliben/pycparser")
     (synopsis "C parser in Python")
     (description
