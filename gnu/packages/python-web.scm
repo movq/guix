@@ -2476,7 +2476,7 @@ follow links and submit forms.  It doesn’t do JavaScript.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv" "test")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/python-hyper/hyperframe")
     (synopsis "HTTP/2 framing layer for Python")
     (description
