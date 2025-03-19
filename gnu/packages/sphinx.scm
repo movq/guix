@@ -319,6 +319,7 @@ sources.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-applehelp")
     (synopsis "Sphinx extension for creating Apple help books")
     (description
