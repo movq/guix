@@ -7393,7 +7393,7 @@ and fairly speedy.")
              (substitute* "setup.py" (("Cython==") "Cython>="))
              #t)))))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython python-pytest python-setuptools))
     (inputs
      (list http-parser))
     (home-page "https://github.com/MagicStack/httptools")
