@@ -2509,7 +2509,7 @@ into HTTP/2 frames.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv" "test")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://hyper.rtfd.org")
     (synopsis "Pure-Python HPACK header compression")
     (description
