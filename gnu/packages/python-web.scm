@@ -6623,7 +6623,7 @@ addon modules.")
              (when tests?
                (with-directory-excursion "test"
                  (invoke "pytest" "-vvv"))))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://bottlepy.org/")
     (synopsis "WSGI framework for small web-applications")
     (description "@code{python-bottle} is a WSGI framework for small web-applications.")
