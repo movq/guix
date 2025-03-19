@@ -36441,11 +36441,12 @@ iGoogle subscription lists.")
          (replace 'check
            ;; Its `setup.py test` doesn't report failure with exit status, so
            ;; we use `nose` instead.
-           (lambda _
-             (invoke "nosetests" "-v" "--exclude=^load_tests$"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "nosetests" "-v" "--exclude=^load_tests$")))))))
     (native-inputs
      ;; For tests.
-     (list python-docutils python-nose python-pygments))
+     (list python-docutils python-nose python-pygments python-setuptools))
     (home-page "https://github.com/leohemsted/smartypants.py")
     (synopsis "Translate punctuation characters into smart quotes")
     (description
