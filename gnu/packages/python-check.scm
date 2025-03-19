@@ -2581,6 +2581,7 @@ side effects when unit testing.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/mypy_extensions")
     (synopsis "Experimental extensions for MyPy")
     (description
