@@ -25306,7 +25306,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
               (patches
                (search-patches "python-random2-getrandbits-test.patch"))))
     (build-system python-build-system)
-    (native-inputs (list unzip))
+    (native-inputs (list python-setuptools unzip))
     (home-page "https://pypi.python.org/pypi/random2")
     (synopsis "Python 3 version of the Python 2 @code{random} module")
     (description
