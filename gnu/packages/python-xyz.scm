@@ -18501,6 +18501,7 @@ invoked on those path objects directly.")
         (base32
          "040vm94lcbscg5p81g1icmwwwa2jm7wrd1ybmxnv1sz8rl8bh3n9"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/alex/pretend")
     (synopsis "Library for stubbing in Python")
     (description
