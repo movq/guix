@@ -5300,8 +5300,7 @@ in the current session, Python, and the OS.")
          (replace 'check
            (lambda _
              (invoke "pytest" "-v"))))))
-    (native-inputs
-     `(("python-pytest" ,python-pytest-bootstrap)))))
+    (native-inputs (list python-pytest-bootstrap python-setuptools))))
 
 (define-public python2-six
   (let ((base (package-with-python2 python-six)))
