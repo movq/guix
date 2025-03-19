@@ -779,7 +779,7 @@ install: libbitshuffle.so
     (propagated-inputs
      (list python-more-itertools))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/jaraco/zipp")
     (synopsis
      "Backport of pathlib-compatible object wrapper for zip files")
