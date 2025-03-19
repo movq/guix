@@ -697,6 +697,7 @@ documents.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-serializinghtml")
     (synopsis "Sphinx extension to serialize HTML files")
     (description
