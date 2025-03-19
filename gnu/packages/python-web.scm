@@ -808,7 +808,7 @@ API rules.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest" "tests")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/aio-libs/frozenlist")
     (synopsis "List-like data structure for Python")
     (description "@code{frozenlist.FrozenList} is a list-like structure which
