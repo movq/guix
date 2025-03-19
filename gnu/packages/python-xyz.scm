@@ -9646,7 +9646,7 @@ capabilities.")
     (arguments
      (list
       ;; TODO: Tests fail on setup, there is some issue with vendored-meson.
-      #:tests? #f 
+      #:tests? #f
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
