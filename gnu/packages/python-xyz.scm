@@ -3301,6 +3301,7 @@ access the technical and tag data for video and audio files.")
      ;; FIXME: some tests do not return and time out.  Some tests fail because
      ;; some processes survive kill().
      '(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/giampaolo/psutil")
     (synopsis "Library for retrieving information on running processes")
     (description
