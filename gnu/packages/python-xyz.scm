@@ -18235,6 +18235,7 @@ primary use case is APIs defined before keyword-only parameters existed.")
         (base32
          "1fnhbi3rmk47l9851gbik0flfr64vs5j0hbqx24cafjap6gprxxf"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://pyasn1.sourceforge.net/")
     (synopsis "ASN.1 types and codecs")
     (description
