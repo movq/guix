@@ -766,7 +766,7 @@ reflected in the package visible to Python, without needing a reinstall.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv" "tests")))))))
-    (native-inputs (list python-flit-scm python-pypa-build))
+    (native-inputs (list python-flit-scm python-pypa-build python-setuptools))
     (home-page "https://github.com/agronholm/exceptiongroup")
     (synopsis "PEP 654 backport from Python 3.11")
     (description "This is a backport of the @code{BaseExceptionGroup} and
