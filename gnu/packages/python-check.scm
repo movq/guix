@@ -3200,6 +3200,7 @@ provided for the main Python test runners.")
         (base32
          "0w4w6pqjkv54j7rv6vdrpfxa72c5516bnlhpcqr3vrb4zpmyxvpm"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python-tap/tappy")
     (synopsis "Tools for Test Anything Protocol")
     (description "Tappy is a set of tools for working with the Test Anything
