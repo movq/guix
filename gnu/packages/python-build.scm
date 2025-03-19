@@ -511,6 +511,7 @@ information.")
      `(("python-packaging" ,python-packaging-bootstrap)
        ("python-pep517", python-pep517-bootstrap)
        ("python-toml" ,python-toml)))
+    (native-inputs (list python-setuptools))
     (home-page "https://pypa-build.readthedocs.io/en/latest/")
     (synopsis "Simple Python PEP 517 package builder")
     (description "The @command{build} command invokes the PEP 517 hooks to
