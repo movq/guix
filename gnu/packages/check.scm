@@ -1512,6 +1512,7 @@ available via the @code{unittest.mock} module.")
                   (add-after 'unpack 'invoke-2to3
                     (lambda _
                       (invoke "2to3" "-w" "."))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://readthedocs.org/docs/nose/")
     (synopsis "Python testing library")
     (description
