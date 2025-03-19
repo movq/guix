@@ -27830,10 +27830,12 @@ class ShellOutSSHClientTests"))))
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-c"
-                     "from regex.test_regex import test_main ; test_main()"))))))
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-c"
+                       "from regex.test_regex import test_main ; test_main()")))))))
+     (native-inputs (list python-setuptools))
      (home-page "https://bitbucket.org/mrabarnett/mrab-regex")
      (synopsis "Alternative regular expression module")
      (description "This regular expression implementation is backwards-
