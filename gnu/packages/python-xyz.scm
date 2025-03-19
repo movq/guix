@@ -22978,6 +22978,7 @@ network support library.")
           (base32
             "18qx113g9bi1ac4indd5phma82zcdq601lxncp3vjn43m2mc3iq0"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "http://www.dabeaz.com/ply/")
     (synopsis "Python Lex & Yacc")
     (description "PLY is a @code{lex}/@code{yacc} implemented purely in Python.
