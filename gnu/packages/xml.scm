@@ -1871,6 +1871,7 @@ The central program included in this package is @code{onsgmls}, which replaces
     ;; The test suite is not run, to avoid a dependency cycle with
     ;; python-xmlschema.
     (arguments `(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page
      "https://github.com/sissaschool/elementpath")
     (synopsis
