@@ -71,6 +71,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
@@ -1889,13 +1890,13 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 (define-public python-lxml
   (package
     (name "python-lxml")
-    (version "5.2.2")
+    (version "5.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lxml" version))
        (sha256
-        (base32 "11yvrzlswlh81z6lpmds2is2jd3wkigpwj6mcfcaggl0h64w8bdv"))))
+         (base32 "1j10b5wx07kpamgfrc6bjjcyj85bw9w2gzkyx7qkkcvp55fpnsqh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1903,7 +1904,7 @@ because lxml.etree already has its own implementation of XPath 1.0.")
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
                         (invoke "make" "test")))))))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-setuptools python-wheel))
     (inputs
      (list libxml2 libxslt))
     (home-page "https://lxml.de/")
