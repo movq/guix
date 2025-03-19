@@ -63,6 +63,7 @@
         (base32
          "11qnlcanr1mqcpqpq1hmnwrs26csbsa2bafc7biq09x91y0dx617"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/cpburnz/python-pathspec")
     (synopsis "Utility library for gitignore style pattern matching of file paths")
     (description
