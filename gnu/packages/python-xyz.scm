@@ -9918,7 +9918,7 @@ include_dirs = ~:*~a/include~%"
     (native-inputs
      (list meson-python
            pkg-config
-           python-cython-0.29.35        ;overwrite Cython from meson-python
+           python-cython
            python-hypothesis
            python-mypy
            python-pytest

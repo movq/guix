@@ -621,7 +621,7 @@ factorization routine for quasi-definite linear system.")
            meson-python
            pkg-config
            python-click
-           python-cython-0.29.35
+           python-cython
            python-doit
            python-hypothesis
            python-pooch
@@ -1712,7 +1712,7 @@ indices of @code{ndarrays}.")
     (inputs
      (list which xclip xsel))
     (native-inputs
-     (list python-cython-0.29.35
+     (list python-cython
            python-beautifulsoup4
            python-lxml
            python-html5lib
