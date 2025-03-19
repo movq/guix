@@ -18271,6 +18271,7 @@ implementations of ASN.1-based codecs and protocols.")
                (base32
                 "1qp743h30s04m3cg3yk3fycad930jv17q7dsslj4mfw0jlvf1y5p"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/phihag/ipaddress")
     (synopsis "IP address manipulation library")
     (description
