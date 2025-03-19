@@ -42,6 +42,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages swig)
@@ -158,17 +159,14 @@ module into a binary representation.")
               (lambda* (#:key make-flags #:allow-other-keys)
                 (apply invoke "make" "pywrap" make-flags)))
             (add-after 'install 'install-pywrap
-              (lambda* (#:key make-flags #:allow-other-keys)
+              (lambda* (#:key inputs outputs make-flags #:allow-other-keys)
                 ;; The build system uses "python setup.py install" to install
                 ;; Python bindings.  Instruct it to use the correct output.
                 (substitute* "src/Makefile"
                   (("--prefix=\\$\\(PREFIX\\)")
                    (string-append "--prefix=" #$output:python
-                                  ;; Python 3.10 refuses to execute the install
-                                  ;; command unless these flags are present.
-                                  " --single-version-externally-managed"
+                                  " --no-build-isolation"
                                   " --root=/")))
-
                 (apply invoke "make" "install-pywrap" make-flags)))))))
     ;; These libraries are in "Requires.private" in libselinux.pc.
     (propagated-inputs
@@ -178,7 +176,7 @@ module into a binary representation.")
      (list python-wrapper))
     ;; These inputs are only needed for the pywrap phase.
     (native-inputs
-     (list pkg-config swig))
+     (list pkg-config python-setuptools python-wheel swig))
     (synopsis "SELinux core libraries and utilities")
     (description
      "The libselinux library provides an API for SELinux applications to get
