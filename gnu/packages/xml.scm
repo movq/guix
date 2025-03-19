@@ -1974,7 +1974,7 @@ XML document to a Python object.")
                          "-k" "not test_export_remote__issue_187")
                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-lxml))   ;for tests
+     (list python-lxml python-setuptools))   ;for tests
     (propagated-inputs
      (list python-elementpath))
     (home-page "https://github.com/sissaschool/xmlschema")
