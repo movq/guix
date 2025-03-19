@@ -2887,6 +2887,7 @@ counterexamples for you.")
                (delete 'sanity-check))))
     (propagated-inputs
      (list python-attrs-bootstrap python-exceptiongroup python-sortedcontainers))
+    (native-inputs (list python-setuptools))
     (synopsis "Library for property based testing")
     (description "Hypothesis is a library for testing your Python code against a
 much larger range of examples than you would ever want to write by hand.  It’s
