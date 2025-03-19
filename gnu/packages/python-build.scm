@@ -664,6 +664,7 @@ system, then @code{flit_core} to build the package.")
     (arguments (list #:tests? #f))    ;avoid extra dependencies such as pytest
     (propagated-inputs (list python-packaging-bootstrap python-tomli
                              python-typing-extensions))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/pypa/setuptools_scm/")
     (synopsis "Manage Python package versions in SCM metadata")
     (description
