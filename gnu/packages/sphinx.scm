@@ -490,6 +490,7 @@ HTML help files.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-jsmath")
     (synopsis "Sphinx extension to render math equations")
     (description
