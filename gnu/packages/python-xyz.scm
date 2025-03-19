@@ -36481,7 +36481,7 @@ entities
      (list python-smartypants))
     (native-inputs
      ;; For tests.
-     (list python-nose))
+     (list python-nose python-setuptools))
     (home-page "https://github.com/mintchaos/typogrify")
     (synopsis "Filters to transform text into typographically-improved HTML")
     (description
