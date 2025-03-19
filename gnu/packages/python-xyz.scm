@@ -16978,7 +16978,7 @@ number of lines in the contained files easily.")
                  "1msibi5cmi5znykkg66dq7xshl07lkqjxhrz5hcipqvlggsvjd4j"))))
      (build-system python-build-system)
      (native-inputs
-      (list unzip))
+      (list python-setuptools unzip))
      (arguments '(#:tests? #f))
      (home-page "https://github.com/fonttools/fonttools")
      (synopsis "Tools to manipulate font files")
