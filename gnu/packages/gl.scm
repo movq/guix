@@ -58,6 +58,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
@@ -255,7 +256,8 @@ generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
                 (let ((share (string-append #$output "/share/"
                                             #$(package-name this-package))))
                   (install-file "cmake/CMakeLists.txt" share))))))))
-    (propagated-inputs (list python-jinja2))))
+    (propagated-inputs (list python-jinja2))
+    (native-inputs (list python-setuptools))))
 
 (define-public s2tc
   (package
