@@ -17807,6 +17807,7 @@ printing of sub-tables by specifying a row range.")
      (origin
        (method url-fetch)
        (uri (pypi-uri "curio" version))
+       (patches (search-patches "python-curio-py312.patch"))
        (sha256
         (base32 "0isj3jl5mx6m25nr1f7r91hfaydhkvmks9p85dyvl5h2n9nmhajn"))))
     (build-system pyproject-build-system)
