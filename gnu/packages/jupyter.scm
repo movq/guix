@@ -79,7 +79,7 @@
                              python-pyzmq
                              python-send2trash
                              python-terminado
-                             python-tornado-6
+                             python-tornado
                              python-traitlets))
     (native-inputs (list python-coverage
                          python-nbval
@@ -217,7 +217,7 @@ protocol} to be used by both clients and kernels.")
            python-jupyter-core
            python-jupyter-protocol
            python-pyzmq
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (native-inputs
      (list python-async-generator
@@ -314,7 +314,7 @@ Messaging Protocol}.")
                          python-ipykernel
                          python-pytest
                          python-pytest-timeout
-                         python-tornado-6))
+                         python-tornado))
     (home-page "https://jupyter.org")
     (synopsis "Pytest plugin for testing Jupyter libraries and extensions.")
     (description
@@ -609,7 +609,7 @@ JavaScript build steps.")
            python-pyzmq
            python-send2trash
            python-terminado
-           python-tornado-6
+           python-tornado
            python-traitlets
            python-websocket-client))
     (native-inputs
@@ -690,7 +690,7 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
                          python-pytest-console-scripts
                          python-pytest-cov
                          python-pytest-xdist
-                         python-tornado-6))
+                         python-tornado))
     (home-page "https://github.com/jupyterlite/jupyterlite")
     (synopsis "Core functionality for building JupyterLite websites")
     (description "The jupyterlite-core package provides the core functionality
@@ -836,7 +836,7 @@ It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
            python-nbformat
            python-pygments
            python-requests
-           python-tornado-6))
+           python-tornado))
     (native-inputs
      (list python-jupyter-server
            python-mock
@@ -1274,7 +1274,7 @@ analyzing Jupyter Notebooks.")
            python-pandas
            python-pytest
            python-pytest-tornasync
-           python-tornado-6
+           python-tornado
            (origin
              (method url-fetch)
              (uri "https://unpkg.com/@jupyterlab/apputils@3.2.8/style/materialcolors.css")
