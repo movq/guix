@@ -300,6 +300,7 @@ def contents() -> str:
     (build-system python-build-system)
     (arguments
      '(#:tests? #f))          ; there are no tests in the pypi archive.
+    (native-inputs (list python-setuptools))
     (home-page "https://pip.pypa.io/")
     (synopsis "Package manager for Python software")
     (description
