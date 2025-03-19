@@ -33153,7 +33153,7 @@ files.  These files are used to translate strings in android apps.")
                           "test_select_fd")
                     " and not "))))
     (propagated-inputs
-     (list python-pathtools python-pyyaml))
+     (list python-pyyaml))
     (native-inputs
      (list python-pytest
            python-pytest-cov
