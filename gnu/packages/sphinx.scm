@@ -745,6 +745,7 @@ builder does not support SVG images natively (e.g. LaTeX).")
      `(#:tests? #f))
     (propagated-inputs
      (list python-sphinxcontrib-serializinghtml))
+    (native-inputs (list python-setuptools))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
     (description
