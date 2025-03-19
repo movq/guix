@@ -947,6 +947,7 @@ protocol (Javascript Object Signing and Encryption).")
     (build-system python-build-system)
     (inputs
      (list libtomcrypt libtommath))
+    (native-inputs (list python-setuptools))
     (home-page "https://www.pycryptodome.org")
     (synopsis "Low-level cryptographic Python library")
     (description
