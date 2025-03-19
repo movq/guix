@@ -2793,6 +2793,7 @@ storage.")
      (list python-six python-webencodings
            ;; Required by Calibre 5.
            python-chardet))
+    (native-inputs (list python-setuptools))
     (arguments
      `(#:test-target "check"))
     (home-page
