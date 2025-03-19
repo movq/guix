@@ -106,6 +106,7 @@ stripped of Pytest specific details.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                     ;no tests suite in release
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/uiri/toml")
     (synopsis "Library for TOML")
     (description
