@@ -5359,6 +5359,7 @@ human-friendly syntax.")
         (base32 "0mmfvx4wqp8gkpv0kbih89zfs9njvmd3v4dxfqii62xddpxq0f1k"))))
     (propagated-inputs
      (list python-six))
+    (native-inputs (list python-setuptools))
     (build-system python-build-system)
     (home-page "https://github.com/scour-project/scour")
     (synopsis "Scour is an SVG optimizer/cleaner written in Python")
