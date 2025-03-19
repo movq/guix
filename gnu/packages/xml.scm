@@ -304,6 +304,7 @@ to output XPath results with a null delimiter.")))
                   ;; provide the absolute directory name.
                   (("/opt/include")
                    (dirname libxml2-headers)))))))))
+    (native-inputs (list python-setuptools))
     (inputs (list libxml2))
     (synopsis "Python bindings for the libxml2 library")))
 
