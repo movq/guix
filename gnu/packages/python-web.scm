@@ -3016,7 +3016,7 @@ desired
              (invoke "py.test" "-v" "webencodings/tests.py")
              #t)))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/SimonSapin/python-webencodings")
     (synopsis "Character encoding aliases for legacy web content")
     (description
