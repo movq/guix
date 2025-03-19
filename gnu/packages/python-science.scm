@@ -3360,7 +3360,7 @@ parentdir_prefix = distributed-
            python-sortedcontainers
            python-tblib
            python-toolz
-           python-tornado-6
+           python-tornado
            python-urllib3
            python-zict))
     (native-inputs

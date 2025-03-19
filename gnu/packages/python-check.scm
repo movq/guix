@@ -2237,7 +2237,7 @@ simplify testing of asynchronous tornado applications.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "--verbose")))))))
     (propagated-inputs
-     (list python-pytest python-tornado-6))
+     (list python-pytest python-tornado))
     (home-page "https://github.com/eukaryote/pytest-tornasync")
     (synopsis "Pytest plugin for testing Tornado code")
     (description

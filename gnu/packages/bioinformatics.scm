@@ -2487,7 +2487,7 @@ from bokeh.util.dataclasses import entries\n"))
                                python-scikit-image
                                python-scipy
                                python-seaborn
-                               python-tornado-6
+                               python-tornado
                                python-tqdm
                                python-umap-learn))
       (native-inputs (list python-pytest python-setuptools python-wheel))
@@ -22084,7 +22084,7 @@ pycisTarget and SCENIC.")
            python-pyarrow
            python-scikit-learn
            python-scipy
-           python-tornado-6))
+           python-tornado))
     (home-page "https://github.com/aertslab/arboreto")
     (synopsis "Gene regulatory network inference using tree-based ensemble regressors")
     (description

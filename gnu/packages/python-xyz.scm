@@ -2827,7 +2827,7 @@ threads.")
      (list python-pytest
            python-setuptools
            python-setuptools-scm
-           python-tornado-6
+           python-tornado
            python-typeguard
            python-wheel))
     (home-page "https://github.com/jd/tenacity")
@@ -7586,7 +7586,7 @@ templates.  A format string can be provided to control the output.")
                          python-nose
                          python-poetry-core
                          python-pytest
-                         python-tornado-6
+                         python-tornado
                          python-wheel))
     (propagated-inputs (list python-charset-normalizer python-six))
     (home-page "https://github.com/kakulukia/pypugjs")
@@ -13799,7 +13799,7 @@ away.")
             python-jupyter-client-bootstrap
             python-psutil
             python-pyzmq
-            python-tornado-6
+            python-tornado
             python-tqdm
             python-traitlets))
      (home-page "https://ipython.org/")
@@ -14114,7 +14114,7 @@ container data structures in Python).")
             python-jupyter-core
             python-nest-asyncio
             python-pyzmq
-            python-tornado-6
+            python-tornado
             python-traitlets))
      (native-inputs
       (list python-hatchling))
@@ -14223,7 +14223,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
            python-packaging
            python-psutil
            python-pyzmq
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (inputs (list python))              ;for cross compilation
     (native-inputs
@@ -16082,7 +16082,7 @@ applications.")
            python-cython
            python-pytest
            python-pytest-asyncio
-           python-tornado-6))
+           python-tornado))
     (home-page "https://github.com/zeromq/pyzmq")
     (synopsis "Python bindings for 0MQ")
     (description
@@ -19415,7 +19415,7 @@ time.")
            python-tinycss2
            python-traitlets
            ;; Required, even if [serve] is not used.
-           python-tornado-6
+           python-tornado
            ;; Required at runtime for `jupyter nbconvert --to=pdf`.
            texlive-adjustbox
            texlive-amsmath
@@ -19540,7 +19540,7 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-pyzmq
            python-send2trash
            python-terminado
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (native-inputs
      (list python-coverage
@@ -21105,7 +21105,7 @@ enhancements to optimization and data fitting problems.")
            python-packaging
            python-pillow
            python-pyyaml
-           python-tornado-6
+           python-tornado
            python-typing-extensions))
     (native-inputs
      (list python-beautifulsoup4
