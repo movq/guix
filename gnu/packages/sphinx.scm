@@ -427,6 +427,7 @@ size responsive web components.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-devhelp")
     (synopsis "Sphinx extension for creating Devhelp documents")
     (description
