@@ -2927,7 +2927,7 @@ in an opinionated way.")
        (sha256
         (base32 "0zhjmsd16xacg4vd7zb75kw8q9khn52wvad634v1bvz7swaivk2c"))))
     (build-system python-build-system)
-    (native-inputs (list python-setuptools-57)) ;for use_2to3
+    (native-inputs (list python-setuptools))
     (home-page
      "https://github.com/msabramo/python_unittest_parameterized_test_case")
     (synopsis "Parameterized tests for Python's unittest module")
