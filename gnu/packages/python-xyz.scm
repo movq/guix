@@ -30626,6 +30626,7 @@ that is accessible to other projects developed in Cython.")
     (arguments
      ;; TODO: Circular dependency on pytest.
      '(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://grantjenks.com/docs/sortedcontainers/")
     (synopsis "Sorted List, Sorted Dict, Sorted Set")
     (description
