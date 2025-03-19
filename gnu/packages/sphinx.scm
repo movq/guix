@@ -676,6 +676,7 @@ commands into documents, helping you to keep your command examples up to date.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-qthelp")
     (synopsis "Sphinx extension to output QtHelp documents")
     (description
