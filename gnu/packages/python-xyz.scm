@@ -6944,6 +6944,7 @@ JavaScript-like message boxes.  Types of dialog boxes include:
                 (("^([[:blank:]]+)def test_stracker_create_summary" all indent)
                  (string-append indent "@unittest.skipIf(True, \
 'Fails on Guix too for unknown reasons')\n" all))))))))
+    (native-inputs (list python-setuptools))
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
