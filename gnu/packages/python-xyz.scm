@@ -7911,7 +7911,7 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; tests contain Python 2 syntax.
     (arguments '(#:tests? #false))
     (native-inputs
-     (list python-setuptools-57))))
+     (list python-setuptools))))
 
 (define-public python-docx
   (package
@@ -12975,7 +12975,7 @@ def get_requires_for_build_sdist(config_settings=None):
            python-pytest-enabler
            python-pytest-flake8
            python-pytest-mypy
-           python-setuptools-57
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-zipp))
@@ -21219,7 +21219,7 @@ fast xml and html manipulation.")
        ;; can be run.  Maybe we could add a build step to transform beforehand
        ;; but it could be annoying/difficult.
        #:tests? #f))
-    (native-inputs (list python-setuptools-57)) ;for use_2to3 support
+    (native-inputs (list python-setuptools))
     (home-page "https://bitbucket.org/runeh/anyjson/")
     (synopsis
      "Wraps best available JSON implementation in a common interface")
