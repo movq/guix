@@ -5591,7 +5591,7 @@ in Golang.")
         "19pqqn01y6qmhhv8q6dh4p1acav49kl923kklnns2qxz5a6h766g"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-toml))
+     (list python-setuptools python-toml))
     (home-page "https://simplejson.readthedocs.io/en/latest")
     (synopsis
      "Json library for Python")
