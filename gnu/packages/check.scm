@@ -1430,7 +1430,7 @@ syntax validation, ...
                           (format #t "test suite not run~%"))
                       #t)))))
     (native-inputs
-     (list python-mock python-nose))
+     (list python-mock python-nose python-setuptools))
     (home-page "https://github.com/wolever/parameterized")
     (synopsis "Parameterized testing with any Python test framework")
     (description
