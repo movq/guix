@@ -1558,7 +1558,7 @@ in Pytest.")
              (when tests?
                (add-installed-pythonpath inputs outputs)
                (invoke "python" "-m" "pytest")))))))
-    (native-inputs (list python-pytest python-setuptools-scm))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/pytest-dev/pytest-subtests")
     (synopsis "Unittest subTest() support and subtests fixture")
     (description "This Pytest plugin provides unittest @code{subTest()}
