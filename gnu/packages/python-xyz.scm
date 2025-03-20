@@ -16846,7 +16846,7 @@ Python.")
        (sha256
         (base32
          "1lmy5d3np6xm95p9iqjg9gwdwh3d4aydkm9qy2xjvl6gfwa4gqia"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-coverage python-pyyaml python-setuptools python-wheel))
     (home-page "https://python-markdown.github.io/")
