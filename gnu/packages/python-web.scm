@@ -2491,7 +2491,7 @@ and that could be anything you want.")
                              `("-k" "not test_changing_max_frame_size")
                              '()))))))))
     (native-inputs
-     (list python-hypothesis python-pytest))
+     (list python-hypothesis python-pytest python-setuptools))
     (propagated-inputs
      (list python-hpack python-hyperframe))
     (home-page "https://github.com/python-hyper/h2")
