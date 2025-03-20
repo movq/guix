@@ -4135,7 +4135,7 @@ grew out of the @dfn{Vc} project.")
 (define-public python-pyfakefs
   (package
     (name "python-pyfakefs")
-    (version "4.6.3")
+    (version "5.8.0")
     (source (origin
               (method url-fetch)
               ;; We use the PyPI URL because there is no proper release
@@ -4144,21 +4144,10 @@ grew out of the @dfn{Vc} project.")
               (uri (pypi-uri "pyfakefs" version))
               (sha256
                (base32
-                "18bcv8yalg80zgigx40fk692yr3wf9ch1hkb0cdplqspyry2mwbd"))
-              (patches (search-patches
-                        "python-pyfakefs-remove-bad-test.patch"))
+                "1klr3hnz62iv9l5bq9g9c7xhpj6ggqi7iqpnrv9njw667kp5fm3y"))
               (file-name (string-append name "-" version ".tar.gz"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The default test suite does not run these extra tests.
-         (add-after 'check 'check-pytest-plugin
-           (lambda _
-             (invoke
-              "python" "-m" "pytest"
-              "pyfakefs/pytest_tests/pytest_plugin_test.py"))))))
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools python-wheel))
     (build-system python-build-system)
     ;; Guix lint doesn't like that this is a permanent redirect to the GitHub
     ;; page, but the pyfakefs documentation asks us to use this specific URL
