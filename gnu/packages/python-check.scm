@@ -1963,7 +1963,7 @@ for the @code{pytest} framework.")
     (propagated-inputs
      (list python-py-cpuinfo))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/ionelmc/pytest-benchmark")
     (synopsis "Pytest fixture for benchmarking code")
     (description
