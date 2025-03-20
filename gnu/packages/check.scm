@@ -3389,6 +3389,7 @@ pytest report.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-coverage python-nose))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/cmheisel/nose-xcover")
     (synopsis "Extends nose.plugins.cover to add Cobertura-style XML reports")
     (description "Nose-xcover is a companion to the built-in
