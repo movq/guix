@@ -26140,7 +26140,7 @@ both as keys and as attributes.")
        ;; fails due to deprecation warnings, etc.
        #:tests? #f))
     (native-inputs
-     (list python-coverage-test-runner python-pep8))
+     (list python-pep8))
     (propagated-inputs
      (list python-pyaml))
     (home-page "https://liw.fi/cliapp/")
@@ -26166,7 +26166,7 @@ both as keys and as attributes.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (native-inputs
-     (list python-coverage-test-runner python-pep8))
+     (list python-pep8))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
