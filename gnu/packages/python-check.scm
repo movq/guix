@@ -403,7 +403,7 @@ analysing code quality.")
            (lambda _
              (invoke "pytest" "-vv"))))))
     (native-inputs
-     (list python-coverage python-pytest))
+     (list python-coverage python-pytest python-setuptools))
     (home-page "https://github.com/asottile/covdefaults")
     (synopsis "Coverage plugin to provide opinionated default settings")
     (description
