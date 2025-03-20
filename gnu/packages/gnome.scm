@@ -5475,6 +5475,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
                              python-pygments
                              python-tomli
                              python-typogrify))
+    (native-inputs (list python-setuptools))
     (home-page "https://gitlab.gnome.org/GNOME/gi-docgen")
     (synopsis "Documentation tool for GObject-based libraries")
     (description "GI-DocGen is a document generator for GObject-based
