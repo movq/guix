@@ -2314,7 +2314,7 @@ plain (undecoratored) native coroutine tests.")
         (base32 "1hl0ln0cicdid4qjk7mv90lw9xkb0v71dlj7q7rn89vzxxm9b53y"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/MobileDynasty/pytest-env")
     (synopsis "Pytest plugin that allows you to add environment variables")
     (description
