@@ -531,7 +531,7 @@ ISO 8601 dates, time and duration.")
                     (lambda _
                       (invoke "pytest" "-vv" "iso8601"))))))
     (native-inputs
-     (list python-pytest python-pytz))
+     (list python-pytest python-pytz python-setuptools))
     (home-page "https://github.com/micktwomey/pyiso8601")
     (synopsis "Module to parse ISO 8601 dates")
     (description
