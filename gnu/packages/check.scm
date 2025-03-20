@@ -3594,7 +3594,7 @@ inspect\\.isclass\\(attr_value\\):")
 or isinstance(attr_value, staticmethod)):")))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-dateutil))
     (arguments
