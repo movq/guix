@@ -3225,6 +3225,7 @@ each of the environments.")
              (invoke "./testrun"))))))
     (propagated-inputs
      (list python-coverage))
+    (native-inputs (list python-setuptools))
     (home-page "https://liw.fi/coverage-test-runner/")
     (synopsis "Python module for running unit tests")
     (description "@code{CoverageTestRunner} is a python module for running
