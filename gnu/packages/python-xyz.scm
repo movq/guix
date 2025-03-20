@@ -13361,6 +13361,7 @@ def get_requires_for_build_sdist(config_settings=None):
      (list python-pypa-build
            python-pyfakefs
            python-pytest
+           python-setuptools
            python-setuptools-scm))
     (home-page "https://importlib-metadata.readthedocs.io/")
     (synopsis "Read metadata from Python packages")
