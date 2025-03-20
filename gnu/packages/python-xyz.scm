@@ -21347,7 +21347,7 @@ of @acronym{REGEXPs, regular expressions}.")
     (propagated-inputs
      (list python-markupsafe))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock python-pytest python-setuptools))
     (home-page "https://www.makotemplates.org/")
     (synopsis "Templating language for Python")
     (description "Mako is a templating language for Python that compiles
