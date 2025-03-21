@@ -3260,12 +3260,7 @@ YouTube.com and many more sites.")
                   python-urllib3-1.26  ; TODO Remove this one too
                   python-websockets))
     (native-inputs
-     (append
-       ;; To generate the manpage.
-       (if (supported-package? pandoc)
-         (list pandoc)
-         '())
-       (list nss-certs-for-test python-hatchling python-pytest zip)))
+      (list nss-certs-for-test python-hatchling python-pytest zip))
     (synopsis "Download videos from YouTube.com and other sites")
     (description
      "yt-dlp is a small command-line program to download videos from
