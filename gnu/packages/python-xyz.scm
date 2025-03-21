@@ -27813,7 +27813,7 @@ class ShellOutSSHClientTests"))))
         (base32 "0ijlnv60y8f41py1wnn5n1a1i81cxd9dfpdhr0k3cgkrcbz8850p"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-nosexcover))
+     (list python-nosexcover python-setuptools))
     (home-page "https://github.com/Byron/smmap")
     (synopsis "Python sliding window memory map manager")
     (description "@code{smmap} is a pure Python implementation of a sliding
