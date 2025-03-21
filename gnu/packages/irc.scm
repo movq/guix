@@ -388,10 +388,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
-     (append (list gettext-minimal pkg-config)
-             (if (target-x86?)
-                 (list ruby-asciidoctor)
-                 '())))
+     (list gettext-minimal pkg-config))
     (inputs
      (list aspell
            curl
@@ -410,24 +407,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
            cjson))
     (arguments
      (list #:configure-flags
-           #~(list "-DENABLE_PHP=OFF"
-                   #$@(if (target-x86?)
-                          #~("-DENABLE_MAN=ON"
-                             "-DENABLE_DOC=ON"
-                             "-DENABLE_DOC_INCOMPLETE=ON")
-                          #~()))
-           #:phases
-           #~(modify-phases %standard-phases
-               #$@(if (target-x86?)
-                      #~((add-after 'install 'move-doc
-                           (lambda* (#:key outputs #:allow-other-keys)
-                             (let* ((out (assoc-ref outputs "out"))
-                                    (doc (assoc-ref outputs "doc"))
-                                    (from (string-append out "/share/doc/weechat"))
-                                    (to (string-append doc "/share/doc/weechat")))
-                               (mkdir-p (string-append doc "/share/doc"))
-                               (rename-file from to)))))
-                      #~()))))
+           #~(list "-DENABLE_PHP=OFF")))
     (synopsis "Extensible chat client")
     (description "WeeChat (Wee Enhanced Environment for Chat) is an
 @dfn{Internet Relay Chat} (IRC) client, which is designed to be light and fast.
