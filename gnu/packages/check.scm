@@ -1953,7 +1953,8 @@ reported in a previous test run.")
                          python-factory-boy
                          python-faker
                          python-numpy
-                         python-pytest-xdist))
+                         python-pytest-xdist
+                         python-setuptools))
     (propagated-inputs (list python-importlib-metadata python-pytest))
     (home-page "https://github.com/pytest-dev/pytest-randomly")
     (synopsis "Pytest plugin to randomly order tests")
