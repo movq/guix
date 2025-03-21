@@ -352,6 +352,7 @@ also known as DXTn or DXTC) for Mesa.")
             python-mako
             python-ply
             python-pyyaml
+            python-setuptools
             python-wrapper
             (@ (gnu packages base) which))
       (if (target-arm?)
