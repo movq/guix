@@ -801,16 +801,24 @@ API rules.")
        (uri (pypi-uri "frozenlist" version))
        (sha256
         (base32 "05xqnkqq7k95v5nfgq1kck78v4i36wjl5m3nx148770vwqlszmc1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-scripts
+           (lambda _
+             (substitute* "packaging/pep517_backend/_backend.py"
+               (("build_inplace=False") "build_inplace=True"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest" "tests")))))))
-    (native-inputs (list python-expandvars python-setuptools python-tomli
-                         python-wheel))
+    (native-inputs
+      (list python-expandvars
+            python-cython
+            python-setuptools
+            python-tomli
+            python-wheel))
     (home-page "https://github.com/aio-libs/frozenlist")
     (synopsis "List-like data structure for Python")
     (description "@code{frozenlist.FrozenList} is a list-like structure which
