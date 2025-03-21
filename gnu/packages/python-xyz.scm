@@ -38771,6 +38771,7 @@ collection.")
        (sha256
         (base32 "10400bd3yv6rjfnq8galskkbpqz1sfx9sfgr5qwvw04270x4cjgr"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for TOML")
     (description "This package contains typing stubs for TOML, a very small
