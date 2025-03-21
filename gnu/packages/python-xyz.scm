@@ -37465,7 +37465,7 @@ statements in OFX files.")
                         ;; missing timezone data (see:
                         ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
                         "-k" "not LocalOffset")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
     (description "The @code{strict_rfc3339} Python module provides strict,
