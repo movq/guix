@@ -7253,7 +7253,7 @@ DAV, and others.")
 (define-public gusb-minimal
   (package
     (name "gusb-minimal")
-    (version "0.3.5")
+    (version "0.4.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7262,7 +7262,7 @@ DAV, and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ifhdqhpyxwsg0z9s1anj7cf5pya5qsqyp5ksh9n7mqwa4lrjkl8"))))
+                "1sr4d1jgn6vr7zs6dwp2v63qmq1kdxqqv6h6r7lf8x9pnws0y8m6"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f          ;libusb fails to initialize.  Wonder what that is.
@@ -7278,7 +7278,7 @@ DAV, and others.")
      (list gobject-introspection pkg-config python vala))
     (propagated-inputs
      ;; Both of these are required by gusb.pc.
-     (list glib libusb))
+     (list glib libusb json-glib))
     (home-page "https://github.com/hughsie/libgusb")
     (synopsis "GLib binding for libusb1")
     (description
