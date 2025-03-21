@@ -26393,7 +26393,7 @@ both as keys and as attributes.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (native-inputs
-     (list python-coverage-test-runner))
+     (list python-coverage-test-runner python-setuptools))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
