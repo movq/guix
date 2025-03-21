@@ -14885,15 +14885,15 @@ Introspection bindings, which is the recommended way to use GLib from Python.")
 (define-public python-dbus
   (package
     (name "python-dbus")
-    (version "1.2.18")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dbus.freedesktop.org/releases/dbus-python/"
-                           "dbus-python-" version ".tar.gz"))
+                           "dbus-python-" version ".tar.xz"))
        (sha256
-        (base32 "0q3jrw515z98mqdk9x822nd95rky455zz9876f1nqna5igkd3gcj"))))
-    (build-system gnu-build-system)
+        (base32 "1ma3c1v7fh0v7028jswvxcrizy9jq6y77adck3vz3j7w1zqjhsy3"))))
+    (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
