@@ -2050,6 +2050,7 @@ on the terminal in a visually appealing way.")
     (native-inputs
      (list python-wheel
            python-wrapper
+           python-setuptools
            python-setuptools-rust))
     (home-page "https://github.com/pyo3/maturin")
     (synopsis "Build and publish crates and python packages")
