@@ -1695,7 +1695,7 @@ of the project to ensure it renders properly.")
            (lambda _
              (invoke "pytest" "-vv"))))))
     (native-inputs
-     (list python-covdefaults python-coverage python-pytest))
+     (list python-covdefaults python-coverage python-pytest python-setuptools))
     (propagated-inputs
      (list python-regex))
     (home-page "https://github.com/asottile/re-assert")
