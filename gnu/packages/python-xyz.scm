@@ -24129,7 +24129,7 @@ simple, lightweight implementation.")
                                       "and not test_125 "
                                       "and not test_131"))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/hamstah/ukpostcodeparser")
     (synopsis "UK Postcode parser for Python")
     (description
