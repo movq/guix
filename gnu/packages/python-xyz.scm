@@ -26130,7 +26130,7 @@ both as keys and as attributes.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pep8))
+     (list python-pep8 python-setuptools))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
