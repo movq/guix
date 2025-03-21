@@ -17553,7 +17553,7 @@ asyncio.")
     (propagated-inputs
      (list python-pytest python-black python-toml))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/shopkeep/pytest-black")
     (synopsis "Pytest plugin to enable format checking with black")
     (description
