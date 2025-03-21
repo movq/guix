@@ -7069,7 +7069,7 @@ exploit attempts.")
            python-decorator
            python-flasgger
            python-flask
-           python-greenlet-2
+           python-greenlet
            python-itsdangerous
            python-markupsafe
            python-six
