@@ -31102,7 +31102,7 @@ make your work easier.")
              (add-installed-pythonpath inputs outputs)
              (invoke "pytest" "-vv"))))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-asyncio))
+     (list python-pytest python-pytest-cov python-pytest-asyncio python-setuptools))
     (propagated-inputs
      (list python-attrs))
     (home-page "https://github.com/python-trio/outcome")
