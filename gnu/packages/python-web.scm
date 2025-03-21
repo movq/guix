@@ -5054,7 +5054,7 @@ addon for removing tracking fields from URLs.")
          "06fg8jj64lgxr2jrizzrsdvaf1avpg5qmhvnswhfbf8sqrv0hmyh"))))
     (build-system pyproject-build-system)
     (arguments `(#:tests? #f))
-    (native-inputs (list python-hatchling))
+    (native-inputs (list python-hatchling python-setuptools))
     (propagated-inputs
      (append
       ;; These 5 inputs are used to build urrlib3[secure]
