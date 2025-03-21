@@ -4165,7 +4165,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
                       #t)))))
     (propagated-inputs (list python-wrapt))
     (native-inputs
-     (list python-coverage python-nose))
+     (list python-coverage python-nose python-setuptools))
     (home-page
      "https://github.com/kwarunek/aiounittest")
     (synopsis "Test asyncio code more easily")
