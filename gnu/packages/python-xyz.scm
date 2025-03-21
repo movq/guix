@@ -15994,34 +15994,48 @@ Python 2 and Python 3.")
 (define-public python-waf
   (package
     (name "python-waf")
-    (version "2.0.19")
+    (version "2.1.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://waf.io/"
                                   "waf-" version ".tar.bz2"))
               (sha256
                (base32
-                "19dvqbsvxz7ch03dh1v0znklrwxlz6yzddc3k9smzrrgny4jch6q"))))
+                "12k7j40c3w7b4292gpvqcq2xlc1j2jnciz1rqjl9r70nx1zl08ya"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'use-packaged-lib
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (pyver (python-version (assoc-ref inputs "python"))))
+               (substitute* "waf-light"
+                 (("dirname = .*") (string-append "return \"" out "/lib/python"
+                                                  pyver
+                                                  "/site-packages\"\n"))))))
          (replace 'build
            (lambda _
              ;; XXX: Find a way to add all extra tools.
              (let ((tools '("gccdeps"
                             "clang_compilation_database")))
-               (invoke "python" "waf-light" "configure" "build"
+               (invoke "python" "waf-light" "configure" "build" "--make-waf"
                        (string-append "--tools="
-                                      (string-join tools ","))))))
+                                      (string-join tools ",")))
+               (invoke "sed" "-i" "/^#==>$/,/^#<==$/d" "waf"))))
          (replace 'check
            (lambda _
              (invoke "python" "waf" "--version")))
          (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (install-file "waf" (string-append out "/bin")))
-             #t))
+               (install-file "waf" (string-append out "/bin"))
+               (copy-recursively "waflib" (string-append out "/lib/python"
+                                                         (python-version (assoc-ref
+                                                                           inputs
+                                                                           "python"))
+                                                         "/site-packages/waflib")))
+             #f))
          ;; waf breaks when it is wrapped.
          (delete 'wrap))))
     (home-page "https://waf.io/")
