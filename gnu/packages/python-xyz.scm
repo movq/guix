@@ -21919,6 +21919,7 @@ main process so that they are handled correctly.")
        #:tests? #f))
     (propagated-inputs
      (list python-dateutil python-pyicu))
+    (native-inputs (list python-setuptools))
     (synopsis "Parse and generate vCard and vCalendar files")
     (description "Vobject is intended to be a full featured Python package for
 parsing and generating vCard and vCalendar files.  Currently, iCalendar files
