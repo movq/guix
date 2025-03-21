@@ -1873,7 +1873,7 @@ default) of the repository.")
     (propagated-inputs
      (list python-smmap))
     (native-inputs
-     (list git-minimal/pinned python-nose))
+     (list git-minimal/pinned python-nose python-setuptools))
     (home-page "https://github.com/gitpython-developers/gitdb")
     (synopsis "Python implementation of the Git object database")
     (description
