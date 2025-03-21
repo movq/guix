@@ -31792,7 +31792,7 @@ one-off scripts.")
                                "    " m)))
              #t)))))
     (native-inputs
-     (list python-freezegun))
+     (list python-freezegun python-setuptools))
     (home-page
      "https://github.com/pydanny/cached-property")
     (synopsis
