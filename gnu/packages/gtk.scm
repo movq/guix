@@ -2130,7 +2130,7 @@ printing and other features typical of a source code editor.")
         "1sybz43sj4ynjahlkidrcdpdrq8yi1avkndc2hgb5pgvfjld1p9d"))))
     (build-system python-build-system)
     (native-inputs
-     (list pkg-config python-pytest))
+     (list pkg-config python-pytest python-setuptools))
     (propagated-inputs                  ;pycairo.pc references cairo
      (list cairo))
     (home-page "https://cairographics.org/pycairo/")
