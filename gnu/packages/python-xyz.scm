@@ -37467,6 +37467,7 @@ statements in OFX files.")
     (native-inputs (list python-hypothesis
                          python-pytest
                          python-pytest-runner
+                         python-setuptools
                          python-strict-rfc3339))
     (propagated-inputs (list python-six))
     (home-page "https://github.com/naimetti/rfc3339-validator")
