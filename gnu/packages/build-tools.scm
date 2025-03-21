@@ -492,7 +492,8 @@ other lower-level build files.")))
      ;; TODO: Add 'fop' when available in Guix to generate manuals.
      (list python-setuptools python-lxml python-wheel
            ;;For tests.
-           python-psutil))
+           python-psutil
+           python-setuptools))
     (home-page "https://scons.org/")
     (synopsis "Software construction tool written in Python")
     (description
