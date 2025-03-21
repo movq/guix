@@ -1865,11 +1865,12 @@ default) of the repository.")
                       (invoke "git" "clone" "--bare" "/tmp/testrepo"
                               "/tmp/testrepo.git")))
                   (replace 'check
-                    (lambda _
-                      (setenv "GITDB_TEST_GIT_REPO_BASE" "/tmp/testrepo.git")
-                      ;; Skip tests that must be run from the gitdb repository.
-                      (setenv "TRAVIS" "1")
-                      (invoke "nosetests" "-v"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (setenv "GITDB_TEST_GIT_REPO_BASE" "/tmp/testrepo.git")
+                        ;; Skip tests that must be run from the gitdb repository.
+                        (setenv "TRAVIS" "1")
+                        (invoke "nosetests" "-v")))))))
     (propagated-inputs
      (list python-smmap))
     (native-inputs
