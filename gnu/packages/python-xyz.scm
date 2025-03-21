@@ -22466,7 +22466,7 @@ are synchronized with data exchanges on \"channels\".")
     (propagated-inputs
      (list python-graphviz))
     (native-inputs
-     (list python-mock graphviz))
+     (list python-mock python-setuptools graphviz))
     (home-page "https://mg.pov.lt/objgraph/")
     (synopsis "Draw Python object reference graphs with graphviz")
     (description
