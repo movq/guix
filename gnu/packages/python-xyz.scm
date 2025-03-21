@@ -27251,7 +27251,7 @@ conversion: Gamut A, B, and C.")
            (lambda _
              (invoke "pytest" "-v"))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://rfc3986.readthedocs.io/")
     (synopsis "Parse and validate URI references")
     (description
