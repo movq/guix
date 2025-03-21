@@ -4990,6 +4990,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
          (list python-pyopenssl)
          '())
        (list python-pysocks)))
+    (native-inputs (list python-setuptools))
     (home-page "https://urllib3.readthedocs.io/")
     (synopsis "HTTP library with thread-safe connection pooling")
     (description
