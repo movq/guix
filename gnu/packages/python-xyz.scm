@@ -5648,7 +5648,7 @@ Prefix) - Encode and decode data structures.")
     (inputs
      (list icu4c))
     (native-inputs
-     (list python-pytest python-six))
+     (list python-pytest python-setuptools python-six))
     (home-page "https://gitlab.pyicu.org/main/pyicu")
     (synopsis "Python extension wrapping the ICU C++ API")
     (description
