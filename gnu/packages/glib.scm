@@ -248,7 +248,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
 (define glib-minimal
   (package
     (name "glib")
-    (version "2.83.3")
+    (version "2.84.0")
     (source
      (origin
        (method url-fetch)
@@ -257,7 +257,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "139jpar5f5qjxkf3knvqq1kgdxgsrxqqmybw4yaaagrfpcc57inh"))
+        (base32 "0spzb95gdcsq7llyfx5bha257apx43m85bfg2ll5whl5rc03d0pq"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
@@ -299,146 +299,147 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                 (("(test_timeout.*) = ([[:digit:]]+)" all first second)
                  (string-append first " = " second "0")))))
           (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* "gio/tests/meson.build"
-                ((".*'testfilemonitor'.*") ;marked as flaky
-                 ""))
-              (with-directory-excursion "glib/tests"
-                (substitute* '("unix.c" "utils.c")
-                  (("[ \t]*g_test_add_func.*;") "")))
-              (with-directory-excursion "gio/tests"
-                (substitute* '("contenttype.c"
-                               "gdbus-address-get-session.c"
-                               "gdbus-server-auth.c"
-                               "gdbus-peer.c"
-                               "appinfo.c"
-                               "desktop-app-info.c")
-                  (("[ \t]*g_test_add_func.*;") ""))
-                (unless (which "update-desktop-database")
-                  (substitute* "file.c"
-                    (("[ \t]*g_test_add_func.*query-default-handler.*;") "")))
-                (substitute* '("portal-support-snap.c")
-                  (("g_test_init .*")
-                   "return EXIT_SUCCESS;")))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "gio/tests/meson.build"
+                  ((".*'testfilemonitor'.*") ;marked as flaky
+                   ""))
+                (with-directory-excursion "glib/tests"
+                  (substitute* '("unix.c" "utils.c")
+                    (("[ \t]*g_test_add_func.*;") "")))
+                (with-directory-excursion "gio/tests"
+                  (substitute* '("contenttype.c"
+                                 "gdbus-address-get-session.c"
+                                 "gdbus-server-auth.c"
+                                 "gdbus-peer.c"
+                                 "appinfo.c"
+                                 "desktop-app-info.c")
+                    (("[ \t]*g_test_add_func.*;") ""))
+                  (unless (which "update-desktop-database")
+                    (substitute* "file.c"
+                      (("[ \t]*g_test_add_func.*query-default-handler.*;") "")))
+                  (substitute* '("portal-support-snap.c")
+                    (("g_test_init .*")
+                     "return EXIT_SUCCESS;")))
 
-              #$@(if (target-x86-32?)
-                     ;; Comment out parts of timer.c that fail on i686 due to
-                     ;; excess precision when building with GCC 10:
-                     ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
-                     '((substitute* "glib/tests/timer.c"
-                         (("^  g_assert_cmpuint \\(micros.*" all)
-                          (string-append "//" all "\n"))
-                         (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
-                          (string-append "//" all "\n"))))
-                     '())
-              #$@(if (target-ppc32?)
-                     ;; assertion failed (last_thread_id <= thread_id): (3 <= 2)
-                     #~((substitute* "glib/tests/thread-pool-slow.c"
-                          (("^   g_assert_cmpint \\(last_thread_id.*" all)
-                           (string-append "//" all "\n"))))
-                     #~())
-              #$@(if (system-hurd?)
-                     '((with-directory-excursion "gio/tests"
-                         ;; TIMEOUT after 600s
-                         (substitute* '("actions.c"
-                                        "dbus-appinfo.c"
-                                        "debugcontroller.c"
-                                        "gdbus-bz627724.c"
-                                        "gdbus-connection-slow.c"
-                                        "gdbus-exit-on-close.c"
-                                        "gdbus-export.c"
-                                        "gdbus-introspection.c"
-                                        "gdbus-method-invocation.c"
-                                        "gdbus-non-socket.c"
-                                        "gdbus-proxy-threads.c"
-                                        "gdbus-proxy-unique-name.c"
-                                        "gdbus-proxy-well-known-name.c"
-                                        "gdbus-proxy.c"
-                                        "gdbus-test-codegen.c"
-                                        "gmenumodel.c"
-                                        "gnotification.c"
-                                        "stream-rw_all.c")
-                           (("return (g_test_run|session_bus_run)" all call)
-                            (string-append "return 0;// " call))
-                           ((" (ret|rtv|result) = (g_test_run|session_bus_run)"
-                             all var call)
-                            (string-append " " var " = 0;// " call))
-                           (("[ \t]*g_test_add_func.*;") ""))
+                #$@(if (target-x86-32?)
+                       ;; Comment out parts of timer.c that fail on i686 due to
+                       ;; excess precision when building with GCC 10:
+                       ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
+                       '((substitute* "glib/tests/timer.c"
+                           (("^  g_assert_cmpuint \\(micros.*" all)
+                            (string-append "//" all "\n"))
+                           (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
+                            (string-append "//" all "\n"))))
+                       '())
+                #$@(if (target-ppc32?)
+                       ;; assertion failed (last_thread_id <= thread_id): (3 <= 2)
+                       #~((substitute* "glib/tests/thread-pool-slow.c"
+                            (("^   g_assert_cmpint \\(last_thread_id.*" all)
+                             (string-append "//" all "\n"))))
+                       #~())
+                #$@(if (system-hurd?)
+                       '((with-directory-excursion "gio/tests"
+                           ;; TIMEOUT after 600s
+                           (substitute* '("actions.c"
+                                          "dbus-appinfo.c"
+                                          "debugcontroller.c"
+                                          "gdbus-bz627724.c"
+                                          "gdbus-connection-slow.c"
+                                          "gdbus-exit-on-close.c"
+                                          "gdbus-export.c"
+                                          "gdbus-introspection.c"
+                                          "gdbus-method-invocation.c"
+                                          "gdbus-non-socket.c"
+                                          "gdbus-proxy-threads.c"
+                                          "gdbus-proxy-unique-name.c"
+                                          "gdbus-proxy-well-known-name.c"
+                                          "gdbus-proxy.c"
+                                          "gdbus-test-codegen.c"
+                                          "gmenumodel.c"
+                                          "gnotification.c"
+                                          "stream-rw_all.c")
+                             (("return (g_test_run|session_bus_run)" all call)
+                              (string-append "return 0;// " call))
+                             ((" (ret|rtv|result) = (g_test_run|session_bus_run)"
+                               all var call)
+                              (string-append " " var " = 0;// " call))
+                             (("[ \t]*g_test_add_func.*;") ""))
 
-                         ;; commenting-out g_assert, g_test_add_func, g_test_run
-                         ;; does not help; special-case short-circuit.
-                         (substitute* "gdbus-connection-loss.c" ;; TODO?
-                           (("  gchar \\*path;.*" all)
-                            (string-append all "  return 0;\n")))
+                           ;; commenting-out g_assert, g_test_add_func, g_test_run
+                           ;; does not help; special-case short-circuit.
+                           (substitute* "gdbus-connection-loss.c" ;; TODO?
+                             (("  gchar \\*path;.*" all)
+                              (string-append all "  return 0;\n")))
 
-                         ;; FAIL
-                         (substitute* '("appmonitor.c"
-                                        "async-splice-output-stream.c"
-                                        "autoptr.c"
-                                        "contexts.c"
-                                        "converter-stream.c"
-                                        "file.c"
-                                        "g-file-info.c"
-                                        "g-file.c"
-                                        "g-icon.c"
-                                        "gapplication.c"
-                                        "gdbus-connection-flush.c"
-                                        "gdbus-connection.c"
-                                        "gdbus-names.c"
-                                        "gdbus-server-auth.c"
-                                        "gsocketclient-slow.c"
-                                        "gsubprocess.c"
-                                        "io-stream.c"
-                                        "live-g-file.c"
-                                        "memory-monitor.c"
-                                        "mimeapps.c"
-                                        "network-monitor-race.c"
-                                        "network-monitor.c"
-                                        "pollable.c"
-                                        "power-profile-monitor.c"
-                                        "readwrite.c"
-                                        "resources.c"
-                                        "socket-service.c"
-                                        "socket.c"
-                                        "tls-bindings.c"
-                                        "tls-certificate.c"
-                                        "tls-database.c"
-                                        "trash.c"
-                                        "vfs.c")
-                           (("return (g_test_run|session_bus_run)" all call)
-                            (string-append "return 0;// " call))
-                           ((" (ret|rtv|result) = (g_test_run|session_bus_run)"
-                             all var call)
-                            (string-append " " var " = 0;// " call))
-                           (("[ \t]*g_test_add_func.*;") ""))
+                           ;; FAIL
+                           (substitute* '("appmonitor.c"
+                                          "async-splice-output-stream.c"
+                                          "autoptr.c"
+                                          "contexts.c"
+                                          "converter-stream.c"
+                                          "file.c"
+                                          "g-file-info.c"
+                                          "g-file.c"
+                                          "g-icon.c"
+                                          "gapplication.c"
+                                          "gdbus-connection-flush.c"
+                                          "gdbus-connection.c"
+                                          "gdbus-names.c"
+                                          "gdbus-server-auth.c"
+                                          "gsocketclient-slow.c"
+                                          "gsubprocess.c"
+                                          "io-stream.c"
+                                          "live-g-file.c"
+                                          "memory-monitor.c"
+                                          "mimeapps.c"
+                                          "network-monitor-race.c"
+                                          "network-monitor.c"
+                                          "pollable.c"
+                                          "power-profile-monitor.c"
+                                          "readwrite.c"
+                                          "resources.c"
+                                          "socket-service.c"
+                                          "socket.c"
+                                          "tls-bindings.c"
+                                          "tls-certificate.c"
+                                          "tls-database.c"
+                                          "trash.c"
+                                          "vfs.c")
+                             (("return (g_test_run|session_bus_run)" all call)
+                              (string-append "return 0;// " call))
+                             ((" (ret|rtv|result) = (g_test_run|session_bus_run)"
+                               all var call)
+                              (string-append " " var " = 0;// " call))
+                             (("[ \t]*g_test_add_func.*;") ""))
 
-                         ;; commenting-out g_test_add_func, g_test_run does
-                         ;; not help; special-case short-circuit.
-                         (substitute* "gsettings.c"
-                           (("#ifdef TEST_LOCALE_PATH" all)
-                            (string-append "  return 0;\n" all)))
+                           ;; commenting-out g_test_add_func, g_test_run does
+                           ;; not help; special-case short-circuit.
+                           (substitute* "gsettings.c"
+                             (("#ifdef TEST_LOCALE_PATH" all)
+                              (string-append "  return 0;\n" all)))
 
-                         ;; commenting-out g_test_add_func, ;; g_test_run does
-                         ;; not help; special-case short-circuit.
-                         (substitute* "proxy-test.c"
-                           (("  gint result.*;" all)
-                            (string-append all "  return 0;\n")))
+                           ;; commenting-out g_test_add_func, ;; g_test_run does
+                           ;; not help; special-case short-circuit.
+                           (substitute* "proxy-test.c"
+                             (("  gint result.*;" all)
+                              (string-append all "  return 0;\n")))
 
-                         ;; commenting-out g_test_add_func, g_test_run
-                         ;; does not help; special-case short-circuit.
-                         (substitute* "volumemonitor.c"
-                           (("  gboolean ret;" all)
-                            (string-append all "  return 0;\n"))))
+                           ;; commenting-out g_test_add_func, g_test_run
+                           ;; does not help; special-case short-circuit.
+                           (substitute* "volumemonitor.c"
+                             (("  gboolean ret;" all)
+                              (string-append all "  return 0;\n"))))
 
-                       (with-directory-excursion "glib/tests"
-                         ;; TIMEOUT after 600s
-                         (substitute* "thread-pool.c"
-                           (("[ \t]*g_test_add_func.*;") ""))
+                         (with-directory-excursion "glib/tests"
+                           ;; TIMEOUT after 600s
+                           (substitute* "thread-pool.c"
+                             (("[ \t]*g_test_add_func.*;") ""))
 
-                         ;; FAIL
-                         (substitute* "fileutils.c"
-                           (("[ \t]*g_test_add_func.*;") ""))))
-                     '())))
+                           ;; FAIL
+                           (substitute* "fileutils.c"
+                             (("[ \t]*g_test_add_func.*;") ""))))
+                       '()))))
           ;; Python references are not being patched in patch-phase of build,
           ;; despite using python-wrapper as input. So we patch them manually.
           ;;
@@ -458,6 +459,10 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                                      "/bin/python"
                                      #$(version-major+minor
                                         (package-version python))))))))
+          (add-after 'unpack 'fix-output-cycle
+            (lambda _
+              (substitute* "girepository/meson.build"
+                (("'gi_compile_repository=.*") ""))))
           (add-before 'check 'pre-check
             (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
               ;; For tests/gdatetime.c.
