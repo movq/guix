@@ -593,7 +593,7 @@ sample formats, sample rates and channel numbers.")
        (list
          #:tests? #f
          #:phases #~(modify-phases %standard-phases
-                      (add-after 'unpack 'replace-network-fetc
+                      (add-after 'unpack 'replace-network-fetch
                         (lambda _
                           (with-output-to-file
                             "src/cmake.deps/FetchPandocMan.cmake"
@@ -606,7 +606,7 @@ sample formats, sample rates and channel numbers.")
                         (lambda _
                           (chdir "src"))))))
       (native-inputs
-        (list pandoc rnpgp-cmake-modules))
+        (list rnpgp-cmake-modules))
       (inputs
         (list ncurses pulseaudio))
       (home-page "https://github.com/fulhax/ncpamixer")
