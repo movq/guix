@@ -3815,7 +3815,7 @@ Unicode-to-LaTeX conversion.")
              (setenv "HOME" "/tmp")
              (invoke "python" "sh.py" "test"))))))
     (native-inputs
-     (list python-coverage))
+     (list python-coverage python-setuptools))
     (home-page "https://github.com/amoffat/sh")
     (synopsis "Python subprocess replacement")
     (description "This package provides a replacement for Python's
