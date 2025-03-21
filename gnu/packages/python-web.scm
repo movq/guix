@@ -3934,6 +3934,7 @@ support for the @code{noload} operations used by @code{zodb}.")
         (base32
          "1ksbc726av9xacml6jhcfyn828hlhb9xlddpx6fcvnlvmpmpvhk9"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/zope.event/")
     (synopsis "Event publishing system for Python")
     (description "Zope.event provides an event publishing API, intended for
