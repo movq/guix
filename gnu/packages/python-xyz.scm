@@ -35386,6 +35386,7 @@ process.")
     (build-system python-build-system)
     (propagated-inputs
       (list python-immutables))
+    (native-inputs (list python-setuptools))
     (home-page
       "https://github.com/MagicStack/contextvars")
     (synopsis "PEP 567 Backport")
