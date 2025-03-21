@@ -2797,6 +2797,7 @@ as is normally the case.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-packaging python-pytest python-termcolor))
+    (native-inputs (list python-setuptools))
     (home-page "https://pivotfinland.com/pytest-sugar/")
     (synopsis "Plugin for pytest that changes the default look and feel")
     (description
