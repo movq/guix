@@ -305,7 +305,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "24.3.2")
+    (version "25.0.2")
     (source
      (origin
        (method url-fetch)
@@ -315,7 +315,7 @@ also known as DXTn or DXTC) for Mesa.")
                                  "mesa-" version ".tar.xz")))
        (sha256
         (base32
-         "05pp7wghydjx428r4wr6p08nsx1g0ssnxvjlc9wf8s91dlx5z7xd"))))
+         "15ywgxi3hmn4sk36xywm1mh5qjsz8gnzy046i6axy25khg809ydd"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -548,6 +548,11 @@ directory = ~a
                                         (from-crates-io 'rust-proc-macro2-1)
                                         (from-crates-io 'rust-paste-1))))))))
                 #~())
+         (add-after 'patch-subproject-sources 'delete-lockfiles
+           (lambda _
+             (for-each (lambda (lockfile)
+                         (delete-file-recursively lockfile))
+                       (find-files "subprojects" "Cargo\\.lock$"))))
          (add-after 'unpack 'set-home-directory
            ;; Build tries to use a shader cache (non-fatal error).
            (lambda _ (setenv "HOME" "/tmp")))
