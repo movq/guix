@@ -100,11 +100,7 @@ block integrity kernel modules.")
 
 (define-public cryptsetup
   (package/inherit cryptsetup-minimal
-    (name "cryptsetup")
-    (native-inputs `(,(if (supported-package? ruby-asciidoctor)
-                          `("ruby-asciidoctor" ,ruby-asciidoctor)
-                          '())
-                     ,@(package-native-inputs cryptsetup-minimal)))))
+    (name "cryptsetup")))
 
 (define-public (libcryptsetup-propagated-inputs)
   (list argon2
