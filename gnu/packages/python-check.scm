@@ -1665,7 +1665,7 @@ failures per test.")
            python-importlib-metadata
            python-pep517
            python-pytest))
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/jaraco/pytest-checkdocs")
     (synopsis "Check the README when running tests")
     (description
