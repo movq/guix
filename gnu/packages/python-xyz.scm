@@ -24175,7 +24175,7 @@ addresses, and phone numbers.")
                 "10w3frzqir5sbpglc9bwb8w414dsivmcvji07yxy61mz2gp9ylf6"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-unidecode))
+     (list python-unidecode python-setuptools))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/mk-fg/pretty-yaml")
