@@ -37218,7 +37218,7 @@ systems in Python.")
     (propagated-inputs
      (list python-click))
     (native-inputs
-     (list python-mock python-pytest python-sh))
+     (list python-mock python-pytest python-setuptools python-sh))
     (home-page "https://saurabh-kumar.com/python-dotenv/")
     (synopsis "Setup environment variables according to .env files")
     (description
