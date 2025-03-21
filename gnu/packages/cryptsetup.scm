@@ -51,10 +51,8 @@
    (arguments
     `(#:configure-flags
       (append
-        (if (assoc-ref %build-inputs "ruby-asciidoctor")
-            '()
-            (list "--disable-asciidoc"))
         (list
+          "--disable-asciidoc"
           ;; Argon2 is always enabled, this just selects the (faster) full version.
           "--enable-libargon2"
           ;; The default is OpenSSL which provides better PBKDF performance.
@@ -70,10 +68,7 @@
           (string-append "--with-libgcrypt-prefix="
                          (assoc-ref %build-inputs "libgcrypt"))))))
    (native-inputs
-    (append (list pkg-config)
-            (if (supported-package? ruby-asciidoctor)
-                (list ruby-asciidoctor)
-                '())))
+    (list pkg-config))
    (inputs
     (list argon2
           json-c
