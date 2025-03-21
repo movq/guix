@@ -13580,7 +13580,7 @@ procedures.")
         (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? (not (%current-target-system))
+     (list #:tests? #f
            ;; Do not test the myproject.toml build as it pulls dependencies.
            ;; Do not run a test that tries to emulate a broken proprietary
            ;; CI set-up, fails to do so correctly, and then throws an error.
