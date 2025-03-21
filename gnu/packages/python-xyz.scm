@@ -27507,6 +27507,7 @@ input.")
        (base32
         "1bxffaf5yz2cph8ki55vdvdypbwkvn2xr1firlcy62vqbzf1jivq"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/syrusakbary/validate_email")
     (synopsis "Verifies if an email address is valid and really exists")
     (description "@code{validate_email} can be used to verify if an email
