@@ -2871,7 +2871,7 @@ synchronous execution of all clients, and low latency operation.")
   (package
     (inherit jack-1)
     (name "jack2")
-    (version "1.9.21")
+    (version "1.9.22")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2880,21 +2880,16 @@ synchronous execution of all clients, and low latency operation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sbrffmdbajvrk7iqvsvrnwnpvmicvbjyq3f52r6ashdsznsz03b"))))
+                "109g08j3jj9jbsrgdcrq53w7a5z4rkwzg7l7sbr90wazrv55zj8a"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
        #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
-         ;; Python 3.11 has removed the 'U' (universal newline) mode.  It has
-         ;; been the default since Python 3.3.
-         (add-after 'unpack 'python-compatibility
+         (add-after 'unpack 'delete-bundled-waflib
            (lambda _
-             (substitute* '("waflib/Context.py"
-                            "waflib/ConfigSet.py")
-               (("m='rU'") "m='r'")
-               (("read\\('rU'") "read('r'"))))
+             (delete-file-recursively "waflib")))
          (add-before 'configure 'set-linkflags
            (lambda _
              ;; Ensure -lstdc++ is the tail of LDFLAGS or the simdtests.cpp
@@ -2907,6 +2902,20 @@ synchronous execution of all clients, and low latency operation.")
                 (string-append m
                                "    conf.env.append_unique('LINKFLAGS',"
                                "'-Wl,-rpath=" %output "/lib')\n")))))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "PYTHONPATH" (getcwd))
+             (invoke "waf" "configure" "--dbus" "--alsa"
+                     (string-append "--prefix="
+                                    (assoc-ref outputs "out")))))
+         (replace 'build
+           (lambda _
+             (invoke "waf" "build")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "waf" "install"
+                     (string-append "--prefix="
+                                    (assoc-ref outputs "out")))))
          (add-after 'install 'wrap-python-scripts
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure 'jack_control' runs with the correct PYTHONPATH.
@@ -2923,7 +2932,7 @@ synchronous execution of all clients, and low latency operation.")
            python-dbus
            readline))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-waf))
     ;; Most files are under GPLv2+, but some headers are under LGPLv2.1+
     (license (list license:gpl2+ license:lgpl2.1+))))
 
