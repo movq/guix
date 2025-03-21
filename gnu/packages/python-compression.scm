@@ -882,7 +882,7 @@ generator")
     (propagated-inputs
      (list python-cffi))
     (native-inputs
-     (list python-hypothesis))
+     (list python-hypothesis python-setuptools))
     (home-page "https://github.com/indygreg/python-zstandard")
     (synopsis "Zstandard bindings for Python")
     (description "This project provides Python bindings for interfacing with
