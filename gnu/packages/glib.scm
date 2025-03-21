@@ -63,6 +63,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
@@ -76,6 +77,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages web)
@@ -612,14 +614,14 @@ be used when cross-compiling."
 (define gobject-introspection-minimal
   (package
     (name "gobject-introspection")
-    (version "1.82.0")
+    (version "1.84.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnome/sources/"
                    "gobject-introspection/" (version-major+minor version)
                    "/gobject-introspection-" version ".tar.xz"))
              (sha256
-              (base32 "029gr80q8749dhcpmf5x1w48adinihb634qyqimz4js210clqnhg"))
+              (base32 "0ya7m2adgdvj52h84z974k20r05y2hfhk7mqcv1faqn2gvd5fnwl"))
              (patches (search-patches
                        "gobject-introspection-cc.patch"
                        "gobject-introspection-girepository.patch"
@@ -636,6 +638,11 @@ be used when cross-compiling."
                  ;; as discussed here: https://issues.guix.gnu.org/50201#60.
                  "-Dbuild_introspection_data=false"))
              '())
+       #:imported-modules (,@%meson-build-system-modules
+                           ,@%python-build-system-modules)
+       #:modules (((guix build python-build-system) #:select (python-version))
+                  (guix build meson-build-system)
+                  (guix build utils))
        #:phases
        ,#~
        (modify-phases %standard-phases
@@ -661,7 +668,18 @@ be used when cross-compiling."
                          #~(string-append #$output
                                           "/lib/gobject-introspection/giscanner"
                                           "/_giscanner"))))
-                #~()))))
+                #~())
+         (add-after 'install 'wrap-programs
+           (lambda* (#:key inputs #:allow-other-keys)
+             (wrap-script
+               (string-append #$output "/bin/g-ir-scanner")
+                              #:guile (search-input-file %build-inputs "bin/guile")
+                              `("GUIX_PYTHONPATH" ":" =
+                                (,(string-append
+                                   (assoc-ref inputs "python-setuptools")
+                                   "/lib/python" (python-version
+                                                  (assoc-ref inputs "python"))
+                                   "/site-packages")))))))))
     (native-inputs
      `(,@(if (%current-target-system)
            `(("python" ,python))
@@ -669,9 +687,10 @@ be used when cross-compiling."
        ("glib" ,glib-minimal "bin")
        ("pkg-config" ,pkg-config)
        ("bison" ,bison)
-       ("flex" ,flex)))
+       ("flex" ,flex)
+       ("python-setuptools" ,python-setuptools)))
     (inputs
-     (list python zlib))
+     (list guile-3.0 python zlib))
     (propagated-inputs
      (list glib-minimal
            ;; In practice, GIR users will need libffi when using
