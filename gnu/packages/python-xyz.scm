@@ -22650,12 +22650,7 @@ library.  It can be used to act both as a TFTP client or TFTP server.")
                (list "--deselect=src/greenlet/tests/test_greenlet.py"
                      "TestGreenlet"
                      "test_dealloc_catches_GreenletExit_throws_other")
-               "::"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+               "::"))))
     (native-inputs
      (list python-objgraph
            python-pytest
