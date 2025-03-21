@@ -16360,7 +16360,7 @@ versions number match PEP 440.")
                       (delete-file "tests/test_meta.py")
                       (if tests?
                           (invoke "pytest") #t))))))
-    (native-inputs (list python-mock python-pytest python-testpath))))
+    (native-inputs (list python-mock python-pytest python-setuptools python-testpath))))
 
 (define-public python-pyproject-metadata
   (package
