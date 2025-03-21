@@ -27538,6 +27538,7 @@ input.")
            python-six
            python-strict-rfc3339
            python-validate-email))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/pipermerriam/flex")
     (synopsis "Validates Swagger schemata")
     (description "@code{flex} can be used to validate Swagger schemata.")
