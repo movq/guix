@@ -37757,7 +37757,7 @@ statements in OFX files.")
                                ;; too small for these tests.
                                '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
                                '("not LocalOffset")))))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
     (description "The @code{strict_rfc3339} Python module provides strict,
