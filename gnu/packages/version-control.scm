@@ -1911,7 +1911,7 @@ allowing to handle large objects with a small memory footprint.")
     (propagated-inputs
      (list python-gitdb python-typing-extensions))
     (native-inputs
-     (list python-ddt python-nose))
+     (list python-ddt python-nose python-setuptools))
     (home-page "https://github.com/gitpython-developers/GitPython")
     (synopsis "Python library for interacting with Git repositories")
     (description
