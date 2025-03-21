@@ -243,13 +243,9 @@ human.")
     (arguments
      (list
       #:configure-flags
-      #~(append
-         (list "-DWITH_XC_ALL=YES"
-               "-DWITH_XC_UPDATECHECK=NO")
-         #$(if (member (%current-system)
-                       (package-transitive-supported-systems ruby-asciidoctor))
-               #~'()
-               #~(list "-DWITH_XC_DOCS=NO")))
+      #~(list "-DWITH_XC_ALL=YES"
+              "-DWITH_XC_UPDATECHECK=NO"
+              "-DWITH_XC_DOCS=NO")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'record-clipboard-programs
@@ -285,12 +281,7 @@ human.")
                 (invoke "ctest" "--exclude-regex"
                         "testentrymodel|testcli")))))))
     (native-inputs
-     (append
-      (list qttools-5)
-      (if (member (%current-system)
-                  (package-transitive-supported-systems ruby-asciidoctor))
-          (list ruby-asciidoctor)
-          '())))
+      (list qttools-5))
     (inputs
      (list argon2
            botan
