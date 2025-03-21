@@ -3915,6 +3915,7 @@ that have uses outside of the Zope framework.")
         (base32
          "1sh3c3i0m8n8fnhqiry0bk3rr356i56ry7calmn57s1pvv8yhsyn"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/zope.testing/")
     (synopsis "Zope testing helpers")
     (description "Zope.testing provides a number of testing utilities for HTML
