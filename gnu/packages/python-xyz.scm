@@ -22467,6 +22467,7 @@ development version of CPython that are not available in older releases.")
                    (("(winreg|tkinter)") ""))
                  (apply sanity-check args)
                  (for-each rename-file backups files))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://python-future.org")
     (synopsis "Single-source support for Python 3 and 2")
     (description
