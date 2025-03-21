@@ -26825,6 +26825,7 @@ parts of the lines that were modified.")
      ;; Tests are not included in the tarball.
      `(#:tests? #f))
     (propagated-inputs (list python-faker))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/benhoyt/scandir")
     (synopsis "Versatile test fixtures replacement")
     (description "Factory_boy is a fixtures replacement based on thoughtbot’s
