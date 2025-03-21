@@ -2041,7 +2041,7 @@ service processes for your tests with pytest.")
          "0kx4mbs9bflycd8x9af0idcjhdgnzri3nw1qb0vpfyb3751qaaf9"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-aiohttp))
     (home-page "https://github.com/aio-libs/pytest-aiohttp/")
