@@ -7189,7 +7189,7 @@ e.g. filters, callbacks and errbacks can all be promises.")
                      "not test_seed_link_via_app_data"
                      ;; AssertionError: assert 'python' in ['python3',
                      ;; 'python3.11'].
-                     ;; 
+                     ;;
                      ;; PythonInfo() returns: 'system_executable':
                      ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
                      "test_fallback_existent_system_executable")
@@ -37553,7 +37553,7 @@ statements in OFX files.")
                                ;; too small for these tests.
                                '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
                                '("not LocalOffset")))))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
     (description "The @code{strict_rfc3339} Python module provides strict,
