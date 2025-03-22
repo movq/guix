@@ -1043,6 +1043,7 @@ scientific documentation.")
               (substitute* "setup.py"
                 (("docutils<0.18") "docutils<0.20")))))))
     (propagated-inputs (list python-docutils python-sphinx))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/snide/sphinx_rtd_theme/")
     (synopsis "ReadTheDocs.org theme for Sphinx")
     (description "A theme for Sphinx used by ReadTheDocs.org.")
