@@ -63,6 +63,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -275,6 +276,7 @@ external dependencies.")
        (list python-dnspython
              python-iso8601
              python-markdown
+             python-setuptools
              rpcsvc-proto               ;for 'rpcgen'
              python-pyasn1              ;for krb5 tests
              ;; For generating man pages.
