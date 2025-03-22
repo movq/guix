@@ -1073,7 +1073,7 @@ and its highly optimized now for efficient performance.")
                 "16rhfz6sjwxlmss1plb2wv2i3jq6wza02rmz1d2jrlnsq67p98vc"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config swig python-3))           ; used to generate the Python bindings
+     (list autoconf automake libtool gettext-minimal pkg-config swig python python-setuptools))           ; used to generate the Python bindings
     (inputs
      (append
       (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
@@ -1086,6 +1086,9 @@ and its highly optimized now for efficient performance.")
      `(#:tests? #f ; not sure how tests are supposed to pass, even when run manually
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             (invoke "autoreconf" "-vfi")))
          (add-before 'configure 'patch-python.h-path
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((python (assoc-ref inputs "python")))
