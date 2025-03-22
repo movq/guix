@@ -5272,10 +5272,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                 ;; Disable the SSL test, failing since 2.68 and resolved in
                 ;; libsoup 3.
                 (substitute* "tests/meson.build"
-                  (("[ \t]*\\['ssl', true, \\[\\]\\],") ""))))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs libsoup-minimal)
-       (replace "vala" vala-0.52)))))
+                  (("[ \t]*\\['ssl', true, \\[\\]\\],") ""))))))))))
 
 (define-public libsoup
   (package/inherit libsoup-minimal
