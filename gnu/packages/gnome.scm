@@ -7213,7 +7213,6 @@ MS Graph APIs.")
            libcap
            libcdio-paranoia
            libgcrypt
-           libgdata
            libgphoto2
            libgudev
            libimobiledevice
@@ -7221,7 +7220,6 @@ MS Graph APIs.")
            libnfs
            libsecret
            lsof
-           msgraph
            samba
            libsoup
            libxml2
