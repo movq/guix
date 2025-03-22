@@ -32424,7 +32424,7 @@ implementation of the D-Bus protocol.")
                                           status))
                                  (loop)))))))))))))
     (native-inputs
-     (list dbus python-pytest upower which))
+     (list dbus python-pytest python-setuptools upower which))
     (inputs
      (list dbus))
     (propagated-inputs
@@ -32445,7 +32445,7 @@ services to what you expect in your tests.")
     (arguments
      (substitute-keyword-arguments (package-arguments python-dbusmock)
        ((#:tests? _ #t) #f)))
-    (native-inputs (list which))
+    (native-inputs (list python-setuptools which))
     (properties '((hidden? . #t)))))
 
 (define-public python-jsonplus
