@@ -1173,6 +1173,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbacl-include-locale.h.patch		\
   %D%/packages/patches/dbacl-icheck-multiple-definitions.patch	\
   %D%/packages/patches/dblatex-inkscape-1.0.patch		\
+  %D%/packages/patches/dblatex-replace-imp-by-importlib.patch   \
   %D%/packages/patches/dbus-helper-search-path.patch		\
   %D%/packages/patches/dbus-c++-gcc-compat.patch		\
   %D%/packages/patches/dbus-c++-threading-mutex.patch		\

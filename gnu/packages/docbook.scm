@@ -37,6 +37,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages base)
   #:use-module (gnu packages web)
   #:use-module (gnu packages web-browsers)
@@ -664,7 +665,8 @@ the in DocBook SGML DTDs.")
                (base32
                 "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))
               (patches
-               (search-patches "dblatex-inkscape-1.0.patch"))))
+               (search-patches "dblatex-inkscape-1.0.patch"
+                               "dblatex-replace-imp-by-importlib.patch"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
@@ -705,7 +707,7 @@ the in DocBook SGML DTDs.")
                 (unsetenv "GUIX_TEXMF")
                 (invoke/quiet (string-append #$output "/bin/dblatex")
                               "--quiet" "tests/mathml/mmltest2.xml")))))))
-    (native-inputs (list docbook-mathml-1.0))
+    (native-inputs (list docbook-mathml-1.0 python-setuptools))
     (inputs
      (list bash-minimal
            texlive-bin
