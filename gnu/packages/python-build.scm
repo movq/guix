@@ -312,14 +312,15 @@ Python Package Index (PyPI).")
 (define-public python-setuptools
   (package
     (name "python-setuptools")
-    (version "67.6.1")
+    (version "77.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setuptools" version))
        (sha256
         (base32
-         "16myxkpa89r045il88zcygdy1zbi2mvvpz5b4a70p9jhklmfjz95"))
+         "0if9371i9nf2qmny682r6jr6zpkhjrh5drs36x05gpm8ilf3cfsq"))
+       (patches (search-patches "python-setuptools-fix-shebang-breakage.patch"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: setuptools now bundles the following libraries:
