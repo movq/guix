@@ -34,10 +34,14 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages node)
   #:use-module (gnu packages python-build)
+  ;#:use-module ((gnu packages python-xyz) #:select (python-cython))
+  #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system tree-sitter)
+  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -859,3 +863,89 @@ used to override the build phases."
              (("\\(integer_decimal\n") "(integer_decimal)\n")
              (("\\(integer\\)") "")
              (("\"0\")") "\"0\"")))))))
+
+(define-public python-tree-sitter-language-pack
+  (package
+    (name "python-tree-sitter-language-pack")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tree_sitter_language_pack" version))
+       (sha256
+        (base32 "1f826jb7sikd7rsr92y8c3b4jaf8byifmr01v5i2ar4vdddmyqx4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-tree-sitter python-tree-sitter-c-sharp
+                             python-tree-sitter-embedded-template
+                             python-tree-sitter-yaml))
+    (native-inputs (list python-cython python-setuptools
+                         python-typing-extensions python-wheel))
+    (home-page #f)
+    (synopsis "Extensive Language Pack for Tree-Sitter")
+    (description "Extensive Language Pack for Tree-Sitter.")
+    (license #f)))
+
+(define-public python-tree-sitter-c-sharp
+  (package
+    (name "python-tree-sitter-c-sharp")
+    (version "0.23.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tree-sitter/tree-sitter-c-sharp.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w6xdb8m38brhin0bmqsdqggdl95xqs3lbwq7azm5gg94agz9qf1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list tree-sitter))
+    (home-page #f)
+    (synopsis "C# grammar for tree-sitter")
+    (description "C# grammar for tree-sitter.")
+    (license license:expat)))
+
+(define-public python-tree-sitter-embedded-template
+  (package
+    (name "python-tree-sitter-embedded-template")
+    (version "0.23.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/tree-sitter/tree-sitter-embedded-template.git")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vq9dywd9vcy59f6i5mk5n7vwk67g8j5x77czg7avpznskgfhqhb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list tree-sitter))
+    (home-page #f)
+    (synopsis "Embedded Template (ERB, EJS) grammar for tree-sitter")
+    (description "Embedded Template (ERB, EJS) grammar for tree-sitter.")
+    (license license:expat)))
+
+(define-public python-tree-sitter-yaml
+  (package
+    (name "python-tree-sitter-yaml")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/tree-sitter-grammars/tree-sitter-yaml.git")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5fz9hiafzapi0ijhyz8np6rksq6c1pb16xv1vhnlfh75rg6zyv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page #f)
+    (synopsis "YAML grammar for tree-sitter")
+    (description "YAML grammar for tree-sitter.")
+    (license license:expat)))
+
