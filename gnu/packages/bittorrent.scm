@@ -472,6 +472,7 @@ and will take advantage of multiple processor cores where possible.")
     (native-inputs
      (list libfaketime
            python-wrapper
+           python-setuptools
            pkg-config))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
