@@ -638,7 +638,7 @@ output), and Binutils.")
                               (&package-unsupported-target-error
                                (package this-package)
                                (target (%current-target-system))))))
-                  '())
+                  '("-DLLVM_TARGETS_TO_BUILD=X86;AMDGPU;BPF"))
            ;; Note: sadly, the build system refuses the use of
            ;; -DBUILD_SHARED_LIBS=ON and the large static archives are needed to
            ;; build clang-runtime, so we cannot delete them.
@@ -712,7 +712,7 @@ of programming tools as well as libraries with equivalent functionality.")
                             (&package-unsupported-target-error
                              (package this-package)
                              (target (%current-target-system))))))
-                '())
+                '("-DLLVM_TARGETS_TO_BUILD=X86;AMDGPU;BPF"))
          ;; undefined reference to `__atomic_fetch_add_8' in lib/libLLVMOrcJIT.so.14
          #$@(if (target-ppc32?)
                 (list "-DCMAKE_SHARED_LINKER_FLAGS=-latomic")
