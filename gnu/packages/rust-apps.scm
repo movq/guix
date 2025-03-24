@@ -5204,3 +5204,34 @@ or existing object")
      "This package generates Podman Quadlet files from a Podman command,
 compose file, or existing object.")
     (license license:mpl2.0)))
+
+;(define-public uv
+;  (package
+;    (name "uv")
+;    (version "0.6.9")
+;    (source
+;     (origin
+;       (method git-fetch)
+;       (uri (git-reference
+;             (url "https://github.com/astral-sh/uv")
+;             (commit version)))
+;       (sha256 (base32 "0xsiy4vshy6cmxf2dnky7wjwy5nayknmfbijqx1vlzy0j8k6gwwb"))))
+;    (build-system cargo-build-system)
+;    (arguments
+;     `(#:cargo-inputs
+;       (("rust-anstream" ,rust-anstream-0.6)
+;        ("rust-anyhow" ,rust-anyhow-1)
+;        ("rust-arcstr" ,rust-arcstr-1)
+;        ("rust-astral-tokio-tar" ,rust-astral-tokio-tar)
+;        ("rust-async-channel" ,rust-async-channel-2)
+;        ("rust-async-compression" ,rust-async-compression-0.4)
+;        ("rust-async-trait" ,rust-async-trait-0.1)
+;        ("rust-async-http-range-reader" ,rust-async-http-range-reader-0.9)
+;        ("rust-async-zip" ,rust-async-zip-gc909fda)
+;        ("rust-axoupdater" ,rust-axoupdater-0.9)
+;        ("rust-backon" ,rust-backon-1)
+;        ("rust-base64" ,rust-base64-0.22))))
+;    (home-page "https://github.com/astral-sh/uv")
+;    (synopsis "Python package manager")
+;    (description "Python package manager")
+;    (license (list license:asl2.0 license:expat))))
