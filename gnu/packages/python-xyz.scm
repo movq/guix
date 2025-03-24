@@ -13571,13 +13571,13 @@ procedures.")
 (define-public python-jaraco-functools
   (package
     (name "python-jaraco-functools")
-    (version "3.5.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jaraco.functools" version))
        (sha256
-        (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
+        (base32 "178sf14y4nf9hq77xhdlsy9c0kr00pl2a8sn2bi9hr07mvif1xvh"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f
@@ -13587,16 +13587,8 @@ procedures.")
            #:test-flags
            '(list "-k" "not project and not test_function_throttled")))
     (native-inputs
-     (list python-jaraco-classes
-           python-pytest
-           python-pytest-black
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
-           python-pytest-mypy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-jaraco-classes python-pytest python-setuptools
+           python-setuptools-scm python-wheel))
     (propagated-inputs (list python-more-itertools))
     (home-page "https://github.com/jaraco/jaraco.functools")
     (synopsis "Python library extending Python's @code{functools}")
