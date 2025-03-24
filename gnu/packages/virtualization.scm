@@ -2537,7 +2537,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.10.0")
+    (version "0.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2546,7 +2546,7 @@ virtual machines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0paahq4y8fmdnipahgymsshi3klmi60lvcqhhg1020z7n1gni0hx"))
+                "1rb7dih12s9liwq2lfjdm1br6jaxkmdwsqjr6zx9wfyy0cnwr07h"))
               (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system meson-build-system)
     (arguments
