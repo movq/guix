@@ -1084,6 +1084,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ccextractor-fix-ocr.patch		\
   %D%/packages/patches/chez-scheme-bin-sh.patch			\
   %D%/packages/patches/circos-remove-findbin.patch		\
+  %D%/packages/patches/citron-fix-build.patch           \
   %D%/packages/patches/cdparanoia-fpic.patch			\
   %D%/packages/patches/cdrkit-libre-cross-compile.patch	\
   %D%/packages/patches/cdrtools-3.01-mkisofs-isoinfo.patch 	\

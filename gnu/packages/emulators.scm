@@ -67,6 +67,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages digest)
@@ -79,6 +80,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -87,8 +89,10 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
@@ -4402,3 +4406,88 @@ information.  Useful for cross-architecture tools (such as @code{python-pyvex}).
       (synopsis "8051/8052 emulator with curses-based UI")
       (description "emu8051 is a simulator of the 8051/8052 microcontrollers.")
       (license license:expat))))
+
+(define-public citron
+  (let ((commit "55dc3f8ec152f2441be8cce113ce47ebb3251bab")
+        (revision "1"))
+    (package
+      (name "citron")
+      (version (git-version "0.6.1" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://git.citron-emu.org/Citron/Citron.git")
+                 (commit commit)
+                 (recursive? #t)))
+          (file-name (git-file-name name version))
+          (sha256 (base32 "0mz22mw41xsx3lznp7pkpppg278ravamw24m96zlq135ha97by50"))
+          (patches (search-patches "citron-fix-build.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f
+             #:substitutable? #f
+             #:configure-flags
+             #~(list "-DUSE_SYSTEM_QT=On"
+                     "-DCITRON_ENABLE_LTO=On"
+                     "-DCITRON_CHECK_SUBMODULES=Off"
+                     "-DCITRON_USE_EXTERNAL_SDL2=Off"
+                     "-DCMAKE_BUILD_TYPE=Release"
+                     "-DCMAKE_C_FLAGS_RELEASE=-O3 -march=native"
+                     "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -march=native")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-shells
+                   (lambda _
+                     (substitute*
+                       "externals/nx_tzdb/tzdb_to_nx/externals/tz/CMakeLists.txt"
+                       (("\\$\\{GNU_MAKE\\}")
+                        (string-append
+                          "${GNU_MAKE} SHELL=" (which "bash")
+                          " cc=" (which "gcc"))))))
+                 (add-after 'unpack 'absolute-vulkan-loader-path
+                   (lambda _
+                     (substitute*
+                       "src/video_core/vulkan_common/vulkan_library.cpp"
+                       (("std::string filename = .*")
+                        (string-append "std::string filename = \""
+                                       #$(this-package-input "vulkan-loader")
+                                       "/lib/libvulkan.so\";")))))
+                 (add-before 'configure 'set-cflags-env
+                   (lambda _
+                     (setenv "CFLAGS" "-O3 -march=native")
+                     (setenv "CXXFLAGS" "-O3 -march=native"))))))
+      (native-inputs
+        (list autoconf
+              automake
+              gcc-14
+              gettext-minimal
+              libtool
+              pkg-config))
+      (inputs
+        (list boost
+              catch2-3
+              eudev
+              ffmpeg
+              fmt-11
+              glslang
+              libffi
+              libusb
+              libva
+              llvm-18
+              lz4
+              nlohmann-json
+              `(,zstd "lib")
+              openssl
+              opus
+              qtbase
+              qtmultimedia
+              sdl2
+              simpleini
+              vulkan-headers
+              vulkan-memory-allocator
+              vulkan-loader))
+      (home-page "https://citron-emu.org")
+      (synopsis "Nintendo Switch emulator")
+      (description "Nintendo Switch emulator")
+      (license license:gpl3))))
