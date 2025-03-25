@@ -94109,7 +94109,7 @@ and native running processes.")
      "Event-driven library for parsing WebAssembly binary files")
     (description
      "This package provides a simple event-driven library for parsing
-@code{WebAssembly} binary files.")1x93si3wwvacxl5d8yb7ymdw02dbhvqppckvcimn8hyx9xk1m235
+@code{WebAssembly} binary files.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
 (define-public rust-wasmparser-0.224
