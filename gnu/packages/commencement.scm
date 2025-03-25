@@ -1935,6 +1935,10 @@ exec " gcc "/bin/" program
   (let ((pkg (mesboot-package "coreutils-mesboot" coreutils)))
     (package
       (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:configure-flags flags #~(list))
+          #~(list "--disable-year2038"))))
       (native-inputs
        `(("sed" ,sed-mesboot)
          ,@(package-native-inputs pkg)
