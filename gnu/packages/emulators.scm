@@ -70,6 +70,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages curl)
+;  #:use-module (gnu packages debug)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages elf)
@@ -88,6 +89,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
@@ -4491,3 +4493,75 @@ information.  Useful for cross-architecture tools (such as @code{python-pyvex}).
       (synopsis "Nintendo Switch emulator")
       (description "Nintendo Switch emulator")
       (license license:gpl3))))
+
+(define-public pcsx2
+  (package
+    (name "pcsx2")
+    (version "2.3.239")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/PCSX2/pcsx2.git")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32 "0nhq3p8ax751wsc5knzlblnrflclin05090zmfbvjh358m71dnck"))))
+    (build-system cmake-build-system)
+    (arguments
+      (list
+        #:tests? #f
+        #:configure-flags
+        #~(list "-DLTO_PCSX2_CORE=ON"
+                "-DENABLE_TESTS=OFF"
+                "-DUSE_BACKTRACE=OFF"
+                "-DPACKAGE_MODE=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'reduce-qt-requirement
+              (lambda _
+                (substitute* "cmake/SearchForStuff.cmake"
+                  (("6\\.7\\.3") "6.7.2"))))
+            (add-after 'unpack 'patch-dlopens
+              (lambda _
+                (substitute* "pcsx2/GS/Renderers/Vulkan/VKShaderCache.cpp"
+                  (("const std::string libname.*")
+                   (string-append "const std::string libname = \""
+                                  #$(this-package-input "shaderc")
+                                  "/lib/libshaderc_shared.so\";\n")))
+                (substitute* "pcsx2/GS/Renderers/Vulkan/VKLoader.cpp"
+                  (("DynamicLibrary::GetVersionedFilename(\"vulkan\".*)\\.c_str()")
+                   (string-append "\"" #$(this-package-input "vulkan-loader")
+                                  "/lib/libvulkan.so\"")))
+                (substitute* "pcsx2/GS/Renderers/OpenGL/GLContextEGL.cpp"
+                  (("egl_libname =.*")
+                   (string-append "egl_libname = \"" #$(this-package-input "mesa")
+                                  "/lib/libEGL.so\";\n"))))))))
+    (native-inputs
+      (list extra-cmake-modules
+            pkg-config))
+    (inputs
+      (list curl
+            dbus
+            eudev
+            ffmpeg
+            freetype
+            kddockwidgets
+            libjpeg-turbo
+            libpcap
+            libpng-apng
+            libwebp
+            libxi
+            lz4
+            mesa
+            qtbase
+            qtdeclarative
+            qttools
+            sdl3
+            shaderc
+            vulkan-headers
+            vulkan-loader
+            `(,zstd "lib")))
+    (home-page "https://pcsx2.net")
+    (synopsis "Sony PlayStation 2 emulator")
+    (description "Sony PlayStation 2 emulator")
+    (license license:gpl3)))
