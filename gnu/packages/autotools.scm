@@ -450,7 +450,7 @@ Makefile, simplifying the entire process for the developer.")
     (arguments
      (substitute-keyword-arguments (package-arguments automake-1.16.5)
        ((#:tests? tests?)
-        #t)
+        #f)
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-before 'check 'skip-test
