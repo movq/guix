@@ -224,6 +224,10 @@
                                  libuv "/lib:"
                                  zlib "/lib"
                                  "'],"))))))
+         (add-before 'configure 'set-optimization-level
+           (lambda _
+             (substitute* "common.gypi"
+               (("-O3") "-O1"))))
          (replace 'configure
            ;; Node's configure script is actually a python script, so we can't
            ;; run it with bash.
@@ -974,7 +978,8 @@ fi"
                              (assoc-ref inputs "bash")
                              out
                              out)))
-                 (chmod file #o555))))))))
+                 (chmod file #o555))))
+           (delete 'set-optimization-level)))))
     (native-inputs
      (list ;; Runtime dependencies for binaries used as a bootstrap.
            c-ares-for-node-lts
