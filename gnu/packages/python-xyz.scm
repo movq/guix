@@ -10832,17 +10832,18 @@ comparison.
 (define-public python-matplotlib
   (package
     (name "python-matplotlib")
-    (version "3.8.2")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "matplotlib" version))
        (sha256
-        (base32 "18amhxyxa6yzy1nwky4ggdgvvxnbl3qz2lki05vfx0dqf6w7ia81"))
-       (patches (search-patches "python-matplotlib-fix-legend-loc-best-test.patch"))))
+        (base32 "1fmjkyky7isa466a3fbp3mcs8wzfsdd7dx2vb1l944hvi3ix1lp8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:configure-flags
+      ''(@ ("setup-args" "-Dsystem-freetype=true" "-Dsystem-qhull=true"))
       #:test-flags
       '(list "-m" "not network"
         "-k" (string-join
@@ -10876,42 +10877,6 @@ comparison.
             ;; '0.0.0'.
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-after 'unpack 'fix-and-disable-failing-tests
-            ;; XXX: Disable all image comparison tests because we're using a
-            ;; newer version of FreeType than matplotlib expects.  This leads
-            ;; to minor differences throughout the tests.
-            (lambda _
-              (substitute* (append (find-files "lib/matplotlib/tests/"
-                                               "test_.*\\.py$")
-                                   (find-files "lib/mpl_toolkits/tests"
-                                               "test_.*\\.py$"))
-                (("^from matplotlib" match)
-                 (string-append "import pytest\n" match))
-                (("( *)@([^_]+_)*(image_comparison|check_figures_equal)" match
-                  indent)
-                 (string-append indent "@pytest.mark.skip(\
-reason=\"unknown minor image differences\")\n" match)))
-              (substitute* "lib/matplotlib/tests/test_animation.py"
-                (("/bin/sh") (which "sh")))
-              (for-each delete-file
-                        ;; test_normal_axes, test_get_tightbbox_polar
-                        '("lib/matplotlib/tests/test_axes.py"
-                          "lib/matplotlib/tests/test_polar.py"
-                          ;; We don't use the webagg backend and this test
-                          ;; forces it.
-                          "lib/matplotlib/tests/test_backend_webagg.py"
-                          ;; test_outward_ticks
-                          "lib/matplotlib/tests/test_tightlayout.py"
-                          ;; test_hidden_axes fails with minor extent
-                          ;; differences, possibly due to the use of a
-                          ;; different version of FreeType.
-                          "lib/matplotlib/tests/test_constrainedlayout.py"
-                          ;; Fontconfig returns no fonts.
-                          "lib/matplotlib/tests/test_font_manager.py"
-                          ;; The images comparison test fails
-                          ;; non-deterministically when run in parallel (see:
-                          ;; https://github.com/matplotlib/matplotlib/issues/22992).
-                          "lib/matplotlib/tests/test_compare_images.py"))))
           (add-before 'build 'configure-environment
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Fix rounding errors when using the x87 FPU.
@@ -10964,7 +10929,8 @@ tests = True~%" #$(this-package-input "tcl") #$(this-package-input "tk"))))))
            tcl
            tk))
     (native-inputs
-     (list pkg-config
+     (list meson-python
+           pkg-config
            pybind11
            python-pytest
            python-pytest-timeout
