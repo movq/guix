@@ -545,13 +545,13 @@ factorization routine for quasi-definite linear system.")
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.12.0")
+    (version "1.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "18rn15wg3lp58z204fbjjhy0h79c53yg3c4qqs9h3liniamspxab"))))
+        (base32 "1v4m6kpnk598akym24jwzphjfkxdgqba5j2myzkgff18v4aa6n6d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -608,7 +608,7 @@ factorization routine for quasi-definite linear system.")
            python-sphinx
            python-threadpoolctl
            python-typing-extensions))
-    (inputs (list openblas pybind11-2.10))
+    (inputs (list openblas pybind11))
     (native-inputs
      (list gfortran
            ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
