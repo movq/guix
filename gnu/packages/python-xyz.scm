@@ -8259,7 +8259,7 @@ decorator for retrying on exceptions.")
     (propagated-inputs
      (list python-docutils))
     (native-inputs
-     (list python-nose))
+     (list python-nose python-setuptools))
     (home-page "https://github.com/twolfson/restructuredtext-lint")
     (synopsis "Linter")
     (description "This package provides a linter for the reStructuredText
