@@ -888,3 +888,24 @@ which will be used as a snippet in origin."
     (synopsis "Embedded Template (ERB, EJS) grammar for tree-sitter")
     (description "Embedded Template (ERB, EJS) grammar for tree-sitter.")
     (license license:expat)))
+
+(define-public python-tree-sitter-yaml
+  (package
+    (name "python-tree-sitter-yaml")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/tree-sitter-grammars/tree-sitter-yaml.git")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5fz9hiafzapi0ijhyz8np6rksq6c1pb16xv1vhnlfh75rg6zyv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page #f)
+    (synopsis "YAML grammar for tree-sitter")
+    (description "YAML grammar for tree-sitter.")
+    (license license:expat)))
