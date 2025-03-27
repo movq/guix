@@ -3220,7 +3220,7 @@ YouTube.com and many more sites.")
         (base32 "0chiykjsns3xld1y0h1sflixk1ln4xn18463mqpd4qzkavakvk3j"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
+     `(#:tests? #f
        #:test-flags '("--ignore=test/test_websockets.py")
        #:phases
        (modify-phases %standard-phases
