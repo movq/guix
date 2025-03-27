@@ -5154,7 +5154,7 @@ downloaded, or download a strip for a particular date or index, if possible.")
                    (when tests?
                      (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-lxml))   ;used for the tests
+     (list python-pytest python-setuptools python-lxml))   ;used for the tests
     (home-page "https://bitbucket.org/openpyxl/et_xmlfile")
     (synopsis "Low memory implementation of @code{lxml.xmlfile}")
     (description "This Python library is based upon the @code{xmlfile} module
