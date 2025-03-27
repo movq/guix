@@ -3236,12 +3236,6 @@ compatible with the well-known scripts of the same name.")
               (for-each (lambda (po)
                           (chmod po #o666))
                         (find-files "po" "\\.po$"))))
-          (add-after 'unpack 'disable-test
-            (lambda _
-              (substitute* "tests/test-portals.c"
-                ;; This test now fails, with gcc-11-13 too.
-                (("g_.*/portal/inhibit/monitor/" all)
-                 (string-append "// " all)))))
           (add-after 'unpack 'set-home-directory
             (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
