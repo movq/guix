@@ -696,7 +696,6 @@
                   libcanberra
                   libevent
                   libffi
-                  libgnome
                   libjpeg-turbo
                   libnotify
                   libpng-apng-for-librewolf
