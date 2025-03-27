@@ -13936,7 +13936,7 @@ without using the configuration machinery.")
            python-setuptools
            python-wheel
            cmake-minimal
-           pybind11-2.13))
+           pybind11))
     (home-page "https://github.com/metaopt/optree")
     (synopsis "Optimized PyTree Utilities")
     (description "This package contains operations on PyTrees (a tree made of
@@ -17632,6 +17632,7 @@ includes dependency resolution logic.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
              (invoke "python" "setup.py" "test"))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/readthedocs/commonmark.py")
     (synopsis "Python parser for the CommonMark Markdown spec")
     (description
@@ -29744,7 +29745,7 @@ user-space file systems in Python.")
      "Stone is an interface description language (IDL) for APIs.")
     (license license:expat)))
 
-(define-public pybind11
+(define-public pybind11-2.8
   (package
     (name "pybind11")
     (version "2.13.6")
@@ -29795,9 +29796,9 @@ inferring type information using compile-time introspection.")
     (license license:bsd-3)))
 
 ;; Needed for python-optree
-(define-public pybind11-2.13
+(define-public pybind11
   (package
-    (inherit pybind11)
+    (inherit pybind11-2.8)
     (name "pybind11")
     (version "2.13.6")
     (source (origin
@@ -29813,7 +29814,7 @@ inferring type information using compile-time introspection.")
 ;; Needed for scipy
 (define-public pybind11-2.10
   (package
-    (inherit pybind11)
+    (inherit pybind11-2.8)
     (name "pybind11")
     (version "2.10.4")
     (source (origin
