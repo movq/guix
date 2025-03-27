@@ -4762,6 +4762,7 @@ a library.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                   ;test suite not included in the release
+    (native-inputs (list python-setuptools))
     (home-page "https://www.grantjenks.com/docs/diskcache/")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
