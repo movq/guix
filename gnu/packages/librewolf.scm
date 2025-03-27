@@ -660,7 +660,6 @@
                   libcanberra
                   libevent
                   libffi
-                  libgnome
                   libjpeg-turbo
                   libnotify
                   libpciaccess
