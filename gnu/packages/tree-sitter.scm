@@ -937,3 +937,25 @@ used to override the build phases."
     (synopsis "YAML grammar for tree-sitter")
     (description "YAML grammar for tree-sitter.")
     (license license:expat)))
+
+;; TODO: Unbundle the prebuilt parsers.
+(define-public python-tree-sitter-language-pack
+  (package
+    (name "python-tree-sitter-language-pack")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tree_sitter_language_pack" version))
+       (sha256
+        (base32 "1f826jb7sikd7rsr92y8c3b4jaf8byifmr01v5i2ar4vdddmyqx4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-tree-sitter python-tree-sitter-c-sharp
+                             python-tree-sitter-embedded-template
+                             python-tree-sitter-yaml))
+    (native-inputs (list python-cython python-setuptools
+                         python-typing-extensions python-wheel))
+    (home-page #f)
+    (synopsis "Extensive Language Pack for Tree-Sitter")
+    (description "Extensive Language Pack for Tree-Sitter.")
+    (license #f)))
