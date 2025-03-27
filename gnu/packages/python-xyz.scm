@@ -6740,7 +6740,7 @@ version numbers.")
                    (when tests?
                      (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/phn/jdcal")
     (synopsis "Functions to convert between Julian dates Gregorian dates")
     (description "This Python library provides functions for converting
