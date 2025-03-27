@@ -4244,7 +4244,7 @@ including @code{pudb.set_trace} in their test file(s).")
          "066bg6wlzgq2pqnjp73dfrcmk8951xw3aqcxa3p1axgqimrixbyk"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-pytest python-wheel))
     (home-page "https://github.com/gabrielcnr/pytest-datadir")
