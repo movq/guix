@@ -5333,7 +5333,7 @@ other traditional Python scientific computing packages.")
 (define-public python-fastparquet
   (package
     (name "python-fastparquet")
-    (version "2024.2.0")
+    (version "2024.11.0")
     (source
      (origin
        ;; Fastparquet uses setuptools-scm to find the current version. This
@@ -5346,7 +5346,7 @@ other traditional Python scientific computing packages.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f32dj1xvd11l0siznqd33dpjlhg9siylcjcfkcdlqfcy45jfj3v"))))
+        (base32 "0dhmyag06d073g1q58npbcikr9hjd6jgf05721gkl6m1gsprv7hq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5372,6 +5372,13 @@ other traditional Python scientific computing packages.")
             ;; Cython extensions need to be built for the check phase.
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-cramjam
            python-fsspec
@@ -5379,11 +5386,6 @@ other traditional Python scientific computing packages.")
            python-numpy
            python-packaging
            python-pandas))
-    (native-inputs
-     (list python-cython
-           python-pytest-runner
-           python-pytest-xdist
-           python-setuptools-scm))
     (home-page "https://github.com/dask/fastparquet")
     (synopsis "Python implementation of the Parquet file format")
     (description
