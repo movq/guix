@@ -27961,6 +27961,8 @@ version of @code{SocksiPy} with bug fixes and extra features.")
      (list ffmpeg))
     (propagated-inputs
      (list python-scipy))
+    (native-inputs
+     (list python-setuptools))
     (synopsis "Manipulate audio with a high level interface in Python")
     (description
      "@code{pydub} makes it easy to manipulate audio in Python.  It relies on
