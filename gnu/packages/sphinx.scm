@@ -449,6 +449,8 @@ size responsive web components.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-docutils python-sphinx))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/jupyter/sphinxcontrib_github_alt")
     (synopsis "Link to GitHub pages from Sphinx docs")
     (description
