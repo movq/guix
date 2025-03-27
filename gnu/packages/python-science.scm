@@ -596,22 +596,18 @@ factorization routine for quasi-definite linear system.")
                         (copy-recursively "build/html" html)))
                     (format #t "sphinx-build not found, skipping~%"))))))))
     (propagated-inputs
-     (append
-       (if (supported-package? python-jupytext)  ; Depends on pandoc.
-           (list python-jupytext)
-           '())
-       (list python-matplotlib
-             python-mpmath
-             python-mypy
-             python-numpy
-             python-numpydoc
-             python-pydata-sphinx-theme
-             python-pydevtool
-             python-pythran
-             python-rich-click
-             python-sphinx
-             python-threadpoolctl
-             python-typing-extensions)))
+     (list python-matplotlib
+           python-mpmath
+           python-mypy
+           python-numpy
+           python-numpydoc
+           python-pydata-sphinx-theme
+           python-pydevtool
+           python-pythran
+           python-rich-click
+           python-sphinx
+           python-threadpoolctl
+           python-typing-extensions))
     (inputs (list openblas pybind11-2.10))
     (native-inputs
      (list gfortran
