@@ -26535,7 +26535,7 @@ package attempts to address the shortcomings of @code{isodate}.")
         (base32
          "1priacxym85yjcf68hh38w55nqswaxp71ryjyfdk222kg9l85ln7"))))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm))
     (build-system python-build-system)
     (home-page "https://github.com/jaraco/configparser/")
     (synopsis "Backport of configparser from python 3.5")
