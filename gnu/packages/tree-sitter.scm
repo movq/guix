@@ -34,6 +34,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages node)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
@@ -844,3 +845,24 @@ which will be used as a snippet in origin."
    "0z5fz9hiafzapi0ijhyz8np6rksq6c1pb16xv1vhnlfh75rg6zyv"
    "0.7.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
+
+(define-public python-tree-sitter-c-sharp
+  (package
+    (name "python-tree-sitter-c-sharp")
+    (version "0.23.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tree-sitter/tree-sitter-c-sharp.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w6xdb8m38brhin0bmqsdqggdl95xqs3lbwq7azm5gg94agz9qf1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list tree-sitter))
+    (home-page #f)
+    (synopsis "C# grammar for tree-sitter")
+    (description "C# grammar for tree-sitter.")
+    (license license:expat)))
