@@ -1962,13 +1962,13 @@ into dataclasses.")
 (define-public python-contourpy
   (package
     (name "python-contourpy")
-    (version "1.1.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "contourpy" version))
        (sha256
-        (base32 "1az80zv067rcybm5x93j7rfiakbwiv1h8l58gnki4wjbwb13gfln"))))
+        (base32 "16d6xwjsix31x4zmgkw0cpkdpshckjhc9g732fllal1khfypmnfz"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Image tests require matplotlib and create a circular dependency.
