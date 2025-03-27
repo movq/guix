@@ -137,6 +137,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/agda.scm				\
   %D%/packages/algebra.scm			\
   %D%/packages/aidc.scm				\
+  %D%/packages/aider.scm				\
   %D%/packages/android.scm			\
   %D%/packages/animation.scm			\
   %D%/packages/anthy.scm			\
@@ -989,6 +990,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/agda-stdlib-use-runhaskell.patch	\
   %D%/packages/patches/agg-am_c_prototype.patch			\
   %D%/packages/patches/agg-2.5-gcc8.patch			\
+  %D%/packages/patches/aider-disable-analytics.patch \
+  %D%/packages/patches/aider-disable-updater.patch \
+  %D%/packages/patches/aider-disable-pypandoc.patch \
   %D%/packages/patches/akonadi-paths.patch		\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
