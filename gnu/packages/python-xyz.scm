@@ -11270,7 +11270,7 @@ search in Python.")
            (lambda _
              (invoke "pytest" "-vv" "test.py"))))))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock python-pytest python-setuptools))
     (home-page "https://github.com/minrk/wurlitzer")
     (synopsis "Capture C-level output in context managers")
     (description
