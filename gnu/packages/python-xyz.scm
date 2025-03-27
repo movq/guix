@@ -26371,6 +26371,7 @@ code reviews.")
                       (when tests?
                         (invoke "python" "-m" "unittest"
                                 "diff_match_patch.tests")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/diff-match-patch-python/diff-match-patch")
     (synopsis "Synchronize plain text")
     (description "Diff Match and Patch libraries offer robust algorithms to
