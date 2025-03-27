@@ -1,0 +1,29 @@
+Index: aider/aider/analytics.py
+===================================================================
+--- aider.orig/aider/analytics.py
++++ aider/aider/analytics.py
+@@ -5,9 +5,6 @@ import time
+ import uuid
+ from pathlib import Path
+ 
+-from mixpanel import MixpanelException
+-from posthog import Posthog
+-
+ from aider import __version__
+ from aider.dump import dump  # noqa: F401
+ from aider.models import model_info_manager
+@@ -91,13 +88,7 @@ class Analytics:
+             return
+ 
+         # self.mp = Mixpanel(mixpanel_project_token)
+-        self.ph = Posthog(
+-            project_api_key=posthog_project_api_key,
+-            host=posthog_host,
+-            on_error=self.posthog_error,
+-            enable_exception_autocapture=True,
+-            super_properties=self.get_system_info(),  # Add system info to all events
+-        )
++
+ 
+     def disable(self, permanently):
+         self.mp = None
