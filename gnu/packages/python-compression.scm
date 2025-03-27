@@ -795,17 +795,15 @@ Python.")
 (define-public python-zipp
   (package
     (name "python-zipp")
-    (version "1.0.0")
+    (version "3.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zipp" version))
        (sha256
         (base32
-         "0v3qayhqv7vyzydpydwcp51bqciw8p2ajddw68x5k8zppc0vx3yk"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-more-itertools))
+         "1x6ibn5v5h8pjhhzwbz0j91yz4yxss761ssj38s4080a8gv5i69c"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/jaraco/zipp")
