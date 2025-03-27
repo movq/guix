@@ -1452,6 +1452,7 @@ such as ISO-2022-JP, Shift_JIS, EUC-JP, UTF-8, UTF-16 or UTF-32.")
        (sha256
         (base32 "0f3sb8q85dbwliv46cc1yvpy4r00qp4by5x8751kn8vx6c1rarqb"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/jgm/pandocfilters")
     (synopsis "Python module for writing Pandoc filters")
     (description "Pandoc is a powerful utility to transform various
