@@ -22693,6 +22693,7 @@ are optionally backed by a C extension built on librdkafka.")
                (base32
                 "1a1pzds3xzfylm5mnc5f6c1p8kiig0daqjc9gygd9rc3cj53x2zj"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/jquast/wcwidth")
     (synopsis "Measure number of terminal column cells of wide-character codes")
     (description "Wcwidth measures the number of terminal column cells of
