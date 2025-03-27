@@ -23866,7 +23866,8 @@ collections of data.")
     (propagated-inputs
      (list python-wcwidth))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/prompt-toolkit/python-prompt-toolkit")
     (synopsis "Library for building command line interfaces in Python")
     (description
