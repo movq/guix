@@ -1,0 +1,38 @@
+Index: aider/aider/scrape.py
+===================================================================
+--- aider.orig/aider/scrape.py
++++ aider/aider/scrape.py
+@@ -3,8 +3,6 @@
+ import re
+ import sys
+ 
+-import pypandoc
+-
+ from aider import __version__, urls, utils
+ from aider.dump import dump  # noqa: F401
+ 
+@@ -198,23 +196,7 @@ class Scraper:
+         return None, None
+ 
+     def try_pandoc(self):
+-        if self.pandoc_available:
+-            return
+-
+-        try:
+-            pypandoc.get_pandoc_version()
+-            self.pandoc_available = True
+-            return
+-        except OSError:
+-            pass
+-
+-        try:
+-            pypandoc.download_pandoc(delete_installer=True)
+-        except Exception as err:
+-            self.print_error(f"Unable to install pandoc: {err}")
+-            return
+-
+-        self.pandoc_available = True
++        pass
+ 
+     def html_to_markdown(self, page_source):
+         from bs4 import BeautifulSoup
