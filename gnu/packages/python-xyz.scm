@@ -11680,6 +11680,7 @@ Python's distutils.")
         (base32
          "1kjxh4gr651hpqkjfv89cfzr40hyvf3vjlda7mifiail83j7j07m"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://www.decalage.info/python/olefileio")
     (synopsis "Read and write Microsoft OLE2 files")
     (description
