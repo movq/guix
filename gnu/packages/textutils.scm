@@ -1763,7 +1763,8 @@ Expressions, and being faster to type than grep.")
                          python-pandocfilters
                          python-pytest
                          python-pytest-cov
-                         python-requests))
+                         python-requests
+                         python-setuptools))
     (home-page "http://scorreia.com/software/panflute/")
     (synopsis "Pythonic Pandoc filters")
     (description
