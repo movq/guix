@@ -8361,6 +8361,8 @@ working with Valve's VDF text format.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-pygments))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/liluo/pygments-github-lexers")
     (synopsis "Pygments Github custom lexers")
     (description "This package installs Github custom lexers to Pygments.")
