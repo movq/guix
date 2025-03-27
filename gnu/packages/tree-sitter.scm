@@ -873,3 +873,24 @@ used to override the build phases."
              (("\\(integer_decimal\n") "(integer_decimal)\n")
              (("\\(integer\\)") "")
              (("\"0\")") "\"0\"")))))))
+
+(define-public python-tree-sitter-c-sharp
+  (package
+    (name "python-tree-sitter-c-sharp")
+    (version "0.23.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tree-sitter/tree-sitter-c-sharp.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w6xdb8m38brhin0bmqsdqggdl95xqs3lbwq7azm5gg94agz9qf1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list tree-sitter))
+    (home-page #f)
+    (synopsis "C# grammar for tree-sitter")
+    (description "C# grammar for tree-sitter.")
+    (license license:expat)))
