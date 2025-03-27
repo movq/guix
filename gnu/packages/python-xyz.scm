@@ -15671,7 +15671,7 @@ session, Python, and the OS.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://mpmath.org")
     (synopsis "Arbitrary-precision floating-point arithmetic in python")
     (description
