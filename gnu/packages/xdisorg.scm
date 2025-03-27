@@ -2766,6 +2766,8 @@ both binary and text data.")
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; Not clear how to make tests pass.
+    (native-inputs
+      (list python-setuptools))
     (inputs
      (list xclip xsel))
     (home-page "https://github.com/asweigart/pyperclip")
