@@ -14956,6 +14956,7 @@ converts incoming documents to Unicode and outgoing documents to UTF-8.")
             #~(modify-phases %standard-phases
                 ;; Circular dependency with python-beautifulsoup4.
                 (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/facelessuser/soupsieve")
     (synopsis "CSS selector library")
     (description
