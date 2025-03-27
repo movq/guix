@@ -866,3 +866,25 @@ which will be used as a snippet in origin."
     (synopsis "C# grammar for tree-sitter")
     (description "C# grammar for tree-sitter.")
     (license license:expat)))
+
+(define-public python-tree-sitter-embedded-template
+  (package
+    (name "python-tree-sitter-embedded-template")
+    (version "0.23.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/tree-sitter/tree-sitter-embedded-template.git")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vq9dywd9vcy59f6i5mk5n7vwk67g8j5x77czg7avpznskgfhqhb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list tree-sitter))
+    (home-page #f)
+    (synopsis "Embedded Template (ERB, EJS) grammar for tree-sitter")
+    (description "Embedded Template (ERB, EJS) grammar for tree-sitter.")
+    (license license:expat)))
