@@ -10709,6 +10709,8 @@ transcendental functions).")
      '(#:tests? #f))
     (propagated-inputs
      (list python-six))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://matplotlib.org/cycler/")
     (synopsis "Composable keyword argument iterator")
     (description
