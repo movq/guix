@@ -27893,7 +27893,7 @@ services.")
                         (("if not isdir\\('\\.git'\\):")
                          "if False:")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-setuptools-scm))
     (home-page "https://github.com/Changaco/setuptools_scm_git_archive/")
