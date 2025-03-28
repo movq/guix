@@ -3658,7 +3658,8 @@ retried.")
                (base32
                 "05kdzlhs2kvj82pfca13qszszcj6dyrk4b9pbr46x06sq2s4qyls"))))
     (native-inputs                      ;all native inputs are for tests
-     (list python-pytest-cov python-mock python-pytest python-hypothesis))
+     (list python-pytest-cov python-mock python-pytest python-hypothesis
+           python-setuptools))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
