@@ -24170,6 +24170,7 @@ YAML-serialized data.")
         (base32 "1nsva88jsmwn0cb9jnrfiz4dvs9xakkpgfii7g1xwkx1pmsjc2bh"))))
     (build-system python-build-system)
     (propagated-inputs (list python-pyyaml))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/waylan/pyyaml-env-tag")
     (synopsis "Custom YAML tag for environment variables")
     (description "This package provides a custom YAML tag for referencing
