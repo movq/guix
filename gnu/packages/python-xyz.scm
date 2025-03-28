@@ -2521,16 +2521,17 @@ ports.")
 (define-public python-mdx-gh-links
   (package
     (name "python-mdx-gh-links")
-    (version "0.2")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mdx_gh_links" version))
        (sha256
-        (base32 "167k1jbp3jifxbnlpi6wy0z1skam7gqv2sixb5bhggb2vypqvysr"))))
-    (build-system python-build-system)
+        (base32 "11inr9azx6c174yfikysbw0mx7mpjm03qdqr1am2a510mg1amma1"))))
+    (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;tests connect github
     (propagated-inputs (list python-markdown))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/Python-Markdown/github-links/")
     (synopsis "Python-Markdown extension adding support for shorthand links")
     (description "This package is an extension to Python-Markdown which adds
