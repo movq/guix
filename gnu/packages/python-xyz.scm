@@ -19864,7 +19864,7 @@ library provides codecs are supported.")
        (patches (search-patches "python-docopt-pytest6-compat.patch"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
