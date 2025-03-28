@@ -1835,6 +1835,7 @@ repository")
                         (install-file "README.md" doc)
                         (install-file "LICENSE" licenses)))))))
     (propagated-inputs (list python-dateutil))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/davisp/ghp-import")
     (synopsis "Copy directory to the gh-pages branch")
     (description "Script that copies a directory to the gh-pages branch (by
