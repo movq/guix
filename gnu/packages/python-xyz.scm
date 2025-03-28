@@ -22665,13 +22665,13 @@ are optionally backed by a C extension built on librdkafka.")
 (define-public python-wcwidth
   (package
     (name "python-wcwidth")
-    (version "0.1.8")
+    (version "0.2.13")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "wcwidth" version))
               (sha256
                (base32
-                "1a1pzds3xzfylm5mnc5f6c1p8kiig0daqjc9gygd9rc3cj53x2zj"))))
+                "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
     (build-system python-build-system)
     (native-inputs (list python-setuptools))
     (home-page "https://github.com/jquast/wcwidth")
