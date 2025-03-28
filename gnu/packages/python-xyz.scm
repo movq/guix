@@ -23248,7 +23248,7 @@ implementation has been adapted, improved, and fixed from Molten.")
              (when tests?
                (invoke "python" "-m" "pytest" "-v")))))))
     (native-inputs
-     (list python-pytest python-pytest-mock))
+     (list python-pytest python-pytest-mock python-setuptools))
     (home-page "https://github.com/sarugaku/shellingham")
     (synopsis "Tool to detect surrounding shell")
     (description
