@@ -34,6 +34,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages node)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
