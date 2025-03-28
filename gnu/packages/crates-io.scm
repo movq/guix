@@ -45862,6 +45862,28 @@ possible over the OS abstractions.")
       "Chaining APIs for both self -> Self and &mut self methods.")
     (license license:expat)))
 
+(define-public rust-monostate-impl-0.1
+  (package
+    (name "rust-monostate-impl")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "monostate-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1db3jrnbriivny6cahvhcc9af7w38q846mg1r4r4y82y5l4s80n4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/dtolnay/monostate")
+    (synopsis "Implementation detail of the monostate crate")
+    (description
+     "This package provides Implementation detail of the monostate crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-more-asserts-0.3
   (package
     (name "rust-more-asserts")
