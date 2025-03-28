@@ -62853,14 +62853,14 @@ extension to python.")
 (define-public rust-pyo3-macros-0.23
   (package
     (name "rust-pyo3-macros")
-    (version "0.23.3")
+    (version "0.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mrjqfvrdw6dp0g4d1ja884vpp4vfk46z23ccb8ysp7sqs7dmdpx"))))
+        (base32 "1nm9i19aff7zn245v35qb0lbr3cxr19zdgcayq84fg7n509j1hpv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
