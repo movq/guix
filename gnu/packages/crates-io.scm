@@ -62101,14 +62101,14 @@ encoder and decoder.")
 (define-public rust-pyo3-0.23
   (package
     (name "rust-pyo3")
-    (version "0.23.3")
+    (version "0.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05bclbdhj210gpq0i7w16369y6cgzbb1z3ribaq7mdjcicngv174"))))
+        (base32 "0wm8z6jgg18z2cgr99wc34mbkffhcnb50igmq5d1ff6ghpyvyy3p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
