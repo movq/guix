@@ -52116,7 +52116,7 @@ safe unsynchronized access.")
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-onig-sys" ,rust-onig-sys-69.6))))
+        ("rust-onig-sys" ,rust-onig-sys-69.8))))
     (home-page "https://github.com/rust-onig/rust-onig")
     (synopsis "Rust bindings for the Oniguruma regular expression library")
     (description
@@ -52124,10 +52124,10 @@ safe unsynchronized access.")
 library.")
     (license license:expat)))
 
-(define-public rust-onig-sys-69.6
+(define-public rust-onig-sys-69.8
   (package
     (name "rust-onig-sys")
-    (version "69.6.0")
+    (version "69.8.1")
     (source
      (origin
        (method url-fetch)
@@ -52135,7 +52135,7 @@ library.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xapbm4mrmyar1lbs3xrly2hm2mkb38hji1j15fjw3scryb3q1pd"))))
+        (base32 "1rw6y2qkb765gzylmrydbbd90hdzhnqyvs2y65z4riwwgqyrx0kv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
