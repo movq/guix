@@ -32472,7 +32472,10 @@ register custom encoders and decoders.")
              (add-installed-pythonpath inputs outputs)
              (invoke "pytest"))))))
     (native-inputs
-     (list double-conversion python-setuptools-scm python-pytest))
+     (list double-conversion
+           python-setuptools
+           python-setuptools-scm
+           python-pytest))
     (home-page "https://github.com/ultrajson/ultrajson")
     (synopsis "Ultra fast JSON encoder and decoder for Python")
     (description
