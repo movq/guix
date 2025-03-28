@@ -18735,7 +18735,7 @@ background.")
                   (replace 'check
                     (lambda _ (invoke "pytest" "-vv"))))))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock python-pytest python-setuptools))
     (inputs
      (list libarchive))
     (home-page "https://github.com/Changaco/python-libarchive-c")
