@@ -62529,14 +62529,14 @@ Python code from a Rust binary is also supported.")
 (define-public rust-pyo3-build-config-0.23
   (package
     (name "rust-pyo3-build-config")
-    (version "0.23.3")
+    (version "0.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3-build-config" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fzzpr1bkwps58m3adcy460820k12mg9d62b0hh8w82gm1lh83nw"))))
+        (base32 "1yqhw1k466k65rqvy2d4xz2shl0hzkry1xlxinciigzkdvlcpxll"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
