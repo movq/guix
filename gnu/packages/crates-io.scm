@@ -45862,6 +45862,29 @@ possible over the OS abstractions.")
       "Chaining APIs for both self -> Self and &mut self methods.")
     (license license:expat)))
 
+(define-public rust-monostate-0.1
+  (package
+    (name "rust-monostate")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "monostate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vpv8d9j8i7wachlcrpbwsy1rvzimpncgv8gwpil4mn7s3lipzma"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-monostate-impl" ,rust-monostate-impl-0.1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/dtolnay/monostate")
+    (synopsis "Type that deserializes only from one specific value")
+    (description
+     "This package provides Type that deserializes only from one specific value.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-monostate-impl-0.1
   (package
     (name "rust-monostate-impl")
