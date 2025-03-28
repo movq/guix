@@ -14911,15 +14911,15 @@ converts incoming documents to Unicode and outgoing documents to UTF-8.")
 (define-public python-soupsieve
   (package
     (name "python-soupsieve")
-    (version "2.2.1")
+    (version "2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "soupsieve" version))
        (sha256
         (base32
-         "1k70gpn2d3vgdyxbdy536dgm4kchcraxz6lmgsfg3324iy2789q5"))))
-    (build-system python-build-system)
+         "1fqslnqnm1m9y4vbr2mvama8lg2a81bi1b6scpn5kwvsfwbq9rp2"))))
+    (build-system pyproject-build-system)
     (arguments
       ;;XXX: 2 tests fail currently despite claming they were to be
       ;;skipped. Also, beautifulsoup4 may depend on this in the future, so we
@@ -14929,7 +14929,7 @@ converts incoming documents to Unicode and outgoing documents to UTF-8.")
             #~(modify-phases %standard-phases
                 ;; Circular dependency with python-beautifulsoup4.
                 (delete 'sanity-check))))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-hatchling))
     (home-page "https://github.com/facelessuser/soupsieve")
     (synopsis "CSS selector library")
     (description
@@ -14939,7 +14939,6 @@ CSS selectors.  Soup Sieve currently provides selectors from the CSS level 1
 specifications up through the latest CSS level 4 drafts and beyond (though
 some are not yet implemented).")
     (license license:expat)))
-
 
 (define-public python-netifaces
   (package
