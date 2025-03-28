@@ -62682,14 +62682,14 @@ ecosystem.")
 (define-public rust-pyo3-ffi-0.23
   (package
     (name "rust-pyo3-ffi")
-    (version "0.23.3")
+    (version "0.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3-ffi" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b9pmqzw0ggw6cwkpad51nwkdzj5k555c9q21wd6yvwnz6klf5gb"))))
+        (base32 "13fxvxijl59vilv39akdzwqd1l7fb6c70f53n27irfy0672b9wg9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
