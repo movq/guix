@@ -52241,14 +52241,14 @@ safe unsynchronized access.")
 (define-public rust-onig-6
   (package
     (name "rust-onig")
-    (version "6.1.1")
+    (version "6.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "onig" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mcx125hh22kx2d0676hkk2gli6v8r6c4rp3wh5qy0dwxpcnzd1h"))))
+        (base32 "0kyaz2fwa5dkr04rvk5ga2yv5jkqn1ymblvpdlf1gn9afb432jwc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
