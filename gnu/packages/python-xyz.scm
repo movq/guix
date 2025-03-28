@@ -26240,14 +26240,15 @@ manipulation and interaction with formal grammars.")
 (define-public python-constantly
   (package
     (name "python-constantly")
-    (version "15.1.0")
+    (version "23.10.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "constantly" version))
               (sha256
                (base32
-                "0dgwdla5kfpqz83hfril716inm41hgn9skxskvi77605jbmp4qsq"))))
+                "1gbw3izhn1gx1rgc61jbfr4dr535fxhynifp7jrhpb726c5bg4ma"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools python-versioneer python-wheel))
     (home-page "https://github.com/twisted/constantly")
     (synopsis "Symbolic constants in Python")
     (description "Constantly is a Python library that provides symbolic
