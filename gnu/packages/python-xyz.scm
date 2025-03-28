@@ -2152,6 +2152,8 @@ that best match text queries.")
            python-pyyaml
            python-pyyaml-env-tag
            python-watchdog))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://www.mkdocs.org")
     (synopsis "Project documentation with Markdown")
     (description "MkDocs is a static site generator geared towards building
