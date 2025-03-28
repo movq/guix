@@ -4974,10 +4974,11 @@ used as authentication in IMAP mail servers.")
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-mock))
+     (list python-pytest python-pytest-cov python-mock python-setuptools))
     (propagated-inputs
      (list python-cryptography python-pyjwt python-blinker))
     (home-page "https://github.com/oauthlib/oauthlib")
