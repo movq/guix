@@ -1591,7 +1591,7 @@ support and @code{subtests} fixture.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "tests/"))))))
       (native-inputs
-       (list python-urllib3))
+       (list python-setuptools python-urllib3))
       (propagated-inputs
        (list python-pytest python-vcrpy))
       (home-page "https://github.com/ktosiek/pytest-vcr")
