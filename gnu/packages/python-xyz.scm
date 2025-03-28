@@ -14411,6 +14411,7 @@ for automated refactoring or highlighting.")
        (sha256
         (base32 "0vwijrylppmk0nbddqvn527r9cg3zw8d6zk6r58hslry42jf7jp6"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/alexmojaki/littleutils")
     (synopsis "Python utility function collection")
     (description "@code{littleutils} is a small collection of Python utility
