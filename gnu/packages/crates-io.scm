@@ -25659,6 +25659,27 @@ deserialized from environment variables.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-str-buf" ,rust-str-buf-1))))))
 
+(define-public rust-esaxx-rs-0.1
+  (package
+    (name "rust-esaxx-rs")
+    (version "0.1.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "esaxx-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rm6vm5yr7s3n5ly7k9x9j6ra5p2l2ld151gnaya8x03qcwf05yq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/Narsil/esaxx-rs")
+    (synopsis "Wrapping around sentencepiece's esaxxx library")
+    (description
+     "This package provides Wrapping around sentencepiece's esaxxx library.")
+    (license license:asl2.0)))
+
 (define-public rust-escape8259-0.5
   (package
     (name "rust-escape8259")
