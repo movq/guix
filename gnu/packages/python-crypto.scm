@@ -119,7 +119,7 @@ the Bitcoin network.")
         (base32 "0agvzdn7r7jx5y4scl5gjmrmr6njvizwmr9n7h1kmaahdrrc34sv"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pycparser python-pytest))
+     (list python-pycparser python-pytest python-setuptools))
     (propagated-inputs
      (list python-cffi python-six))
     (home-page "https://github.com/pyca/bcrypt/")
