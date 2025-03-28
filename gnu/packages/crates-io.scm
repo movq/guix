@@ -63169,14 +63169,14 @@ extension to python.")
 (define-public rust-pyo3-macros-backend-0.23
   (package
     (name "rust-pyo3-macros-backend")
-    (version "0.23.3")
+    (version "0.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3-macros-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z9ysg19gh84qdxvnmw426nd6nahmspkc4cb2s8jgagm5wh8b8rq"))))
+        (base32 "0a10yxj41kvjhh9vywzd2zj3h6iwm4bg3mlkw2frrnpks1m759pw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
