@@ -3347,14 +3347,14 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
 (define-public python-soundfile
   (package
     (name "python-soundfile")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "soundfile" version))
        (sha256
         (base32
-         "0mc3g5l9fzj57m62zrwwz0w86cbihpna3mikgh8kpmz7ppc9jcz8"))))
+         "0nqf7z2wrb70vppjv5729565h0p3azgl6nqa10bp6a9h3smqvimj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3373,7 +3373,7 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (propagated-inputs
      (list python-cffi python-numpy libsndfile))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/bastibe/SoundFile")
     (synopsis "Python bindings for libsndfile")
     (description "This package provides python bindings for libsndfile based on
