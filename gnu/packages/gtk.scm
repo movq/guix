@@ -2406,7 +2406,6 @@ information.")
     (inputs
      (list bash-minimal
            bc
-           dblatex
            docbook-xml-4.3
            docbook-xsl
            glib
