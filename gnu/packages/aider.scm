@@ -131,7 +131,11 @@
 
 [tool.setuptools.package-data]
 \"*\" = [\"*.scm\"]
-\"aider.resources\" = [\"*\"]")))))))
+\"aider.resources\" = [\"*\"]"))))
+          (add-after 'unpack 'patch-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("dependencies = \\{ file = \"requirements.txt\" \\}") "")))))))
     (propagated-inputs (list python-configargparse
                              python-diff-match-patch
                              python-diskcache
@@ -140,6 +144,8 @@
                              python-httpx
                              python-importlib-resources
                              python-json5
+                             python-litellm
+                             python-openai
                              python-packaging
                              python-pexpect
                              python-pillow
