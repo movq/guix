@@ -131,7 +131,11 @@
 
 [tool.setuptools.package-data]
 \"*\" = [\"*.scm\"]
-\"aider.resources\" = [\"*\"]")))))))
+\"aider.resources\" = [\"*\"]"))))
+          (add-after 'unpack 'patch-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("dependencies = \\{ file = \"requirements.txt\" \\}") "")))))))
     (propagated-inputs (list python-configargparse
                              python-diff-match-patch
                              python-diskcache
@@ -140,6 +144,8 @@
                              python-httpx
                              python-importlib-resources
                              python-json5
+                             python-litellm
+                             python-openai
                              python-packaging
                              python-pexpect
                              python-pillow
@@ -369,92 +375,3 @@ of dense vectors.")
     (synopsis #f)
     (description #f)
     (license #f)))
-
-(define-public python-cohere
-  (package
-    (name "python-cohere")
-    (version "5.14.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cohere" version))
-       (sha256
-        (base32 "1zbqbkk1c1y7p5bswpivbl2w5i29s5pyvy4zyz4796q4ai62vgzx"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-fastavro
-                             python-httpx
-                             python-httpx-sse
-                             python-pydantic
-                             python-pydantic-core
-                             python-requests
-                             python-tokenizers
-                             python-types-requests
-                             python-typing-extensions))
-    (native-inputs (list python-poetry-core))
-    (home-page #f)
-    (synopsis #f)
-    (description #f)
-    (license license:expat)))
-
-(define-public python-ml-dtypes
-  (package
-    (name "python-ml-dtypes")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ml_dtypes" version))
-       (sha256
-        (base32 "1j82c0jnx1xdrddalqmbdc5zjj9j06w4x66nis29ajmqkdamhnxc"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-absl-py
-                         python-numpy
-                         python-pyink
-                         python-pylint
-                         python-pytest
-                         python-pytest-xdist
-                         python-setuptools
-                         python-wheel))
-    (home-page #f)
-    (synopsis #f)
-    (description #f)
-    (license #f)))
-
-(define-public python-redisvl
-  (package
-    (name "python-redisvl")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "redisvl" version))
-       (sha256
-        (base32 "1rh1cill5hb299wj7ssqrkilwb9365f9286axz094ix9dd13cspx"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-boto3
-                             python-cohere
-                             python-coloredlogs
-                             ;python-google-cloud-aiplatform
-                             ;python-mistralai
-                             python-ml-dtypes
-                             python-numpy
-                             python-openai
-                             python-protobuf
-                             python-pydantic
-                             python-ulid
-                             python-pyyaml
-                             python-redis
-                             python-scipy
-                             python-sentence-transformers
-                             python-tabulate
-                             python-tenacity
-                             python-voyageai))
-    (native-inputs (list python-poetry-core))
-    (home-page "https://github.com/redis/redis-vl-python")
-    (synopsis
-     "Python client library and CLI for using Redis as a vector database")
-    (description
-     "Python client library and CLI for using Redis as a vector database.")
-    (license license:expat)))
-
