@@ -2888,14 +2888,6 @@ synchronous execution of all clients, and low latency operation.")
        #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
-         ;; Python 3.11 has removed the 'U' (universal newline) mode.  It has
-         ;; been the default since Python 3.3.
-         (add-after 'unpack 'python-compatibility
-           (lambda _
-             (substitute* '("waflib/Context.py"
-                            "waflib/ConfigSet.py")
-               (("m='rU'") "m='r'")
-               (("read\\('rU'") "read('r'"))))
          (add-after 'unpack 'delete-bundled-waflib
            (lambda _
              (delete-file-recursively "waflib")))
