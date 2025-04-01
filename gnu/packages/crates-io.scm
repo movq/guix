@@ -40589,6 +40589,29 @@ nor a system allocator.")
        #:cargo-development-inputs
        (("rust-approx" ,rust-approx-0.4))))))
 
+(define-public rust-lexical-parse-float-1
+  (package
+    (name "rust-lexical-parse-float")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lexical-parse-float" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wmhcndf7gvfqvmd5v61nhbqgaybiw27q1cs41h81c5h3yq9qvyy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lexical-parse-integer" ,rust-lexical-parse-integer-1)
+                       ("rust-lexical-util" ,rust-lexical-util-1)
+                       ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/Alexhuszagh/rust-lexical")
+    (synopsis "Efficient parsing of floats from strings")
+    (description
+     "This package provides Efficient parsing of floats from strings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lexical-parse-float-0.8
   (package
     (name "rust-lexical-parse-float")
