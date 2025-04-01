@@ -32,6 +32,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system pyproject)
@@ -140,11 +141,13 @@
                              python-diff-match-patch
                              python-diskcache
                              python-dotenv
+                             python-gitpython
                              python-grep-ast
                              python-httpx
                              python-importlib-resources
                              python-json5
                              python-litellm
+                             python-networkx
                              python-openai
                              python-packaging
                              python-pexpect
@@ -243,7 +246,7 @@
                              python-jinja2
                              python-jsonschema
                              python-openai
-                             python-pydantic
+                             python-pydantic-2
                              python-dotenv
                              python-tiktoken
                              python-tokenizers))
