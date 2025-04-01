@@ -40614,6 +40614,28 @@ nor a system allocator.")
      "This crate provides efficient parsing of floats from strings.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lexical-parse-integer-1
+  (package
+    (name "rust-lexical-parse-integer")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lexical-parse-integer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bpidpb0viqj9wx3z727y6d59smz5kj7km5nlwdi42pw4ap7l83j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lexical-util" ,rust-lexical-util-1)
+                       ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/Alexhuszagh/rust-lexical")
+    (synopsis "Efficient parsing of integers from strings")
+    (description
+     "This package provides Efficient parsing of integers from strings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lexical-parse-integer-0.8
   (package
     (name "rust-lexical-parse-integer")
