@@ -40637,6 +40637,26 @@ nor a system allocator.")
      "This crate provides efficient parsing of integers from strings.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lexical-util-1
+  (package
+    (name "rust-lexical-util")
+    (version "1.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lexical-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cx0974y9x63ikra6l2vqcr4gmf8pipdrfzzfz0j9z9pym5y50js"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/Alexhuszagh/rust-lexical")
+    (synopsis "Shared utilities for lexical creates")
+    (description "This package provides Shared utilities for lexical creates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lexical-util-0.8
   (package
     (name "rust-lexical-util")
