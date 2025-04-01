@@ -58902,14 +58902,14 @@ overloading without macros in Rust.")
 (define-public rust-portable-atomic-1
   (package
     (name "rust-portable-atomic")
-    (version "1.9.0")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "portable-atomic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cmd87qj90panwsi350djb8lsxdryqkkxmimjcz7a1nsysini76c"))
+        (base32 "0glb2wngflvfmg789qbf6dbnwcf6ai212fs7n0lf1c66rd49n3im"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
