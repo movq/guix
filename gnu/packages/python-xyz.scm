@@ -9810,6 +9810,8 @@ writing C extensions for Python as easy as Python itself.")
            python-wheel))
     (properties '())))
 
+(define-public python-cython-3 python-cython)
+
 ;; NOTE: when upgrading numpy please make sure that python-numba,
 ;; python-pandas and python-scipy still build, as these three packages are
 ;; often used together.
