@@ -38519,6 +38519,7 @@ Python, with static types.")
                (base32
                 "0qlrxgl4mz6hs8z4qnl91hsa8mqcfm6397s3s3j21imxqxk8ww1s"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for setuptools")
     (description "This package provides typing stubs for setuptools.")
