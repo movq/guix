@@ -38578,14 +38578,14 @@ heavily inspired by the Temporal project.")
 (define-public rust-jiff-tzdb-0.1
   (package
     (name "rust-jiff-tzdb")
-    (version "0.1.1")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "jiff-tzdb" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ls6mpzy0bhckpv681cxlm61cpq21rxldgdrfg3c9iahb1bmwcwi"))))
+        (base32 "09350bna4vxdn2fv7gd08ay41llkflmfyvpx5d6l088axc2kfa61"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/BurntSushi/jiff/tree/master/jiff-tzdb")
     (synopsis "The entire Time Zone Database embedded into your binary")
