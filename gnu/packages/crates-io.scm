@@ -63166,6 +63166,32 @@ extension to python.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-pyo3-macros-backend-0.24
+  (package
+    (name "rust-pyo3-macros-backend")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-macros-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m9q9zlwn5s0pa2819z3a13yn94pmq1q3swvx04fvc5z1jm6zkzl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-heck" ,rust-heck-0.5)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.24)
+                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.24)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Code generation for PyO3 package")
+    (description
+     "This package provides Code generation for @code{PyO3} package.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-macros-backend-0.23
   (package
     (name "rust-pyo3-macros-backend")
