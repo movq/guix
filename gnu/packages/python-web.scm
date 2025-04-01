@@ -3043,13 +3043,13 @@ service.")
 (define-public python-openai
   (package
     (name "python-openai")
-    (version "0.28.1")
+    (version "1.70.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "openai" version))
               (sha256
                (base32
-                "1j6wsavgrxzh6ls8hp45nllz8f5l65a6vzk0lvhlqnx6579xmqab"))))
+                "0aqv157dz3789mg9ccjlicv2bvxbllhmp6skb37hiszgqda8sap5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3060,10 +3060,15 @@ service.")
              "-k" "not test_requestor_cycle_sessions\
  and not test_requestor_sets_request_id\
  and not test_file_cli")))
-    (propagated-inputs (list python-aiohttp python-requests python-tqdm
+    (propagated-inputs (list python-anyio
+                             python-distro
+                             python-httpx
+                             python-jiter
+                             python-pydantic
+                             python-sniffio
+                             python-tqdm
                              python-typing-extensions))
-    (native-inputs (list python-black python-pytest python-pytest-asyncio
-                         python-pytest-mock python-setuptools python-wheel))
+    (native-inputs (list python-hatch-fancy-pypi-readme python-hatchling))
     (home-page "https://github.com/openai/openai-python")
     (synopsis "Python client library for the OpenAI API")
     (description "This package provides a Python client library for the
