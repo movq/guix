@@ -76,7 +76,7 @@
                  '("vi_cv_sprintf_count=yes")
                  '()))
       #:make-flags
-      (list
+      #~(list
        ;; nvi's configure chokes on passing CFLAGS and ignores
        ;; CFLAGS set in the environment
        (string-append "CFLAGS=-g -O2"
