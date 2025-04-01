@@ -38575,6 +38575,33 @@ are designed to be difficult to misuse and have reasonable performance.  It's
 heavily inspired by the Temporal project.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-jiff-static-0.2
+  (package
+    (name "rust-jiff-static")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiff-static" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k1v30mhbgh4zj2r9d7lfqlh5b20b5573cx0a4gip7rlkldf7pac"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-jiff-tzdb" ,rust-jiff-tzdb-0.1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page
+     "https://github.com/BurntSushi/jiff/tree/master/crates/jiff-static")
+    (synopsis
+     "Create static TimeZone values for Jiff (useful in core-only environments)")
+    (description
+     "This package provides Create static @code{TimeZone} values for Jiff (useful in core-only
+environments).")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-jiff-tzdb-0.1
   (package
     (name "rust-jiff-tzdb")
