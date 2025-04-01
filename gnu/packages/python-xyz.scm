@@ -7576,6 +7576,53 @@ adds a 'now' tag providing a convenient access to the arrow.now() API from
 templates.  A format string can be provided to control the output.")
     (license license:expat)))
 
+(define-public python-jiter
+  (package
+    (name "python-jiter")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydantic/jiter.git")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "0bgh4ykr56ri78ww1gy1nk8lq3m8h1a87vshrdqsipd1f6sml81y"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix py:)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'cd-to-python-bindings
+                     (lambda _
+                       (chdir "crates/jiter-python")))
+                   (replace 'build
+                     (assoc-ref py:%standard-phases
+                                'build))
+                   (delete 'package)
+                   (replace 'install
+                     (assoc-ref py:%standard-phases
+                                'install))
+                   (add-after 'install 'compile-bytecode
+                     (assoc-ref py:%standard-phases
+                                'compile-bytecode)))
+      #:cargo-inputs `(("rust-bencher" ,rust-bencher-0.1)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-codspeed-bencher-compat"
+                        ,rust-codspeed-bencher-compat-2)
+                       ("rust-lexical-parse-float" ,rust-lexical-parse-float-1)
+                       ("rust-pyo3" ,rust-pyo3-0.24))))
+    (native-inputs (list maturin python-wrapper))
+    (home-page "https://github.com/pydantic/jiter/")
+    (synopsis "Fast iterable JSON parser.")
+    (description "Fast iterable JSON parser.")
+    (license license:expat)))
+
 (define-public python-pypugjs
   (package
     (name "python-pypugjs")
