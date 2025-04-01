@@ -58938,14 +58938,14 @@ overloading without macros in Rust.")
 (define-public rust-portable-atomic-util-0.2
   (package
     (name "rust-portable-atomic-util")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "portable-atomic-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0v105n6yyvzwvfgsvfm5cqb818avlk3hbpfnahdljan5xjzdb9wh"))))
+        (base32 "01rmx1li07ixsx3sqg2bxqrkzk7b5n8pibwwf2589ms0s3cg18nq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-build-context" ,rust-build-context-0.1)
