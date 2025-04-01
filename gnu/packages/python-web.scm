@@ -3119,7 +3119,7 @@ service.")
 (define-public python-openai
   (package
     (name "python-openai")
-    (version "1.3.5")
+    (version "1.70.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3128,7 +3128,7 @@ service.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k1rwhj7v22x5bnv9xbk9nj9grxqmmclh9538qqjadgqxfn5x74q"))))
+                "0aqv157dz3789mg9ccjlicv2bvxbllhmp6skb37hiszgqda8sap5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3143,37 +3143,16 @@ service.")
              "--ignore=tests/test_client.py"
              "-k" "not test_requestor_cycle_sessions\
  and not test_requestor_sets_request_id\
- and not test_file_cli\
- and not test_basic_async\
- and not test_async\
- and not test_datetime_with_alias\
- and not test_pydantic")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("distro>=1.7.0") "distro>=1.6.0")
-               (("anyio>=3.5.0, <4") "anyio"))))
-         (add-after 'unpack 'httpx-compatibility
-           (lambda _
-             (substitute* "src/openai/_base_client.py"
-               (("proxies=proxies,") "")
-               (("self._proxies = proxies") "")
-               (("proxies: ProxiesTypes . None,") "")))))))
-    (propagated-inputs
-     (list python-aiohttp
-           python-distro
-           python-httpx
-           python-pydantic-2
-           python-requests
-           python-tqdm
-           python-typing-extensions))
-    (native-inputs (list nss-certs-for-test
-                         python-dirty-equals
-                         python-hatchling
-                         python-pytest python-pytest-asyncio
-                         python-pytest-mock python-setuptools python-wheel))
+ and not test_file_cli")))
+    (propagated-inputs (list python-anyio
+                             python-distro
+                             python-httpx
+                             python-jiter
+                             python-pydantic
+                             python-sniffio
+                             python-tqdm
+                             python-typing-extensions))
+    (native-inputs (list python-hatch-fancy-pypi-readme python-hatchling))
     (home-page "https://github.com/openai/openai-python")
     (synopsis "Python client library for the OpenAI API")
     (description "This package provides a Python client library for the
