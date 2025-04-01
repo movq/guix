@@ -62666,6 +62666,31 @@ Python code from a Rust binary is also supported.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-pyo3-build-config-0.24
+  (package
+    (name "rust-pyo3-build-config")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-build-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hazmb2hm7qad5xcy9gajwj3231hqjnndfcb145014ypkf46awg2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+                       ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13))))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Build configuration for the PyO3 ecosystem")
+    (description
+     "This package provides Build configuration for the @code{PyO3} ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-build-config-0.23
   (package
     (name "rust-pyo3-build-config")
