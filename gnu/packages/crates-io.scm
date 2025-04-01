@@ -62990,6 +62990,29 @@ extension to python.")
        (("rust-pyo3" ,rust-pyo3-0.19)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-pyo3-macros-0.24
+  (package
+    (name "rust-pyo3-macros")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i2zrpazxwgfbpmzvrcqhdgg3j97l5i0q455b4rzdlx4d9lfag2w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.24)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Proc macros for PyO3 package")
+    (description "This package provides Proc macros for @code{PyO3} package.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-macros-0.23
   (package
     (name "rust-pyo3-macros")
