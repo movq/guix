@@ -32174,7 +32174,7 @@ for manual interpretation.")
          "09441261dd3c8b2gv15vhw1cryzg60lmgpkk07v6hpwwkyhfbxc3"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/nir0s/distro")
     (synopsis
      "OS platform information API")
