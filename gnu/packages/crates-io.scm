@@ -38623,14 +38623,14 @@ environments).")
 (define-public rust-jiff-tzdb-platform-0.1
   (package
     (name "rust-jiff-tzdb-platform")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "jiff-tzdb-platform" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0aa3iwpvvl970180da9y2cisz9liairbqdq42sgyavv2183g0dcq"))))
+        (base32 "1s1ja692wyhbv7f60mc0x90h7kn1pv65xkqi2y4imarbmilmlnl7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-jiff-tzdb" ,rust-jiff-tzdb-0.1))))
