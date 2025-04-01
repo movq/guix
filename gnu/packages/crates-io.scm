@@ -62844,6 +62844,28 @@ ecosystem.")
      `(#:cargo-inputs
        (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-pyo3-ffi-0.24
+  (package
+    (name "rust-pyo3-ffi")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-ffi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g5a5w7rsq2afb5zamz1jjx5834cnwlg4gig0qhb9xnvw4k0aa05"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.24))))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Python-API bindings for the PyO3 ecosystem")
+    (description
+     "This package provides Python-API bindings for the @code{PyO3} ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-ffi-0.23
   (package
     (name "rust-pyo3-ffi")
