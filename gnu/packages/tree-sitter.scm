@@ -47,20 +47,18 @@
   #:use-module (guix utils))
 
 (define-public python-tree-sitter
-  (let ((commit "191c2de2e032038b1eaa424ffd99bc266485b23d")
-        (revision "1"))
     (package
       (name "python-tree-sitter")
-      (version (git-version "0.25" revision commit))
+      (version "0.24.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/tree-sitter/py-tree-sitter")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0qislrlsddfg6kmk9igp3sw0k2iv0mgvx74bjznh170i0c8ybr6y"))))
+                  "00scl7srac55lp99kc4qsx9wbk7gx09rhmdh6hgwqxqa7s62divn"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -114,7 +112,7 @@
       (synopsis "Python bindings to the Tree-sitter parsing library")
       (description "This package provides Python bindings to the
   Tree-sitter parsing library.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public rust-tree-sitter-bash-0.23
   (package
