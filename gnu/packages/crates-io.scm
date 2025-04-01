@@ -38533,6 +38533,41 @@ strings and byte slices for sets of ASCII characters or bytes.")
         (base32 "1sq6d6c9vi44gkr566w2f1d4n6mmrjx8gjdwgnhkgcsg051j391j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-jiff-0.2
+  (package
+    (name "rust-jiff")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q3jpq3scznmviiajldyf5xby38zgyvkxbrmgb9hf78r6416f0n1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-jiff-static" ,rust-jiff-static-0.2)
+                       ("rust-jiff-static" ,rust-jiff-static-0.2)
+                       ("rust-jiff-tzdb" ,rust-jiff-tzdb-0.1)
+                       ("rust-jiff-tzdb-platform" ,rust-jiff-tzdb-platform-0.1)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/BurntSushi/jiff")
+    (synopsis
+     "date-time library that encourages you to jump into the pit of success.
+
+This library is heavily inspired by the Temporal project.")
+    (description
+     "This package provides a date-time library that encourages you to jump into the
+pit of success.  This library is heavily inspired by the Temporal project.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-jiff-0.1
   (package
     (name "rust-jiff")
