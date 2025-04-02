@@ -107,7 +107,7 @@
 (define-public aider
   (package
     (name "aider")
-    (version "0.79.0")
+    (version "0.80.1")
     (source
      (origin
        (method git-fetch)
@@ -115,7 +115,7 @@
               (url "https://github.com/Aider-AI/aider")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "1gr05fh9jr34mxh13hvprn6a8xj9icb60gxr1dydls2wrsjvyw7i"))
+        (base32 "0d9kw448azxp9yq4vg8mbpnf4izcdrmilfl1g59s8pcijgfmcwjc"))
        (patches (search-patches "aider-disable-analytics.patch"
                                 "aider-disable-updater.patch"
                                 "aider-disable-pypandoc.patch"))))
