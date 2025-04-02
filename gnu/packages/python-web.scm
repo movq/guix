@@ -3148,7 +3148,7 @@ service.")
                              python-distro
                              python-httpx
                              python-jiter
-                             python-pydantic
+                             python-pydantic-2
                              python-sniffio
                              python-tqdm
                              python-typing-extensions))
