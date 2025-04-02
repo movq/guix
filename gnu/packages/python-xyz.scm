@@ -23202,7 +23202,7 @@ docstring and colored output.")
         (base32 "0wsxnv9bs7jk8ig8blj9c438a1ygvdad7y9cn1zr720nfbjm5fbi"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest python-pyyaml))
+     (list python-pytest python-pyyaml python-setuptools))
     (home-page "https://github.com/sdispater/tomlkit")
     (synopsis "Style-preserving TOML library")
     (description
