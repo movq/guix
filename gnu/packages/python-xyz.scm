@@ -12056,6 +12056,49 @@ NIH, ImageJ, MicroManager, MD GEL, and FluoView files.  It also lets you write
 numpy arrays to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
     (license license:bsd-3)))
 
+(define-public python-tiktoken
+  (package
+    (name "python-tiktoken")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tiktoken" version))
+       (sha256
+        (base32 "0p9cg6n8mzdi4lbbwxrrp26chy5hr14bqmzr3w74kq1qm6k5qanh"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix py:)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'build
+                     (assoc-ref py:%standard-phases
+                                'build))
+                   (delete 'package)
+                   (replace 'install
+                     (assoc-ref py:%standard-phases
+                                'install)))
+      #:cargo-inputs
+      `(("rust-bstr" ,rust-bstr-1)
+        ("rust-fancy-regex" ,rust-fancy-regex-0.13)
+        ("rust-pyo3" ,rust-pyo3-0.22))))
+    (propagated-inputs (list python-regex python-requests))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-rust
+           python-wheel
+           python-wrapper))
+    (home-page #f)
+    (synopsis "tiktoken is a fast BPE tokeniser for use with OpenAI's models")
+    (description
+     "tiktoken is a fast BPE tokeniser for use with @code{OpenAI's} models.")
+    (license #f)))
+
 (define-public python-lfdfiles
   (package
     (name "python-lfdfiles")
