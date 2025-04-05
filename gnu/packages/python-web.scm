@@ -7680,6 +7680,34 @@ management.  It can find an unused TCP localhost port and remember the
 association.")
     (license license:expat)))
 
+(define-public python-litellm
+  (package
+    (name "python-litellm")
+    (version "1.64.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "litellm" version))
+       (sha256
+        (base32 "12cgxkky7zyh990vmhyr0z14hgy5axv9c7k99pd7mmzvn68wifkk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-aiohttp
+                             python-click
+                             python-httpx
+                             python-importlib-metadata
+                             python-jinja2
+                             python-jsonschema
+                             python-openai
+                             python-pydantic-2
+                             python-dotenv
+                             python-tiktoken
+                             python-tokenizers))
+    (native-inputs (list python-poetry-core python-wheel))
+    (home-page #f)
+    (synopsis "Library to easily interface with LLM API providers")
+    (description "Library to easily interface with LLM API providers.")
+    (license license:expat)))
+
 (define-public python-livereload
   (package
     (name "python-livereload")
