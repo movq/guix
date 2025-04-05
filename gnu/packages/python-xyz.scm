@@ -7819,6 +7819,69 @@ alternative representations which do not require this package.")
 structure for Python.")
     (license license:asl2.0)))
 
+(define-public aider
+  (package
+    (name "aider")
+    (version "0.81.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Aider-AI/aider")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "1iqq7m81l1syc5vhm3lkakcdfbnkapbdapj1197gy5v6j2q9vm2c"))
+       (patches (search-patches "aider-disable-analytics.patch"
+                                "aider-disable-updater.patch"
+                                "aider-disable-pypandoc.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-installation
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("include = \\[\"aider\"\\]")
+                 "include = [\"aider\", \"aider.*\"]
+
+[tool.setuptools.package-data]
+\"*\" = [\"*.scm\"]
+\"aider.resources\" = [\"*\"]"))))
+          (add-after 'unpack 'patch-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("dependencies = \\{ file = \"requirements.txt\" \\}") "")))))))
+    (propagated-inputs (list python-configargparse
+                             python-diff-match-patch
+                             python-diskcache
+                             python-dotenv
+                             python-gitpython
+                             python-grep-ast
+                             python-httpx
+                             python-importlib-resources
+                             python-json5
+                             python-litellm
+                             python-networkx
+                             python-openai
+                             python-packaging
+                             python-pexpect
+                             python-pillow
+                             python-prompt-toolkit
+                             python-pydub
+                             python-pyperclip
+                             python-pyyaml
+                             python-tqdm
+                             python-watchfiles
+                             python-wcwidth
+                             python-yarl))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/paul-gauthier/aider")
+    (synopsis "AI programming assistant")
+    (description
+     "This package provides a terminal-based AI programming assistant.")
+    (license license:asl2.0)))
+
 (define-public autokey
   (package
     (name "autokey")
