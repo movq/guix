@@ -10349,6 +10349,24 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
 Interface) framework/toolkit for building async web services in Python.")
     (license license:bsd-3)))
 
+(define-public python-sse-starlette
+  (package
+    (name "python-sse-starlette")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sse_starlette" version))
+       (sha256
+        (base32 "06dl330s5i7isw8kp58xhpm7kcxl105l6wylnbbfwji735ghsisl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-anyio python-starlette))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page #f)
+    (synopsis "SSE plugin for Starlette")
+    (description "SSE plugin for Starlette.")
+    (license #f)))
+
 (define-public python-starsessions
   (package
     (name "python-starsessions")
