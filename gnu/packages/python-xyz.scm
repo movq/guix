@@ -12820,6 +12820,25 @@ you to actually draw things with your favorite toolkit.")
     ;; The user can choose either license.
     (license (list license:gpl2 license:epl1.0))))
 
+(define-public python-grep-ast
+  (package
+    (name "python-grep-ast")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "grep_ast" version))
+       (sha256
+        (base32 "0zqqck9clf85kdqqlx9xar4611i9h0giwpx4qryz8ah48igjibwg"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pathspec python-tree-sitter-language-pack))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/paul-gauthier/grep-ast")
+    (synopsis "A tool to grep through the AST of a source file")
+    (description
+     "This package provides a tool to grep through the AST of a source file.")
+    (license license:asl2.0)))
+
 (define-public python-gridmap
   (package
     (name "python-gridmap")
