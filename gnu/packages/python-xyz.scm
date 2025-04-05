@@ -12099,6 +12099,73 @@ numpy arrays to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
      "tiktoken is a fast BPE tokeniser for use with @code{OpenAI's} models.")
     (license #f)))
 
+(define-public python-tokenizers
+  (package
+    (name "python-tokenizers")
+    (version "0.21.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huggingface/tokenizers.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0q0v2p9r201n1a12rni6qbc0814ynzx66y46is6hr7v7lq4xjbnx"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix py:)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'cd-to-bindings-dir
+                     (lambda _
+                       (chdir "bindings/python")))
+                   (replace 'build
+                     (assoc-ref py:%standard-phases
+                                'build))
+                   (delete 'package)
+                   (replace 'install
+                     (assoc-ref py:%standard-phases
+                                'install)))
+      #:cargo-development-inputs
+      `(("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))
+      #:cargo-inputs `(
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-esaxx-rs" ,rust-esaxx-rs-0.1)
+                       ("rust-indicatif" ,rust-indicatif-0.17)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-macro-rules-attribute" ,rust-macro-rules-attribute-0.2)
+                       ("rust-monostate" ,rust-monostate-0.1)
+                       ("rust-ndarray" ,rust-ndarray-0.16)
+                       ("rust-numpy" ,rust-numpy-0.23)
+                       ("rust-pyo3" ,rust-pyo3-0.23)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rayon-cond" ,rust-rayon-cond-0.3)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+                       ("rust-spm-precompiled" ,rust-spm-precompiled-0.1)
+                       ("rust-unicode-normalization-alignments"
+                        ,rust-unicode-normalization-alignments-0.1))))
+    (propagated-inputs (list python-huggingface-hub python-huggingface-hub))
+    (native-inputs (list python-black
+                         maturin
+                         python-numpy
+                         python-pytest
+                         python-requests
+                         python-setuptools
+                         python-wrapper))
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
 (define-public python-lfdfiles
   (package
     (name "python-lfdfiles")
