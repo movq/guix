@@ -134,19 +134,19 @@ C/C++ part.")
               (sha256
                (base32 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))))
 
-(define-public icu4c icu4c-71)
-
 (define-public icu4c-73
   (package
-    (inherit icu4c)
+    (inherit icu4c-71)
     (name "icu4c")
-    (version "71.1")
+    (version "73.2")
     (source (origin
               (method url-fetch)
               (uri (icu4c-uri version))
               (sha256
                (base32
-                "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))))
+                "1qacc2mw542blinrk51fdxz1dyn7mw0mwc2jnvcsrjnk5rqq12l1"))))))
+
+(define-public icu4c icu4c-73)
 
 (define-public icu4c-75
   (package
@@ -159,18 +159,6 @@ C/C++ part.")
               (sha256
                (base32
                 "1vya31v549pq89kgr02jajwi7gc7qw0mv6n4265pxs6jwkrqv5nb"))))))
-
-(define-public icu4c-76
-  (package
-    (inherit icu4c)
-    (name "icu4c")
-    (version "76.1")
-    (source (origin
-              (method url-fetch)
-              (uri (icu4c-uri version))
-              (sha256
-               (base32
-                "0gjg1zrnqk4vmidqgqx4xbz05898px212gnff8242is7zrmv9b6z"))))))
 
 (define-public icu4c-70
   (package
