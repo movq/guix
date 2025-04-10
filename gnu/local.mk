@@ -1143,6 +1143,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
+  %D%/packages/patches/compsize-fix-build.patch			\
   %D%/packages/patches/containerd-create-pid-file.patch	\
   %D%/packages/patches/converseen-hide-updates-checks.patch	\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\

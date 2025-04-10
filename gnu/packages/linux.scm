@@ -6811,18 +6811,21 @@ blocks and random block placement.")
     (license license:gpl2+)))
 
 (define-public compsize
+  (let ((commit "d79eacf77abe3b799387bb8a4e07a18f1f1031e8")
+        (revision "1"))
   (package
     (name "compsize")
-    (version "1.5")
+    (version (git-version "1.5" revision commit))
     (home-page "https://github.com/kilobyte/compsize")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))))
+                    (commit commit)))
               (sha256
-               (base32 "0vqnrwgpv6pc1yjl0g4gl71xyl6v0xl3pyqjanjpwps73c53azir"))
-              (file-name (git-file-name name version))))
+               (base32 "02fvgy12m50rg1snp555a1kc3cm01g2imb81cih7ikhkbjbca0d7"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "compsize-fix-build.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list btrfs-progs))
@@ -6852,7 +6855,7 @@ only a few bytes of a 1GB extent or reflink it a thousand times.  Thus, the
 uncompressed size will not match the number given by @command{tar} or
 @command{du}.  On the other hand, the space used should be accurate (although
 obviously it can be shared with files outside our set).")
-    (license license:gpl2+)))
+    (license license:gpl2+))))
 
 (define-public f2fs-tools
   (package
