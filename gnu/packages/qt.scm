@@ -4235,6 +4235,7 @@ contain over 620 classes.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ;; No test code.
+    (native-inputs (list python-setuptools))
     (home-page "https://www.riverbankcomputing.com/software/sip/")
     (synopsis "Sip module support for PyQt5")
     (description "Sip module support for PyQt5")
