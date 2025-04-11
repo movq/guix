@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,10 +19,10 @@
 
 (define-module (guix build tree-sitter-build-system)
   #:use-module ((guix build node-build-system) #:prefix node:)
+  #:use-module (guix build json)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
-  #:use-module (json)
   #:use-module (srfi srfi-1)
   #:export (%standard-phases
             tree-sitter-build))
@@ -47,24 +48,30 @@
   "Rewrite dependencies in 'package.json'.  We remove all runtime dependencies
 and replace development dependencies with tree-sitter grammar node modules."
 
-  (node:with-atomic-json-file-replacement
-   (lambda (pkg-meta-alist)
-     (map (match-lambda
-            (("dependencies" dependencies ...)
-             '("dependencies"))
-            (("devDependencies" dev-dependencies ...)
-             `("devDependencies"
-               ,@(filter-map (match-lambda
-                               ((key . directory)
-                                (let ((node-module
-                                       (string-append directory
-                                                      "/lib/node_modules/"
-                                                      key)))
-                                  (and (directory-exists? node-module)
-                                       `(,key . ,node-module)))))
-                             (alist-delete "node" inputs))))
-            (other other))
-          pkg-meta-alist))))
+  (define (rewrite package.json)
+    (map (match-lambda
+           (("dependencies" @ . _)
+            '("dependencies" @))
+           (("peerDependencies" @ . _)
+            '("peerDependencies" @))
+           (("devDependencies" @ . _)
+            `("devDependencies" @
+              ,@(filter-map (match-lambda
+                              ((key . directory)
+                               (let ((node-module
+                                      (string-append directory
+                                                     "/lib/node_modules/"
+                                                     key)))
+                                 (and (directory-exists? node-module)
+                                      `(,key . ,node-module)))))
+                            (alist-delete "node" inputs))))
+           (other other))
+         package.json))
+
+  (node:with-atomic-json-file-replacement "package.json"
+    (match-lambda
+      (('@ . package.json)
+       (cons '@ (rewrite package.json))))))
 
 ;; FIXME: The node build-system's configure phase does not support
 ;; cross-compiling so we re-define it.
@@ -75,14 +82,15 @@ and replace development dependencies with tree-sitter grammar node modules."
 (define* (build #:key grammar-directories #:allow-other-keys)
   (for-each (lambda (dir)
               (with-directory-excursion dir
-                ;; Avoid generating binding code for other languages, we do
-                ;; not support this use-case yet and it relies on running
-                ;; `node-gyp' to build native addons.
-                (invoke "tree-sitter" "generate" "--no-bindings")))
+                (invoke "tree-sitter" "generate")))
             grammar-directories))
 
-(define* (check #:key grammar-directories tests? #:allow-other-keys)
+(define* (check #:key grammar-directories tests? target #:allow-other-keys)
   (when tests?
+    (setenv "CC"
+            (if target
+                (string-append target "-gcc")
+                "gcc"))
     (for-each (lambda (dir)
                 (with-directory-excursion dir
                   (invoke "tree-sitter" "test")))
@@ -95,7 +103,7 @@ and replace development dependencies with tree-sitter grammar node modules."
     (define (compile-language dir)
       (with-directory-excursion dir
         (let ((lang (assoc-ref (call-with-input-file "src/grammar.json"
-                                 json->scm)
+                                 read-json)
                                "name"))
               (source-file (lambda (path)
                              (if (file-exists? path)
@@ -111,6 +119,7 @@ and replace development dependencies with tree-sitter grammar node modules."
                    "-O2"
                    "-g"
                    "-o" ,(string-append lib "/libtree-sitter-" lang ".so")
+                   "-Isrc"
                    ;; An additional `scanner.{c,cc}' file is sometimes
                    ;; provided.
                    ,@(cond
