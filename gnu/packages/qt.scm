@@ -2377,7 +2377,8 @@ Server Protocol (LSP) for Qt.")
               (uri (qt-url name version))
               (sha256
                (base32
-                "0ja5rs1z9lx9hns7m1mg1lndl04arhjajqbdg29j446q5xlzkpk2"))))
+                "0ja5rs1z9lx9hns7m1mg1lndl04arhjajqbdg29j446q5xlzkpk2"))
+              (patches (search-patches "qtlocation-5-fix-build-with-gcc-14.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
