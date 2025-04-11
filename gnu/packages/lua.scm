@@ -819,7 +819,7 @@ Grammars (PEGs).")
 (define (make-lua-luv name lua)
   (package
     (name name)
-    (version "1.50.0-0")
+    (version "1.50.0-1")
     (source (origin
               ;; The release tarball includes the sources of libuv but does
               ;; not include the pkg-config files.
