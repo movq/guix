@@ -422,7 +422,7 @@ defconfig.  Return the appropriate Make target if applicable, otherwise return
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.13-version "6.13.9")
+(define-public linux-libre-6.13-version "6.13.11")
 (define-public linux-libre-6.13-gnu-revision "gnu")
 (define deblob-scripts-6.13
   (linux-libre-deblob-scripts
@@ -432,7 +432,7 @@ defconfig.  Return the appropriate Make target if applicable, otherwise return
    (base32 "1a6ri9awza8nf7cdabp09dk327cx0dw8q3rhm016a578kb4ihviq")))
 (define-public linux-libre-6.13-pristine-source
   (let ((version linux-libre-6.13-version)
-        (hash (base32 "1ci78x5dfjm3nlv4m2j02wl7ax82l47xwnr4k6j9n4dn53qa7rsk")))
+        (hash (base32 "08gcms4gvh8i30wj9vk27rb7d4yrndprxk1m72dhr1f7lywz2azn")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.13)))
