@@ -8486,6 +8486,7 @@ increment.  It also creates commits and tags.")
         (base32
          "0zn7694yfipxg35ikkfh7kvgl2fissha3dnqad2c5bvsvmrwhi37"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/peritus/bumpversion")
     (synopsis "Tool to bump software version")
     (description "This tool provides a command-line interface (CLI) to bump a
