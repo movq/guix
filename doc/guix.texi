@@ -14303,7 +14303,7 @@ options specific to @var{importer}. @command{guix import} itself has the
 following @var{global-options}:
 
 @table @code
-@item --insert=@var{file}
+@item --insert @var{file}
 @itemx -i @var{file}
 Insert the package definition(s) that the @var{importer} generated into the
 specified @var{file}, either in alphabetical order among existing package

@@ -76,7 +76,7 @@ Run IMPORTER with ARGS.\n"))
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
-  -i, --insert=FILE      insert packages into FILE alphabetically"))
+  -i, --insert FILE      insert packages into FILE alphabetically"))
   (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
