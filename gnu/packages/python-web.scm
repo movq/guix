@@ -735,7 +735,7 @@ scripting Launchpad via its the web service API.")
        (sha256
         (base32 "0r44rw0bj5mayhqwfwj1dnrjgzj1lrh7ishiddd1vygnrczqa9jh"))))
     (build-system python-build-system)
-    (native-inputs (list python-zope-testrunner))
+    (native-inputs (list python-setuptools python-zope-testrunner))
     (home-page "https://launchpad.net/lazr.uri")
     (synopsis "Python URI manipulation library")
     (description "This Python package provides a self-contained, easily
