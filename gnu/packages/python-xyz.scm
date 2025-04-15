@@ -8536,7 +8536,7 @@ to deprecate classes, functions or methods.")
      (list python-cryptography python-deprecated python-pyjwt
            python-pynacl python-requests))
     (native-inputs
-     (list nss-certs-for-test python-httpretty python-pytest))
+     (list nss-certs-for-test python-httpretty python-setuptools python-pytest))
     (home-page "https://pygithub.readthedocs.io/en/latest/")
     (synopsis "Python library for the GitHub API")
     (description "This library allows managing GitHub resources such as
