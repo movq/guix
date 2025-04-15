@@ -22864,6 +22864,7 @@ graphviz.")
         (sha256
           (base32 "06gk14qgm9dxx3pzjn0ckdbywc8ial2bjfzddqwlr4bn1nnqkbll"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/jelmer/python-fastimport")
     (synopsis "VCS fastimport parser and generator in Python")
     (description "This package provides a parser for and generator of the Git
