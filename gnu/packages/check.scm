@@ -2400,6 +2400,7 @@ python-fixtures package instead.")
      (list python-pbr python-six python-extras))
     (native-inputs
      `(("python-mock" ,python-mock)
+       ("python-setuptools" ,python-setuptools)
        ("python-testtools" ,python-testtools-bootstrap)))
     (description
      "Fixtures provides a way to create reusable state, useful when writing
