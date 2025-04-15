@@ -6227,6 +6227,7 @@ automatic tab-completion, color support, logging to @code{std}, etc.")
          (replace 'check
            (lambda _
              (invoke "./mimeparse_test.py"))))))
+    (native-inputs (list python-setuptools))
     (home-page
      "https://github.com/dbtsai/python-mimeparse")
     (synopsis "Python library for parsing MIME types")
