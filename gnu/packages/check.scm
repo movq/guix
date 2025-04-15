@@ -2327,6 +2327,7 @@ use of resources by test cases.")))
      (list python-extras python-testtools-bootstrap))
     (native-inputs
      (list python-fixtures-bootstrap python-hypothesis
+           python-setuptools
            python-testscenarios-bootstrap))
     (home-page "https://launchpad.net/subunit")
     (synopsis "Python implementation of the subunit protocol")
