@@ -5743,6 +5743,8 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
        #:tests? #f))
     (propagated-inputs
      (list python-requests))
+    (native-inputs
+      (list python-setuptools))
     (home-page "https://github.com/sigmavirus24/betamax")
     (synopsis "Record HTTP interactions with python-requests")
     (description "Betamax will record your test suite's HTTP interactions and
