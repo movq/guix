@@ -2256,6 +2256,7 @@ compatibility.")))
     (propagated-inputs
      `(("python-pbr" ,python-pbr-minimal)
        ("python-testtools" ,python-testtools-bootstrap)))
+    (native-inputs (list python-setuptools))
     (home-page "https://launchpad.net/testscenarios")
     (synopsis "Pyunit extension for dependency injection")
     (description
