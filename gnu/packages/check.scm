@@ -2306,7 +2306,7 @@ testresources package instead.")
      (list python-pbr))
     (arguments '())
     (native-inputs
-     (list python-fixtures python-testtools))
+     (list python-fixtures python-setuptools python-testtools))
     (description
      "Testresources is an extension to Python's unittest to allow declarative
 use of resources by test cases.")))
