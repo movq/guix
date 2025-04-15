@@ -552,6 +552,7 @@ ISO 8601 dates, time and duration.")
          "1c6z46yb600klbfhqadyl7vq0jdjdxkm72k43ra3iw3d0xakv593"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/atdt/monotonic")
     (synopsis "Implementation of time.monotonic() for Python 2 & < 3.3")
     (description
