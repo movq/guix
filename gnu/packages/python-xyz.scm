@@ -6449,6 +6449,7 @@ code introspection, and logging.")
       `(("python-fixtures" ,python-fixtures-bootstrap)
         ;; discover, coverage, hacking, subunit
         ("python-mock" ,python-mock)
+        ("python-setuptools" ,python-setuptools)
         ("python-six" ,python-six)
         ("python-sphinx" ,python-sphinx)
         ("python-testrepository" ,python-testrepository-bootstrap)
