@@ -3986,7 +3986,8 @@ conforming to a given API or contract.")
                  (invoke "zope-testrunner" "--test-path=src")
                  (format #t "test suite not run~%")))))))
     (native-inputs
-     `(("python-zope-testrunner" ,python-zope-testrunner-bootstrap)))
+     `(("python-zope-testrunner" ,python-zope-testrunner-bootstrap)
+       ("python-setuptools" ,python-setuptools)))
     (propagated-inputs
      (list python-zope-interface))
     (home-page "https://pypi.org/project/zope.exceptions/")
