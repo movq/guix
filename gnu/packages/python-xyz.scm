@@ -26226,22 +26226,19 @@ manipulation and interaction with formal grammars.")
   (package
     (name "python-invoke")
     (home-page "https://www.pyinvoke.org/")
-    (version "1.6.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "invoke" version))
               (sha256
                (base32
-                "1lsql9daabfr31c7syva5myc5bka45k57ygs9fliv63qrwp1wk9p"))))
+                "1mbbixban0238bwkadgynw60n0jrq1ja5wl4zv3mka7i388bnv7f"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Requires many dependencies that are not yet in Guix.
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'delete-python2-code
-           (lambda _
-             (delete-file-recursively "invoke/vendor/yaml2")))
          (add-after 'unpack 'fix-bash-path
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((bash (assoc-ref inputs "bash")))
@@ -26250,6 +26247,7 @@ manipulation and interaction with formal grammars.")
                   (string-append "shell = \"" bash "/bin/bash\"")))))))))
     (inputs
      `(("bash" ,bash-minimal)))
+    (native-inputs (list python-setuptools))
     (synopsis "Pythonic task execution")
     (description
      "Invoke is a Python task execution tool and library, drawing inspiration
