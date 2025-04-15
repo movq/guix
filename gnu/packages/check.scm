@@ -2289,6 +2289,7 @@ style tests.")))
     (arguments '(#:tests? #f))
     (propagated-inputs
      `(("python-pbr" ,python-pbr-minimal)))
+    (native-inputs (list python-setuptools))
     (home-page "https://launchpad.net/testresources")
     (synopsis
      "Pyunit extension for managing test resources")
