@@ -612,6 +612,8 @@ datasets and other repos on the @url{huggingface.co} hub.")
            python-pyparsing
            python-six
            python-wadllib))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://launchpad.net/lazr.restfulclient")
     (synopsis "Web client Python library extending wadlib")
     (description "This package provides a programmable client library that
