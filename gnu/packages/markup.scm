@@ -439,7 +439,7 @@ implementation.
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests? (invoke "pytest" "-vv" "tests")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list cmark-gfm))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/theacodes/cmarkgfm")
