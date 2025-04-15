@@ -7213,7 +7213,8 @@ efficient where possible.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "EVENTLET_NO_GREENDNS" "YES")
-               (invoke "nosetests" "--exclude=(passthrough|streaming|httpretty_should_handle)")))))))
+               (invoke "nosetests" "--exclude=(passthrough|streaming|httpretty_should_handle)"))))
+         (delete 'sanity-check))))
     (native-inputs
      (list nss-certs-for-test
            python-coverage
@@ -7223,6 +7224,7 @@ efficient where possible.")
            python-nose
            python-pyparsing
            python-requests
+           python-setuptools
            python-sure
            python-tornado))
     (home-page "https://httpretty.readthedocs.io")
