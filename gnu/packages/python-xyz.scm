@@ -6145,6 +6145,7 @@ any Python package.")
     (arguments
      ;; FIXME: Circular dependency on testtools.
      '(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/testing-cabal/extras")
     (synopsis "Useful extensions to the Python standard library")
     (description
