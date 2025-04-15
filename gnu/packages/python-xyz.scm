@@ -6430,6 +6430,7 @@ code introspection, and logging.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://docs.openstack.org/pbr/latest/")
     (synopsis "Minimal build of python-pbr used for bootstrapping")
     (description
