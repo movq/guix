@@ -826,7 +826,7 @@ includes the following features:
          "06rimidc9nb3i3r90n3a1zwf0qxw24zqykb3wpxwd1p72yifc9wb"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-ruamel.yaml.clib))
     (arguments
