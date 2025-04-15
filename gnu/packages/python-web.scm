@@ -3977,7 +3977,8 @@ servers, regular expressions, and more.")
              (delete-file
               "src/zope/testrunner/tests/testrunner-ex/sample2/badsyntax.py"))))))
     (native-inputs
-     (list python-zope-testing))
+     (list python-setuptools
+           python-zope-testing))
     (propagated-inputs
      (list python-six python-zope-exceptions python-zope-interface))
     (home-page "https://pypi.org/project/zope.testrunner/")
