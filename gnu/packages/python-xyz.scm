@@ -20008,6 +20008,8 @@ objects.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-six))
+    (native-inputs
+     (list python-setuptools))
     (synopsis "Config file reading, writing and validation")
     (description "ConfigObj is a simple but powerful config file reader and
 writer: an ini file round tripper.  Its main feature is that it is very easy to
