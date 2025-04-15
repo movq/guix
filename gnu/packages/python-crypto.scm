@@ -1437,6 +1437,7 @@ and Backlog for a list of what is and is not currently supported.")
      '(#:tests? #f)) ; Tests require a running dbus service.
     (propagated-inputs
      (list python-cryptography python-jeepney))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/mitya57/secretstorage")
     (synopsis "Python bindings to FreeDesktop.org Secret Service API")
     (description
