@@ -27092,7 +27092,7 @@ conversion: Gamut A, B, and C.")
     (propagated-inputs
      (list python-mock python-six))
     (native-inputs
-     (list python-nose))
+     (list python-nose python-setuptools))
     (home-page "https://github.com/gabrielfalcao/sure")
     (synopsis "Automated testing library in python for python")
     (description
