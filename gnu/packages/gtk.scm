@@ -2778,14 +2778,13 @@ printed to standard output.")
       (version (string-append "16.04.0" "-" bzr-revision))
       (source
        (origin
-         (method bzr-fetch)
-         (uri (bzr-reference
-               (url "lp:libdbusmenu")
-               (revision bzr-revision)))
-         (file-name (string-append name "-" version "-checkout"))
+         (method url-fetch)
+         (uri
+           "https://bazaar.launchpad.net/~dbusmenu-team/libdbusmenu/trunk.16.10/tarball/496")
+         (file-name (string-append name "-" version ".tar.gz"))
          (sha256
           (base32
-           "1rnp86r8f2xjcbk6jjl6np1qdhc3d7fj1c3ggn0gbv2kksc8r1bx"))))
+           "07kr2q0kkgmgn0iaw10dra0nmq0dfmdv3l8qn2hcsls54p32aw0m"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -2814,6 +2813,9 @@ printed to standard output.")
                   ;; (("\\$\\(srcdir)/clean-namespaces.xslt")
                   ;;  "clean-namespaces.xslt")
                   )))
+            (add-after 'unpack 'cd-to-source
+              (lambda _
+                (chdir "libdbusmenu/trunk.16.10")))
             (add-before 'configure 'do-not-treat-warnings-as-errors
               (lambda _
                 ;; Prevent the build from failing due to deprecation warnings
