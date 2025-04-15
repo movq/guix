@@ -2572,7 +2572,7 @@ execution of any hook written in any language before every commit.")
 (define-public mercurial
   (package
     (name "mercurial")
-    (version "6.7.2")
+    (version "7.0.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://www.mercurial-scm.org/"
@@ -2580,7 +2580,7 @@ execution of any hook written in any language before every commit.")
              (patches (search-patches "mercurial-hg-extension-path.patch"))
              (sha256
               (base32
-               "01nqvp3cvidlz9z5vm05vpq81r6x10jwwfcaz0gw9anz0l60f8hw"))))
+               "0j2bfsn6xh5ami5bq78vjpkhxczx8alff8fljgzzf5bcxi1dwk0g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -2655,6 +2655,8 @@ execution of any hook written in any language before every commit.")
                          "-v"))))))))
     (native-inputs
      (list python-docutils
+           python-setuptools
+           python-setuptools-scm-next
            ;; The following inputs are only needed to run the tests.
            python-nose unzip which))
     (inputs
