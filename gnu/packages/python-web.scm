@@ -5569,6 +5569,7 @@ GLib mainloop.")
         (base32
          "1d28r8pmhzjjd6hrn1xcddinfhwv8lcl1s59ygmqa8kfmz5pkrgl"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/kbandla/dpkt")
     (synopsis "Packet generator and parser for TCP/IP protocols")
     (description "The dpkt module is a fast, simple packet generator and parser
