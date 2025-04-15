@@ -2371,6 +2371,8 @@ protocol.")))
            (delete 'sanity-check))))
     (propagated-inputs
      (list python-pbr-minimal python-six python-extras))
+    (native-inputs
+      (list python-setuptools))
     (home-page "https://launchpad.net/python-fixtures")
     (synopsis "Python test fixture library")
     (description
