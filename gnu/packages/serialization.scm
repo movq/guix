@@ -880,6 +880,9 @@ style and key ordering are kept, so you can diff the source.")
        #:phases
        (modify-phases %standard-phases
          (delete 'sanity-check) ; Depends on python-ruamel.yaml
+         (add-before 'build 'set-cflags
+           (lambda _
+             (setenv "CFLAGS" "-Wno-incompatible-pointer-types")))
          (add-after 'unpack 'cythonize-code
            (lambda _
              (invoke "cython" "_ruamel_yaml.pyx"))))))
