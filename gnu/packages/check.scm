@@ -2424,7 +2424,7 @@ Python tests.")))
        ("python-subunit" ,python-subunit-bootstrap)
        ("python-testtools" ,python-testtools-bootstrap)))
     (native-inputs
-     (list python-mimeparse))
+     (list python-mimeparse python-setuptools))
     (home-page "https://launchpad.net/testrepository")
     (synopsis "Database for Python test results")
     (description
