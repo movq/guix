@@ -884,7 +884,8 @@ style and key ordering are kept, so you can diff the source.")
            (lambda _
              (invoke "cython" "_ruamel_yaml.pyx"))))))
     (native-inputs
-     (list python-cython))
+     (list python-cython
+           python-setuptools))
     (home-page "https://sourceforge.net/p/ruamel-yaml-clib/code/ci/default/tree")
     (synopsis "C version of reader, parser and emitter for ruamel.yaml")
     (description
