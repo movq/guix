@@ -2343,7 +2343,7 @@ python-subunit package instead.")
     (propagated-inputs
      (list python-extras python-testtools))
     (native-inputs
-     (list python-fixtures python-hypothesis python-testscenarios))
+     (list python-fixtures python-hypothesis python-setuptools python-testscenarios))
     (description
      "Python-subunit is a Python implementation of the subunit test streaming
 protocol.")))
