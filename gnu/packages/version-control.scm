@@ -292,7 +292,6 @@
                   python-launchpadlib
                   python-merge3
                   python-paramiko
-                  python-gpg
                   python-patiencediff
                   python-pygithub
                   python-pyyaml
