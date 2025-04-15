@@ -4011,7 +4011,7 @@ that have uses outside of the Zope framework.")
             `(modify-phases ,phases
                (delete 'sanity-check))))))
     (propagated-inputs `())
-    (native-inputs `())
+    (native-inputs (list python-setuptools))
     (properties `((hidden? . #t)))))
 
 (define-public python-zope-exceptions-bootstrap
