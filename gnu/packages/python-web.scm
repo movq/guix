@@ -714,7 +714,10 @@ adds functionality on top of @code{wadlib}.")
            python-keyring
            python-lazr-restfulclient
            python-lazr-uri))
-    (native-inputs (list python-mock python-testresources python-wadllib))
+    (native-inputs (list python-mock
+                         python-setuptools
+                         python-testresources
+                         python-wadllib))
     (home-page "https://help.launchpad.net/API/launchpadlib")
     (synopsis "Python client library for Launchpad's web service")
     (description "@code{launchpadlib} is a Python library that allows
